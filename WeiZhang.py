@@ -21,7 +21,26 @@ class Instructor:
                
     def get_expertise(self):    
         """ Getter for the expertise attribute."""
-        return self.__name   
+        return self.__expertise
+
+    def set_expertise(self,expertise):
+        """ Setter for the expertise attribute."""
+        if isinstance(expertise, str) and expertise.strip():
+            self.__expertise = expertise
+        else:
+           raise ValueError("Expertise must be a non-empty string")
+    
+    def get_years_of_experience(self):
+        """ Getter for the years_of_experience attribute."""
+        return self.__years_of_experience 
+    
+    def set_years_of_experience(self,years_of_experience):
+        """ Setter for the years_of_experience attribute."""
+        if isinstance(years_of_experience, str) and years_of_experience >=0:
+           self.__years_of_experience =years_of_experience
+        else:
+           raise ValueError("Years of experience must be a positive integer")    
+    
 
     def instructor_profile(self):
         ''' Display the instructor's full profile, including name, expertise, and experience. '''
@@ -30,36 +49,48 @@ class Instructor:
             ", the expertise is: " + self.__expertise +
             ", and the years of experience is: " + str(self.__years_of_experience)
         )
-    def assign_workshop(self,workshop):
-        ''' assign workshop to the instructor.''' 
+    def add_workshop(self,workshop):
+        ''' Add workshop to the instructor.''' 
         self.__workshops.append(workshop)
 
     def display_workshop(self):    
-        ''' Display the list of tech workshops assigned to the instructor.'''        
+        ''' Display the list of tech workshops added to the instructor.'''        
         return (
-            "The list of tech workshops assigned to " + self.__name +
+            "The list of tech workshops added to " + self.__name +
             " is: " + ", ".join(self.__workshops)
         )
-Instructor1=Instructor("Lee","math",10)  
-print(Instructor1.instructor_profile())
+    
+    def __str__(self):
+        '''Return the instructor's profile.'''
+        return self.instructor_profile()
+    
+# Testing class Instructor:    
+# Instructor1=Instructor("Lee","math",10)  
+# print(Instructor1.instructor_profile())
 
-Instructor1.assign_workshop("COMP636")
-Instructor1.assign_workshop("COMP640")
-print(Instructor1.display_workshop())
+# Instructor1.add_workshop("COMP636")
+# Instructor1.add_workshop("COMP640")
+# print(Instructor1.display_workshop())
 
 
 
+class Participant:
+    '''This class is to Initialise the
+    participant name, registration number, email address attributes'''
+    def __init__(self, name, registration_number, email):
+        self.__name = name
+        self.__registration_number = registration_number
+        self.__email = email
+        self.__enrolled_workshops = []
+        self.__waitlisted_workshops = []
+    
+    def enroll_workshops(self,workshop):
+        '''Workshops that participant enrolled.''' 
+        self.__enrolled_workshops.append(workshop)
 
 
 
-
-# class Participant:
-#     def __init__(self, name, registration_number, email):
-#         self.__name = name
-#         self.__registration_number = registration_number
-#         self.__email = email
-#         self.__enrolled_workshops = []
-#         self.__waitlisted_workshops = []
+    
 
         
 # class Workshop:
