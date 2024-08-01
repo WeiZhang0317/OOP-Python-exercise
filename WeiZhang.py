@@ -1,6 +1,5 @@
 from datetime import datetime 
 
-        
 class Workshop:
     def __init__(self,name,instructor,date):
         self.__workshop_name=name
@@ -52,8 +51,7 @@ class Workshop:
             self.__workshop_date = date
         else:
             raise ValueError("Date must be in YYYY-MM-DD format and a valid date")
-           
-
+        
     @staticmethod
     def validate_date(date):
         """ Validate the date format to be YYYY-MM-DD and check if it's a valid date."""
@@ -62,7 +60,47 @@ class Workshop:
             return True
         except ValueError:
             return False
-        
+
+    def assign_instructor(self,instructor):
+          """ Assign an instructor to conduct the workshop.  """ 
+          self.set_instructor(instructor)  
+
+    def enroll_participant(self,participant):      
+        """ Enroll an participant to the workshop. If the workshop is full, the participant will be 
+            added to the waitlist.""" 
+        if len(self.__enrolled_participants) < self.__workshop_maximum_capacity:
+           self.__enrolled_participants.append(participant)
+           print(f"{participant.get_name()} is enrolled in {self.__workshop_name}.")
+        else:   
+            self.__waitlist_participants.append(participant)
+
+    def display_enroll_participant(self):
+      ''' Display all participants currently enrolled in the workshop.'''
+      result = "Enrolled participants: "
+      for participant in self.__enrolled_participants:
+       result += participant.get_name() + ", "
+       return result.rstrip(', ')
+    
+    def num_enrolled_participants(self): 
+        '''Return the number of participants currently enrolled in the workshop'''
+        return len(self.__enrolled_participants)
+    
+    def num_available_slot(self):
+        '''  Return the number of available slots for enrolment in the workshop.  '''
+        return self.__workshop_maximum_capacity-self.num_enrolled_participants()
+    
+    def remove_participants(self,participant): 
+        '''  Remove a participant from the enrolled list of the workshop.'''  
+        return self.__enrolled_participants.remove(participant)
+    
+    def calculate_payment(self):
+        '''Calculate and return the total payment received for the workshop based on the 
+           number of enrolled participants and the workshop fee. '''     
+        if self.num_enrolled_participants()==0:
+             return self.__workshop_fee
+        else:
+            return  self.num_enrolled_participants()* self.__workshop_fee
+    
 class Instructor:
     '''This class is to Initialise the
     instructor name,expertise,experience attributes '''
