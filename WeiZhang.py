@@ -1,4 +1,68 @@
+from datetime import datetime 
 
+        
+class Workshop:
+    def __init__(self,name,instructor,date):
+        self.__workshop_name=name
+        self.__workshop_instructor=instructor
+        self.__workshop_fee= 1050
+        self.__workshop_maximum_capacity=20
+        self.__workshop_date=date
+        self.__enrolled_participants=[]
+        self.__waitlist_participants=[]
+        self.__attended_participants=[]
+    
+    def get_name(self):    
+        """ Getter for the name attribute."""
+        return self.__workshop_name
+    
+    def set_name(self, name):
+        """ Setter for the name attribute.Must be a non-empty string."""
+        if isinstance(name, str) and name.strip():
+            self.__workshop_name = name
+        else:
+           raise ValueError("Name must be a non-empty string")
+        
+    def get_instructor(self):    
+        """ Getter for the name attribute."""
+        return self.__workshop_instructor  
+    
+    def set_instructor(self, instructor):
+        """ Setter for the instructor attribute. Must be a non-empty string."""
+        if isinstance(instructor, str) and instructor.strip():
+            self.__workshop_instructor = instructor
+        else:
+           raise ValueError("Instructor must be a non-empty string")    
+    
+    def get_fee(self):
+        """ Getter for the fee attribute."""
+        return self.__workshop_fee
+
+    def get_maximum_capacity(self):
+       """ Getter for the maximum_capacity attribute."""
+       return self.__workshop_maximum_capacity
+    
+    def get_date(self):
+        """ Getter for the date attribute."""
+        return self.__workshop_date
+
+    def set_date(self, date):
+        """ Setter for the date attribute. Must be a valid date in YYYY-MM-DD format."""
+        if self.validate_date(date):
+            self.__workshop_date = date
+        else:
+            raise ValueError("Date must be in YYYY-MM-DD format and a valid date")
+           
+
+    @staticmethod
+    def validate_date(date):
+        """ Validate the date format to be YYYY-MM-DD and check if it's a valid date."""
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+            return True
+        except ValueError:
+            return False
+        
 class Instructor:
     '''This class is to Initialise the
     instructor name,expertise,experience attributes '''
@@ -87,25 +151,12 @@ class Participant:
     def enroll_workshops(self,workshop):
         '''Workshops that participant enrolled.''' 
         self.__enrolled_workshops.append(workshop)
-
-
-
     
-
-        
-# class Workshop:
-#     def __init__(self,name,instructor, date fee=1050, maximum_capacity=20):
-#         self.__workshop_name=name
-#         self.__workshop_instructor=instructor
-#         self.__workshop_fee= fee
-#         self.__workshop_maximum_capacity=maximum_capacity
-#         self.__workshop_date=date
-#         self.__enrolled_participants=[]
-#         self.__waitlist_participants=[]
-#         self.__attended_participants=[]
-
-    
-               
+    def check_capacity(self,workshop):
+        '''Check if workshop is already full, if so the participant will be added to waitlist.'''
+         if len
 
 
+
+ 
 
