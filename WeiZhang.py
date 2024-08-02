@@ -127,26 +127,21 @@ class Workshop:
            return 0.0  
         attendance_percentage=(total_attended_participants/total_enrolled__participants)*100
         return attendance_percentage
-        
-        
            
-                
-    
-    
 class Instructor:
     '''This class is to initialize the
     instructor name, expertise, and experience attributes.'''
     
     def __init__(self, name, expertise, years_of_experience):
-        self.__name = name
+        self.__instructor_name = name
         self.__expertise = expertise
         self.__years_of_experience = years_of_experience
-        self.__workshops = []
+        self.__workshops_assigned = []
 
     @property
     def name(self):
         """ Getter for the name attribute."""
-        return self.__name    
+        return self.__instructor_name    
     
     @name.setter
     def name(self, name):
@@ -192,13 +187,13 @@ class Instructor:
     
     def add_workshop(self, workshop):
         ''' Add workshop to the instructor.''' 
-        self.__workshops.append(workshop)
+        self.__workshops_assigned .append(workshop)
 
     def display_workshop(self):
         """ Display the list of tech workshops added to the instructor. """
         return (
             "The list of tech workshops added to " + self.__name +
-            " is: " + ", ".join([workshop.name for workshop in self.__workshops])
+            " is: " + ", ".join([workshop.name for workshop in self. self.__workshops_assigned])
         )
 
     
@@ -221,19 +216,88 @@ class Participant:
     '''This class is to Initialise the
     participant name, registration number, email address attributes'''
     def __init__(self, name, registration_number, email):
-        self.__name = name
+        self.__participant_name = name
         self.__registration_number = registration_number
         self.__email = email
-        self.__enrolled_workshops = []
-        self.__waitlisted_workshops = []
+        self.__participant_enrolled_workshops = []
+        self.__participant_waiting_workshops = []
     
-    def enroll_workshops(self,workshop):
-        '''Workshops that participant enrolled.''' 
-        self.__enrolled_workshops.append(workshop)
+    @property
+    def name(self):
+        """ Getter for the name attribute."""
+        return self.__participant_name
     
-    def check_capacity(self,workshop):
-        '''Check if workshop is already full, if so the participant will be added to waitlist.'''
-         if len
+    @name.setter
+    def name(self, name):
+        """ Setter for the name attribute. Must be a non-empty string."""
+        if isinstance(name, str) and name.strip():
+            self.__participant_name = name
+        else:
+            raise ValueError("Name must be a non-empty string")
+    
+    @property
+    def registration_number(self):
+        """ Getter for the registration number attribute."""
+        return self.__registration_number
+    
+    @registration_number.setter
+    def registration_number(self, registration_number):
+        """ Setter for the registration number attribute. Must be a non-empty string."""
+        if isinstance(registration_number, str) and registration_number.strip():
+            self.__registration_number = registration_number
+        else:
+            raise ValueError("Registration number must be a non-empty string")
+    
+    @property
+    def email(self):
+        """ Getter for the email attribute."""
+        return self.__email
+    
+    @email.setter
+    def email(self, email):
+        """ Setter for the email attribute. Must be a valid email address."""
+        if isinstance(email, str) and email.strip() and "@" in email:
+            self.__email = email
+        else:
+            raise ValueError("Email must be a valid email address")
+        
+    def book_workshop(self, workshop):
+        """Book enrolment in a tech workshop. If the workshop is already full, the participant will be added to the waitlist. """
+        if workshop.num_available_slot()>0:
+            workshop.enroll_participant(self)
+            self.__participant_enrolled_workshops.append(workshop)  
+            print(f"{self.__participant_name} is enrolled in {workshop.name}.")
+        else:
+            workshop.__waitlist_participants.append(self)
+            self.__participant_waiting_workshops.append(workshop) 
+            print(f"{self.__participant_name} is added to the waitlist for {workshop.name}.")
+                
+    def unenroll_workshop(self, workshop):
+        """Unenroll from a tech workshop."""
+        if self.__participant_name in workshop.__enrolled_participants:
+    
+    
+    
+    
+    
+    
+    
+    # def unenroll(self, workshop):
+    #     '''Unenroll from a tech workshop.'''
+    #     if workshop in self.__enrolled_workshops:
+    #         self.__enrolled_workshops.remove(workshop)
+    #         workshop.remove_participants(self)
+    #         print(f"{self.__participant_name} has been unenrolled from {workshop.name}.")
+    #     else:
+    #         print(f"{self.__participant_name} is not enrolled in {workshop.name}.")
+    
+    def display_booked_workshops(self):
+        '''Display all booked tech workshops.'''
+        return ", ".join([workshop.name for workshop in self.__enrolled_workshops])
+    
+    def __str__(self):
+        '''Return participant's profile.'''
+        return f"Name: {self.__participant_name}, Registration Number: {self.__registration_number}, Email: {self.__email}"
 
 
 
