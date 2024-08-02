@@ -11,41 +11,49 @@ class Workshop:
         self.__waitlist_participants=[]
         self.__attended_participants=[]
     
-    def get_name(self):    
+    @property
+    def name(self):
         """ Getter for the name attribute."""
-        return self.__workshop_name
+        return self.__workshop_name    
     
-    def set_name(self, name):
-        """ Setter for the name attribute.Must be a non-empty string."""
+    @name.setter
+    def name(self, name):
+        """ Setter for the name attribute. Must be a non-empty string."""
         if isinstance(name, str) and name.strip():
-            self.__workshop_name = name
+            self.__name = name
         else:
-           raise ValueError("Name must be a non-empty string")
-        
-    def get_instructor(self):    
+            raise ValueError("Name must be a non-empty string")
+    
+    @property    
+    def instructor(self):    
         """ Getter for the name attribute."""
         return self.__workshop_instructor  
     
-    def set_instructor(self, instructor):
+    @instructor.setter
+    def instructor(self, instructor):
         """ Setter for the instructor attribute. Must be a non-empty string."""
         if isinstance(instructor, str) and instructor.strip():
             self.__workshop_instructor = instructor
         else:
            raise ValueError("Instructor must be a non-empty string")    
     
-    def get_fee(self):
+    @property    
+    def fee(self):
         """ Getter for the fee attribute."""
         return self.__workshop_fee
-
-    def get_maximum_capacity(self):
+    
+    @property
+    def maximum_capacity(self):
        """ Getter for the maximum_capacity attribute."""
        return self.__workshop_maximum_capacity
     
-    def get_date(self):
+    @property
+    def date(self):
         """ Getter for the date attribute."""
         return self.__workshop_date
-
-    def set_date(self, date):
+    
+    @date.setter
+    def date(self, date):
         """ Setter for the date attribute. Must be a valid date in YYYY-MM-DD format."""
         if self.validate_date(date):
             self.__workshop_date = date
@@ -63,7 +71,7 @@ class Workshop:
 
     def assign_instructor(self,instructor):
           """ Assign an instructor to conduct the workshop.  """ 
-          self.set_instructor(instructor)  
+          self.instructor(instructor)  
 
     def enroll_participant(self,participant):      
         """ Enroll an participant to the workshop. If the workshop is full, the participant will be 
@@ -75,11 +83,13 @@ class Workshop:
             self.__waitlist_participants.append(participant)
 
     def display_enroll_participant(self):
-      ''' Display all participants currently enrolled in the workshop.'''
-      result = "Enrolled participants: "
-      for participant in self.__enrolled_participants:
-       result += participant.get_name() + ", "
-       return result.rstrip(', ')
+        """ Display all participants currently enrolled in the workshop."""
+        result = "Enrolled participants: "
+        for participant in self.__enrolled_participants:
+            result += participant.get_name() + ", "
+        return result.rstrip(', ')
+
+
     
     def num_enrolled_participants(self): 
         '''Return the number of participants currently enrolled in the workshop'''
@@ -96,53 +106,81 @@ class Workshop:
     def calculate_payment(self):
         '''Calculate and return the total payment received for the workshop based on the 
            number of enrolled participants and the workshop fee. '''     
-        if self.num_enrolled_participants()==0:
-             return self.__workshop_fee
+        return  self.num_enrolled_participants()* self.__workshop_fee
+    
+    def mark_attendance(self,participant):
+        '''Mark a participant's attendance for the workshop.'''
+        if participant in self.__enrolled_participants:
+            if participant not in self.__attended_participants:     
+                self.__attended_participants.append(participant)
+            else:
+                print(f"{participant.get_name()} has already been marked as attended.")
         else:
-            return  self.num_enrolled_participants()* self.__workshop_fee
+            print(f"{participant.get_name()} is not enrolled in this workshop.")
+
+    def cal_attendance_percentage(self):
+        '''Calculate and return the attendance percentage for the workshop, representing 
+           the ratio of participants attended to the total number of enrolled participants. '''
+        total_attended_participants=len(self.__attended_participants)
+        total_enrolled__participants=len(self.__enrolled_participants)
+        if total_enrolled__participants == 0:
+           return 0.0  
+        attendance_percentage=(total_attended_participants/total_enrolled__participants)*100
+        return attendance_percentage
+        
+        
+           
+                
+    
     
 class Instructor:
-    '''This class is to Initialise the
-    instructor name,expertise,experience attributes '''
+    '''This class is to initialize the
+    instructor name, expertise, and experience attributes.'''
+    
     def __init__(self, name, expertise, years_of_experience):
         self.__name = name
         self.__expertise = expertise
         self.__years_of_experience = years_of_experience
         self.__workshops = []
 
-    def get_name(self):    
+    @property
+    def name(self):
         """ Getter for the name attribute."""
         return self.__name    
     
-    def set_name(self, name):
-        """ Setter for the name attribute.Must be a non-empty string."""
+    @name.setter
+    def name(self, name):
+        """ Setter for the name attribute. Must be a non-empty string."""
         if isinstance(name, str) and name.strip():
             self.__name = name
         else:
-           raise ValueError("Name must be a non-empty string")
-               
-    def get_expertise(self):    
+            raise ValueError("Name must be a non-empty string")
+
+    @property
+    def expertise(self):
         """ Getter for the expertise attribute."""
         return self.__expertise
 
-    def set_expertise(self,expertise):
-        """ Setter for the expertise attribute."""
+    @expertise.setter
+    def expertise(self, expertise):
+        """ Setter for the expertise attribute. Must be a non-empty string."""
         if isinstance(expertise, str) and expertise.strip():
             self.__expertise = expertise
         else:
-           raise ValueError("Expertise must be a non-empty string")
+            raise ValueError("Expertise must be a non-empty string")
     
-    def get_years_of_experience(self):
+    @property
+    def years_of_experience(self):
         """ Getter for the years_of_experience attribute."""
         return self.__years_of_experience 
     
-    def set_years_of_experience(self,years_of_experience):
-        """ Setter for the years_of_experience attribute."""
-        if isinstance(years_of_experience, str) and years_of_experience >=0:
-           self.__years_of_experience =years_of_experience
+    @years_of_experience.setter
+    def years_of_experience(self, years_of_experience):
+        """ Setter for the years_of_experience attribute. Must be a non-negative integer."""
+        if isinstance(years_of_experience, int) and years_of_experience >= 0:
+            self.__years_of_experience = years_of_experience
         else:
-           raise ValueError("Years of experience must be a positive integer")    
-    
+            raise ValueError("Years of experience must be a non-negative integer")
 
     def instructor_profile(self):
         ''' Display the instructor's full profile, including name, expertise, and experience. '''
@@ -151,20 +189,23 @@ class Instructor:
             ", the expertise is: " + self.__expertise +
             ", and the years of experience is: " + str(self.__years_of_experience)
         )
-    def add_workshop(self,workshop):
+    
+    def add_workshop(self, workshop):
         ''' Add workshop to the instructor.''' 
         self.__workshops.append(workshop)
 
-    def display_workshop(self):    
-        ''' Display the list of tech workshops added to the instructor.'''        
+    def display_workshop(self):
+        """ Display the list of tech workshops added to the instructor. """
         return (
             "The list of tech workshops added to " + self.__name +
-            " is: " + ", ".join(self.__workshops)
+            " is: " + ", ".join([workshop.name for workshop in self.__workshops])
         )
+
     
     def __str__(self):
         '''Return the instructor's profile.'''
         return self.instructor_profile()
+
     
 # Testing class Instructor:    
 # Instructor1=Instructor("Lee","math",10)  
