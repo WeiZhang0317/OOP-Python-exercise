@@ -60,3 +60,19 @@ elevator.gotoGround()
 elevator.openDoor()
 elevator.closeDoor()
 elevator.gotoFloor(7) #invalid
+
+
+
+#lecture 2
+
+class Ele:
+   def openDoor(self):
+      print("open")
+   def closeDoor(self):
+      print("close") 
+   def goFloor(self, floorNo):
+      if self.currentFloor==floorNo:
+         print( "you are in right one")     
+
+   def gotoGround(self):
+      self.goFloor(0)      
