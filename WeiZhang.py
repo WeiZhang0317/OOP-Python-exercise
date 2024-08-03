@@ -127,6 +127,14 @@ class Workshop:
            return 0.0  
         attendance_percentage=(total_attended_participants/total_enrolled__participants)*100
         return attendance_percentage
+    
+    def __str__(self):
+        """ String representation of the Workshop object."""
+        return (f"Workshop Name: {self.__workshop_name}, Instructor: {self.__workshop_instructor}, "
+                f"Date: {self.__workshop_date}, Fee: {self.__workshop_fee}, "
+                f"Maximum Capacity: {self.__workshop_maximum_capacity}, "
+                f"Enrolled Participants: {self.num_enrolled_participants()}, "
+                f"Available Slots: {self.num_available_slots()}")
            
 class Instructor:
     '''This class is to initialize the
@@ -201,15 +209,6 @@ class Instructor:
         '''Return the instructor's profile.'''
         return self.instructor_profile()
 
-    
-# Testing class Instructor:    
-# Instructor1=Instructor("Lee","math",10)  
-# print(Instructor1.instructor_profile())
-
-# Instructor1.add_workshop("COMP636")
-# Instructor1.add_workshop("COMP640")
-# print(Instructor1.display_workshop())
-
 
 
 class Participant:
@@ -271,25 +270,15 @@ class Participant:
             workshop.__waitlist_participants.append(self)
             self.__participant_waiting_workshops.append(workshop) 
             print(f"{self.__participant_name} is added to the waitlist for {workshop.name}.")
-                
-    def unenroll_workshop(self, workshop):
-        """Unenroll from a tech workshop."""
-        if self.__participant_name in workshop.__enrolled_participants:
-    
-    
-    
-    
-    
-    
-    
-    # def unenroll(self, workshop):
-    #     '''Unenroll from a tech workshop.'''
-    #     if workshop in self.__enrolled_workshops:
-    #         self.__enrolled_workshops.remove(workshop)
-    #         workshop.remove_participants(self)
-    #         print(f"{self.__participant_name} has been unenrolled from {workshop.name}.")
-    #     else:
-    #         print(f"{self.__participant_name} is not enrolled in {workshop.name}.")
+       
+    def unenroll(self, workshop):
+        '''Unenroll from a tech workshop.'''
+        if workshop in self.__enrolled_workshops:
+            self.__enrolled_workshops.remove(workshop)
+            workshop.remove_participants(self)
+            print(f"{self.__participant_name} has been unenrolled from {workshop.name}.")
+        else:
+            print(f"{self.__participant_name} is not enrolled in {workshop.name}.")
     
     def display_booked_workshops(self):
         '''Display all booked tech workshops.'''
