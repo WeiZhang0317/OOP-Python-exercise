@@ -216,7 +216,6 @@ class Instructor:
             "The list of tech workshops added to " + self.__instructor_name +
             " is: " + ", ".join([workshop.name for workshop in self.__workshops_assigned])
         )
-
     
     def __str__(self):
         '''Return the instructor's profile.'''
@@ -307,36 +306,47 @@ class Participant:
 def driver_program():
     # Create 2 Workshop objects
     workshop1 = Workshop("COMP646 WORKSHOP","Dr.Richard", "2024-09-01")
-    workshop2 = Workshop("COMP644 WORKSHOP","Dr.Stuart", "2024-08-01")
+    workshop2 = Workshop("COMP330 WORKSHOP","Dr.Stuart", "2024-08-01")
     
     # Create 6 Participant objects
     # (self, name, registration_number, email):
-    participants = [Participant("Wei","021069","Wei@Lincoln.ac.nz"),
+    participants = [
+    Participant("Wei","021069","Wei@Lincoln.ac.nz"),
     Participant("Lilian","023362","Lilian@Lincoln.ac.nz"),
     Participant("William","189521","William@Lincoln.ac.nz"),
     Participant("Wade","655844","Wade@Lincoln.ac.nz"),
     Participant("Kiko","544952","Kiko@Lincoln.ac.nz"),
     Participant("Ian","45451","Ian@Lincoln.ac.nz"),  
-    Participant("Participant7", "007", "participant7@example.com"),
-    Participant("Participant8", "008", "participant8@example.com"),
-    Participant("Participant9", "009", "participant9@example.com"),
-    Participant("Participant10", "010", "participant10@example.com"),
-    Participant("Participant11", "011", "participant11@example.com"),
-    Participant("Participant12", "012", "participant12@example.com"),
-    Participant("Participant13", "013", "participant13@example.com"),
-    Participant("Participant14", "014", "participant14@example.com"),
-    Participant("Participant15", "015", "participant15@example.com"),
-    Participant("Participant16", "016", "participant16@example.com"),
-    Participant("Participant17", "017", "participant17@example.com"),
-    Participant("Participant18", "018", "participant18@example.com"),
-    Participant("Participant19", "019", "participant19@example.com"),
-    Participant("Participant20", "020", "participant20@example.com"),
-    Participant("Participant21", "021", "participant21@example.com"),
-    Participant("Participant22", "022", "participant22@example.com"),
-    Participant("Participant23", "023", "participant23@example.com"),
-    Participant("Participant24", "024", "participant24@example.com"),
-    Participant("Participant25", "025", "participant25@example.com")
-    ]
+     ]
+    
+    #testing
+    # participants = [
+    # Participant("Participant1", "001", "participant1@Lincoln.ac.nz"),
+    # Participant("Participant2", "002", "participant2@Lincoln.ac.nz"),
+    # Participant("Participant3", "003", "participant3@Lincoln.ac.nz"),
+    # Participant("Participant4", "004", "participant4@Lincoln.ac.nz"),
+    # Participant("Participant5", "005", "participant5@Lincoln.ac.nz"),
+    # Participant("Participant6", "006", "participant6@Lincoln.ac.nz"),    
+    # Participant("Participant7", "007", "participant7@Lincoln.ac.nz"),
+    # Participant("Participant8", "008", "participant8@Lincoln.ac.nz"),
+    # Participant("Participant9", "009", "participant9@Lincoln.ac.nz"),
+    # Participant("Participant10", "010", "participant10@Lincoln.ac.nz"),
+    # Participant("Participant11", "011", "participant11@Lincoln.ac.nz"),
+    # Participant("Participant12", "012", "participant12@Lincoln.ac.nz"),
+    # Participant("Participant13", "013", "participant13@Lincoln.ac.nz"),
+    # Participant("Participant14", "014", "participant14@Lincoln.ac.nz"),
+    # Participant("Participant15", "015", "participant15@Lincoln.ac.nz"),
+    # Participant("Participant16", "016", "participant16@Lincoln.ac.nz"),
+    # Participant("Participant17", "017", "participant17@Lincoln.ac.nz"),
+    # Participant("Participant18", "018", "participant18@Lincoln.ac.nz"),
+    # Participant("Participant19", "019", "participant19@Lincoln.ac.nz"),
+    # Participant("Participant20", "020", "participant20@Lincoln.ac.nz"),
+    # Participant("Participant21", "021", "participant21@Lincoln.ac.nz"),
+    # Participant("Participant22", "022", "participant22@Lincoln.ac.nz"),
+    # Participant("Participant23", "023", "participant23@Lincoln.ac.nz"),
+    # Participant("Participant24", "024", "participant24@Lincoln.ac.nz"),
+    # Participant("Participant25", "025", "participant25@Lincoln.ac.nz")
+    # ]
     
     # Create 2 Instructor objects
     instructor1 = Instructor("Dr.Richard", "Artificial Intelligence", 20)
@@ -351,13 +361,13 @@ def driver_program():
     instructor2.add_workshop(workshop2)
 
     # Set up at least 5 participant bookings for each workshop
-    # Book all participants into workshop1
+    # Book all participants into workshop1 COMP646
     for participant in participants:
         participant.book_workshop(workshop1)
      
     
-     # Book some participants into workshop2
-    for participant in participants[:6]:  #only the first 6 participants book for workshop2
+     # Book some participants into workshop2 COMP644
+    for participant in participants[:5]:  #only the first 5 participants book for workshop2
         participant.book_workshop(workshop2) 
     
     # Cancel a participant's enrolment in a specific tech workshop. 
@@ -371,9 +381,13 @@ def driver_program():
     print(f"The available slots for {workshop1.name} is {workshop1.num_available_slots()}")
 
    # Display the waiting list for a workshop
-    print("Waiting list for {} is:".format(workshop1.name))
-    for participant in workshop1._Workshop__waitlist_participants:
-        print(participant.name)
+    if workshop1._Workshop__waitlist_participants:
+        print("Waiting list for {} is:".format(workshop1.name))
+        for participant in workshop1._Workshop__waitlist_participants:
+            print(participant.name)
+    else:
+        print("No participants on the waiting list for {}.".format(workshop1.name))
+        
         
     # Display the list of enrolled participants for a tech workshop. 
     print(workshop1.display_enroll_participant())
