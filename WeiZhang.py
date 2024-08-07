@@ -71,22 +71,25 @@ class Workshop:
 
     def assign_instructor(self,instructor):
           """ Assign an instructor to conduct the workshop.  """ 
-          self.instructor(instructor)  
+          self.instructor = instructor  
 
-    def enroll_participant(self,participant):      
-        """ Enroll an participant to the workshop. If the workshop is full, the participant will be 
+    def enroll_participant(self, participant):      
+        """ Enroll a participant to the workshop. If the workshop is full, the participant will be 
             added to the waitlist.""" 
         if len(self.__enrolled_participants) < self.__workshop_maximum_capacity:
-           self.__enrolled_participants.append(participant)
-           print(f"{participant.get_name()} is enrolled in {self.__workshop_name}.")
+            self.__enrolled_participants.append(participant)
+            print(f"{participant.name} is enrolled in {self.__workshop_name}.")
         else:   
             self.__waitlist_participants.append(participant)
+            print(f"{participant.name} is added to the waitlist for {self.__workshop_name}.")
+
+
 
     def display_enroll_participant(self):
         """ Display all participants currently enrolled in the workshop."""
         result = "Enrolled participants: "
         for participant in self.__enrolled_participants:
-            result += participant.get_name() + ", "
+            result += participant.name + ", "
         return result.rstrip(', ')
 
 
@@ -95,11 +98,11 @@ class Workshop:
         '''Return the number of participants currently enrolled in the workshop'''
         return len(self.__enrolled_participants)
     
-    def num_available_slot(self):
+    def num_available_slots(self):
         '''  Return the number of available slots for enrolment in the workshop.  '''
         return self.__workshop_maximum_capacity-self.num_enrolled_participants()
     
-    def remove_participants(self,participant): 
+    def remove_participant(self,participant): 
         '''  Remove a participant from the enrolled list of the workshop.'''  
         return self.__enrolled_participants.remove(participant)
     
@@ -114,9 +117,13 @@ class Workshop:
             if participant not in self.__attended_participants:     
                 self.__attended_participants.append(participant)
             else:
-                print(f"{participant.get_name()} has already been marked as attended.")
+                print(f"{participant.name} has already been marked as attended.")
         else:
-            print(f"{participant.get_name()} is not enrolled in this workshop.")
+            print(f"{participant.name} is not enrolled in this workshop.")
+            
+    def num_attended_participants(self):
+        """Return the number of participants who attended the workshop"""
+        return len(self.__attended_participants)        
 
     def cal_attendance_percentage(self):
         '''Calculate and return the attendance percentage for the workshop, representing 
@@ -129,12 +136,15 @@ class Workshop:
         return attendance_percentage
     
     def __str__(self):
-        """ String representation of the Workshop object."""
-        return (f"Workshop Name: {self.__workshop_name}, Instructor: {self.__workshop_instructor}, "
-                f"Date: {self.__workshop_date}, Fee: {self.__workshop_fee}, "
-                f"Maximum Capacity: {self.__workshop_maximum_capacity}, "
-                f"Enrolled Participants: {self.num_enrolled_participants()}, "
-                f"Available Slots: {self.num_available_slots()}")
+        '''Return a string representation of the workshop.'''
+        return (
+            f"Workshop Name: {self.__workshop_name}, "
+            f"Instructor: {self.__workshop_instructor}, "
+            f"Date: {self.__workshop_date}, "
+            f"Enrolled Participants: {len(self.__enrolled_participants)}, "
+            f"Available Slots: {self.num_available_slots()}, "
+            f"Waitlist Participants: {len(self.__waitlist_participants)}"
+        )
            
 class Instructor:
     '''This class is to initialize the
@@ -155,7 +165,7 @@ class Instructor:
     def name(self, name):
         """ Setter for the name attribute. Must be a non-empty string."""
         if isinstance(name, str) and name.strip():
-            self.__name = name
+            self.__instructor_name = name
         else:
             raise ValueError("Name must be a non-empty string")
 
@@ -188,7 +198,7 @@ class Instructor:
     def instructor_profile(self):
         ''' Display the instructor's full profile, including name, expertise, and experience. '''
         return (
-            "The name of the instructor is: " + self.__name +
+            "The name of the instructor is: " + self.__instructor_name +
             ", the expertise is: " + self.__expertise +
             ", and the years of experience is: " + str(self.__years_of_experience)
         )
@@ -197,11 +207,11 @@ class Instructor:
         ''' Add workshop to the instructor.''' 
         self.__workshops_assigned .append(workshop)
 
-    def display_workshop(self):
+    def display_workshops(self):
         """ Display the list of tech workshops added to the instructor. """
         return (
-            "The list of tech workshops added to " + self.__name +
-            " is: " + ", ".join([workshop.name for workshop in self. self.__workshops_assigned])
+            "The list of tech workshops added to " + self.__instructor_name +
+            " is: " + ", ".join([workshop.name for workshop in self.__workshops_assigned])
         )
 
     
@@ -209,11 +219,10 @@ class Instructor:
         '''Return the instructor's profile.'''
         return self.instructor_profile()
 
-
+    
 
 class Participant:
-    '''This class is to Initialise the
-    participant name, registration number, email address attributes'''
+    '''This class is to initialize the participant name, registration number, email address attributes'''
     def __init__(self, name, registration_number, email):
         self.__participant_name = name
         self.__registration_number = registration_number
@@ -262,33 +271,106 @@ class Participant:
         
     def book_workshop(self, workshop):
         """Book enrolment in a tech workshop. If the workshop is already full, the participant will be added to the waitlist. """
-        if workshop.num_available_slot()>0:
+        if workshop.num_available_slots() > 0:
             workshop.enroll_participant(self)
-            self.__participant_enrolled_workshops.append(workshop)  
-            print(f"{self.__participant_name} is enrolled in {workshop.name}.")
+            self.__participant_enrolled_workshops.append(workshop)
         else:
-            workshop.__waitlist_participants.append(self)
-            self.__participant_waiting_workshops.append(workshop) 
+            workshop._Workshop__waitlist_participants.append(self)
+            self.__participant_waiting_workshops.append(workshop)
             print(f"{self.__participant_name} is added to the waitlist for {workshop.name}.")
-       
+
+                    
     def unenroll(self, workshop):
-        '''Unenroll from a tech workshop.'''
-        if workshop in self.__enrolled_workshops:
-            self.__enrolled_workshops.remove(workshop)
-            workshop.remove_participants(self)
+        """Unenroll from a tech workshop. """
+        if workshop in self.__participant_enrolled_workshops:
+            self.__participant_enrolled_workshops.remove(workshop)
+            workshop.remove_participant(self)
             print(f"{self.__participant_name} has been unenrolled from {workshop.name}.")
         else:
             print(f"{self.__participant_name} is not enrolled in {workshop.name}.")
+
     
     def display_booked_workshops(self):
         '''Display all booked tech workshops.'''
-        return ", ".join([workshop.name for workshop in self.__enrolled_workshops])
+        return ", ".join([workshop.name for workshop in self.__participant_enrolled_workshops])
     
     def __str__(self):
         '''Return participant's profile.'''
         return f"Name: {self.__participant_name}, Registration Number: {self.__registration_number}, Email: {self.__email}"
 
+# Driver Program
 
+def driver_program():
+    # Create 2 Workshop objects
+    workshop1 = Workshop("COMP646 WORKSHOP","Dr.Richard", "2024-09-01")
+    workshop2 = Workshop("COMP644 WORKSHOP","Dr.Stuart", "2024-08-01")
+    
+    # Create 6 Participant objects
+    # (self, name, registration_number, email):
+    participant1 = Participant("Wei","021069","Wei@Lincoln.ac.nz")
+    participant2 = Participant("Lilian","023362","Lilian@Lincoln.ac.nz")
+    participant3 = Participant("William","189521","William@Lincoln.ac.nz")
+    participant4 = Participant("Wade","655844","Wade@Lincoln.ac.nz")
+    participant5 = Participant("Kiko","544952","Kiko@Lincoln.ac.nz")
+    participant6 = Participant("Ian","45451","Ian@Lincoln.ac.nz")
+    
+    # Create 2 Instructor objects
+    instructor1 = Instructor("Dr.Richard", "Artificial Intelligence", 20)
+    instructor2 = Instructor("Dr.Stuart", "Data Science", 12)
 
- 
+     # Assign an instructor to each workshop
+    workshop1.assign_instructor(instructor1.name)
+    workshop2.assign_instructor(instructor2.name)
+    
 
+    # Set up at least 5 participant bookings for each workshop
+    participant1.book_workshop(workshop1)
+    participant2.book_workshop(workshop1)
+    participant3.book_workshop(workshop1)
+    participant4.book_workshop(workshop1)
+    participant5.book_workshop(workshop1)
+    participant6.book_workshop(workshop1)  
+    
+    participant1.book_workshop(workshop2)
+    participant2.book_workshop(workshop2)
+    participant3.book_workshop(workshop2)
+    participant4.book_workshop(workshop2)
+    participant5.book_workshop(workshop2)
+    participant6.book_workshop(workshop2)  
+    
+    # Cancel a participant's enrolment in a specific tech workshop. 
+    participant3.unenroll(workshop1)
+    
+    # Record 2 specific participants checking into a tech workshop. 
+    workshop1.mark_attendance(participant1)
+    workshop1.mark_attendance(participant2)
+    
+    # Display the number of available slots for a tech workshop.
+    print(f"The available slots for {workshop1.name} is {workshop1.num_available_slots()}")
+
+   # Display the waiting list for a workshop
+    print("Waiting list for {} is:".format(workshop1.name))
+    for participant in workshop1._Workshop__waitlist_participants:
+        print(participant.name)
+        
+    # Display the list of enrolled participants for a tech workshop. 
+    print(workshop1.display_enroll_participant())
+    # Display the number of participants enrolled in a tech workshop.
+    print(f"Number of participants enrolled in {workshop1.name} is {workshop1.num_enrolled_participants()}") 
+    # Display the number of waitlist participants in a tech workshop. 
+    print(f"Number of waitlist participants in {workshop1.name} is {len(workshop1._Workshop__waitlist_participants)}")
+    # Display the number of attendees for a tech workshop. 
+    print(f"Number of attendees for {workshop1.name} is {workshop1.num_attended_participants()}")
+    # Display the attendance percentage for a tech workshop. 
+    print(f"Attendance percentage for {workshop1.name} is {workshop1.cal_attendance_percentage()}%")
+    # Display the total payment collected for a tech workshop
+    print(f"Total payment collected for {workshop1.name} is ${workshop1.calculate_payment()}")
+    
+    # Display the list of workshops hosted by a particular instructor along with the full profile details of the instructor
+    print(instructor1.display_workshops())
+    print(instructor1)
+    
+    # Display the list of tech workshops for which a specific participant is enrolled
+    print(f"{participant1.name} is enrolled in the following workshops: {participant1.display_booked_workshops()}")
+
+driver_program()
