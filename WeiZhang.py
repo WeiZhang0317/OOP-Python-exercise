@@ -73,15 +73,15 @@ class Workshop:
           """ Assign an instructor to conduct the workshop.  """ 
           self.instructor = instructor  
 
-    def enroll_participant(self, participant):      
+    def enroll_participant(self, participant):
         """ Enroll a participant to the workshop. If the workshop is full, the participant will be 
-            added to the waitlist.""" 
+            added to the waitlist and the participant's waitlist will be updated.""" 
         if len(self.__enrolled_participants) < self.__workshop_maximum_capacity:
             self.__enrolled_participants.append(participant)
-            print(f"{participant.name} is enrolled in {self.__workshop_name}.")
-        else:   
+        else:
             self.__waitlist_participants.append(participant)
-            print(f"{participant.name} is added to the waitlist for {self.__workshop_name}.")
+            participant._Participant__participant_waiting_workshops.append(self)
+
 
 
 
@@ -104,7 +104,10 @@ class Workshop:
     
     def remove_participant(self,participant): 
         '''  Remove a participant from the enrolled list of the workshop.'''  
-        return self.__enrolled_participants.remove(participant)
+        if participant in self.__enrolled_participants:
+            self.__enrolled_participants.remove(participant)
+        else:
+            pass
     
     def calculate_payment(self):
         '''Calculate and return the total payment received for the workshop based on the 
@@ -275,9 +278,7 @@ class Participant:
             workshop.enroll_participant(self)
             self.__participant_enrolled_workshops.append(workshop)
         else:
-            workshop._Workshop__waitlist_participants.append(self)
-            self.__participant_waiting_workshops.append(workshop)
-            print(f"{self.__participant_name} is added to the waitlist for {workshop.name}.")
+            workshop.enroll_participant(self)
 
                     
     def unenroll(self, workshop):
@@ -285,14 +286,17 @@ class Participant:
         if workshop in self.__participant_enrolled_workshops:
             self.__participant_enrolled_workshops.remove(workshop)
             workshop.remove_participant(self)
-            print(f"{self.__participant_name} has been unenrolled from {workshop.name}.")
         else:
-            print(f"{self.__participant_name} is not enrolled in {workshop.name}.")
-
+            pass    
     
     def display_booked_workshops(self):
         '''Display all booked tech workshops.'''
         return ", ".join([workshop.name for workshop in self.__participant_enrolled_workshops])
+    
+    def add_to_waitlist(self, workshop):
+        """Add the workshop to the participant's waiting list."""
+        self.__participant_waiting_workshops.append(workshop)
+
     
     def __str__(self):
         '''Return participant's profile.'''
@@ -307,12 +311,32 @@ def driver_program():
     
     # Create 6 Participant objects
     # (self, name, registration_number, email):
-    participant1 = Participant("Wei","021069","Wei@Lincoln.ac.nz")
-    participant2 = Participant("Lilian","023362","Lilian@Lincoln.ac.nz")
-    participant3 = Participant("William","189521","William@Lincoln.ac.nz")
-    participant4 = Participant("Wade","655844","Wade@Lincoln.ac.nz")
-    participant5 = Participant("Kiko","544952","Kiko@Lincoln.ac.nz")
-    participant6 = Participant("Ian","45451","Ian@Lincoln.ac.nz")
+    participants = [Participant("Wei","021069","Wei@Lincoln.ac.nz"),
+    Participant("Lilian","023362","Lilian@Lincoln.ac.nz"),
+    Participant("William","189521","William@Lincoln.ac.nz"),
+    Participant("Wade","655844","Wade@Lincoln.ac.nz"),
+    Participant("Kiko","544952","Kiko@Lincoln.ac.nz"),
+    Participant("Ian","45451","Ian@Lincoln.ac.nz"),  
+    Participant("Participant7", "007", "participant7@example.com"),
+    Participant("Participant8", "008", "participant8@example.com"),
+    Participant("Participant9", "009", "participant9@example.com"),
+    Participant("Participant10", "010", "participant10@example.com"),
+    Participant("Participant11", "011", "participant11@example.com"),
+    Participant("Participant12", "012", "participant12@example.com"),
+    Participant("Participant13", "013", "participant13@example.com"),
+    Participant("Participant14", "014", "participant14@example.com"),
+    Participant("Participant15", "015", "participant15@example.com"),
+    Participant("Participant16", "016", "participant16@example.com"),
+    Participant("Participant17", "017", "participant17@example.com"),
+    Participant("Participant18", "018", "participant18@example.com"),
+    Participant("Participant19", "019", "participant19@example.com"),
+    Participant("Participant20", "020", "participant20@example.com"),
+    Participant("Participant21", "021", "participant21@example.com"),
+    Participant("Participant22", "022", "participant22@example.com"),
+    Participant("Participant23", "023", "participant23@example.com"),
+    Participant("Participant24", "024", "participant24@example.com"),
+    Participant("Participant25", "025", "participant25@example.com")
+    ]
     
     # Create 2 Instructor objects
     instructor1 = Instructor("Dr.Richard", "Artificial Intelligence", 20)
@@ -322,28 +346,26 @@ def driver_program():
     workshop1.assign_instructor(instructor1.name)
     workshop2.assign_instructor(instructor2.name)
     
+     # Add workshops to instructors
+    instructor1.add_workshop(workshop1)
+    instructor2.add_workshop(workshop2)
 
     # Set up at least 5 participant bookings for each workshop
-    participant1.book_workshop(workshop1)
-    participant2.book_workshop(workshop1)
-    participant3.book_workshop(workshop1)
-    participant4.book_workshop(workshop1)
-    participant5.book_workshop(workshop1)
-    participant6.book_workshop(workshop1)  
+    # Book all participants into workshop1
+    for participant in participants:
+        participant.book_workshop(workshop1)
+     
     
-    participant1.book_workshop(workshop2)
-    participant2.book_workshop(workshop2)
-    participant3.book_workshop(workshop2)
-    participant4.book_workshop(workshop2)
-    participant5.book_workshop(workshop2)
-    participant6.book_workshop(workshop2)  
+     # Book some participants into workshop2
+    for participant in participants[:6]:  #only the first 6 participants book for workshop2
+        participant.book_workshop(workshop2) 
     
     # Cancel a participant's enrolment in a specific tech workshop. 
-    participant3.unenroll(workshop1)
+    participants[2].unenroll(workshop1)
     
     # Record 2 specific participants checking into a tech workshop. 
-    workshop1.mark_attendance(participant1)
-    workshop1.mark_attendance(participant2)
+    workshop1.mark_attendance(participants[0])
+    workshop1.mark_attendance(participants[1])
     
     # Display the number of available slots for a tech workshop.
     print(f"The available slots for {workshop1.name} is {workshop1.num_available_slots()}")
@@ -371,6 +393,6 @@ def driver_program():
     print(instructor1)
     
     # Display the list of tech workshops for which a specific participant is enrolled
-    print(f"{participant1.name} is enrolled in the following workshops: {participant1.display_booked_workshops()}")
+    print(f"{participants[0].name} is enrolled in the following workshops: {participants[0].display_booked_workshops()}")
 
 driver_program()
