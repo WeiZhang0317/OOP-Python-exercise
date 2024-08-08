@@ -20,7 +20,7 @@ class Workshop:
     def name(self, name):
         """ Setter for the name attribute. Must be a non-empty string."""
         if isinstance(name, str) and name.strip():
-            self.__name = name
+            self.__workshop_name = name
         else:
             raise ValueError("Name must be a non-empty string")
     
@@ -31,11 +31,12 @@ class Workshop:
     
     @instructor.setter
     def instructor(self, instructor):
-        """ Setter for the instructor attribute. Must be a non-empty string."""
-        if isinstance(instructor, str) and instructor.strip():
+        """ Setter for the instructor attribute. Must be an instance of Instructor."""
+        if isinstance(instructor, Instructor):
             self.__workshop_instructor = instructor
         else:
-           raise ValueError("Instructor must be a non-empty string")    
+            raise ValueError("Instructor must be an instance of the Instructor class")
+    
     
     @property    
     def fee(self):
@@ -62,16 +63,27 @@ class Workshop:
         
     @staticmethod
     def validate_date(date):
-        """ Validate the date format to be YYYY-MM-DD and check if it's a valid date."""
+        """ Validate the date format to be YYYY-MM-DD."""
         try:
             datetime.strptime(date, "%Y-%m-%d")
             return True
         except ValueError:
             return False
+        
+    @property
+    def waitlist_participants(self):
+        """ Getter for the waitlist participants attribute."""
+        return self.__waitlist_participants
+
+    def num_waitlist_participants(self):
+        """ Return the number of participants on the waitlist."""
+        return len(self.__waitlist_participants)
 
     def assign_instructor(self,instructor):
           """ Assign an instructor to conduct the workshop.  """ 
           self.instructor = instructor  
+    
+    
 
     def enroll_participant(self, participant):
         """ Enroll a participant to the workshop. If the workshop is full, the participant will be 
@@ -80,7 +92,7 @@ class Workshop:
             self.__enrolled_participants.append(participant)
         else:
             self.__waitlist_participants.append(participant)
-            participant._Participant__participant_waiting_workshops.append(self)
+            participant.add_to_waitlist(self)
 
 
 
@@ -319,42 +331,14 @@ def driver_program():
     Participant("Ian","45451","Ian@Lincoln.ac.nz"),  
      ]
     
-    #testing
-    # participants = [
-    # Participant("Participant1", "001", "participant1@Lincoln.ac.nz"),
-    # Participant("Participant2", "002", "participant2@Lincoln.ac.nz"),
-    # Participant("Participant3", "003", "participant3@Lincoln.ac.nz"),
-    # Participant("Participant4", "004", "participant4@Lincoln.ac.nz"),
-    # Participant("Participant5", "005", "participant5@Lincoln.ac.nz"),
-    # Participant("Participant6", "006", "participant6@Lincoln.ac.nz"),    
-    # Participant("Participant7", "007", "participant7@Lincoln.ac.nz"),
-    # Participant("Participant8", "008", "participant8@Lincoln.ac.nz"),
-    # Participant("Participant9", "009", "participant9@Lincoln.ac.nz"),
-    # Participant("Participant10", "010", "participant10@Lincoln.ac.nz"),
-    # Participant("Participant11", "011", "participant11@Lincoln.ac.nz"),
-    # Participant("Participant12", "012", "participant12@Lincoln.ac.nz"),
-    # Participant("Participant13", "013", "participant13@Lincoln.ac.nz"),
-    # Participant("Participant14", "014", "participant14@Lincoln.ac.nz"),
-    # Participant("Participant15", "015", "participant15@Lincoln.ac.nz"),
-    # Participant("Participant16", "016", "participant16@Lincoln.ac.nz"),
-    # Participant("Participant17", "017", "participant17@Lincoln.ac.nz"),
-    # Participant("Participant18", "018", "participant18@Lincoln.ac.nz"),
-    # Participant("Participant19", "019", "participant19@Lincoln.ac.nz"),
-    # Participant("Participant20", "020", "participant20@Lincoln.ac.nz"),
-    # Participant("Participant21", "021", "participant21@Lincoln.ac.nz"),
-    # Participant("Participant22", "022", "participant22@Lincoln.ac.nz"),
-    # Participant("Participant23", "023", "participant23@Lincoln.ac.nz"),
-    # Participant("Participant24", "024", "participant24@Lincoln.ac.nz"),
-    # Participant("Participant25", "025", "participant25@Lincoln.ac.nz")
-    # ]
     
     # Create 2 Instructor objects
     instructor1 = Instructor("Dr.Richard", "Artificial Intelligence", 20)
     instructor2 = Instructor("Dr.Stuart", "Data Science", 12)
 
      # Assign an instructor to each workshop
-    workshop1.assign_instructor(instructor1.name)
-    workshop2.assign_instructor(instructor2.name)
+    workshop1.assign_instructor(instructor1)
+    workshop2.assign_instructor(instructor2)
     
      # Add workshops to instructors
     instructor1.add_workshop(workshop1)
@@ -381,12 +365,16 @@ def driver_program():
     print(f"The available slots for {workshop1.name} is {workshop1.num_available_slots()}")
 
    # Display the waiting list for a workshop
-    if workshop1._Workshop__waitlist_participants:
+    if workshop1.waitlist_participants:
         print("Waiting list for {} is:".format(workshop1.name))
-        for participant in workshop1._Workshop__waitlist_participants:
+        for participant in workshop1.waitlist_participants:
             print(participant.name)
     else:
         print("No participants on the waiting list for {}.".format(workshop1.name))
+        
+    # Display the number of waitlist participants in a tech workshop.
+    print(f"Number of waitlist participants in {workshop1.name} is {workshop1.num_waitlist_participants()}")
+
         
         
     # Display the list of enrolled participants for a tech workshop. 
