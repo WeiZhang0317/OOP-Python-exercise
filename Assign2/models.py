@@ -7,7 +7,7 @@ class Customer:
         self.customerID = Customer.next_id
         Customer.next_id += 1
         self.customerName = name
-        self._customerBalance = balance  # Directly setting the private attribute
+        self._customerBalance = balance  
         self.orders = []
         self.payments = []
 
@@ -17,7 +17,7 @@ class Customer:
 
     @customerBalance.setter
     def customerBalance(self, value):
-        # No need to enforce any conditions, directly set the value
+
         self._customerBalance = value
         
     def add_order(self, order):
