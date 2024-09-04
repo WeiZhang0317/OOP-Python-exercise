@@ -9,7 +9,7 @@ def load_customers(company, filepath):
             name = line.strip()
             if name:
                 company.create_customer(name)
-    print(f"Loaded customers: {[customer.customerName for customer in company.customers]}")  # Debugging line
+    print(f"Loaded customers: {[customer.customerName for customer in company.customers]}")  
 
 def load_products(company, filepath):
     """Load products from a file and add them to the company."""
@@ -18,7 +18,7 @@ def load_products(company, filepath):
             if line.strip():
                 name, price = line.strip().rsplit(',', 1)
                 company.create_product(name.strip(), float(price.strip()))
-    print(f"Loaded products: {[product.productName for product in company.products]}")  # 打印所有加载的产品
+    print(f"Loaded products: {[product.productName for product in company.products]}")  
 
 
 def main():
@@ -31,13 +31,12 @@ def main():
     load_customers(company, customer_file)
     load_products(company, product_file)
 
-    # 启动应用程序
+   
     app = Application()
     
-    # 将 company 实例传递给 app
+
     app.company = company
 
-    # 更新下拉列表
     app.update_customer_list()
     app.update_product_list()
 

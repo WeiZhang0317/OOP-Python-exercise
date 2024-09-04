@@ -55,8 +55,16 @@ class Application(tk.Tk):
         self.order_details_text = tk.Text(order_details_frame, height=10)
         self.order_details_text.pack(fill=tk.BOTH, expand=True)
 
-        tk.Button(order_details_frame, text="Submit Order", command=self.submit_order).pack(pady=5)
+        # Subtotal Frame (with white background and border)
+        subtotal_frame = tk.Frame(order_details_frame, bg="white", relief=tk.SOLID, borderwidth=1)
+        subtotal_frame.pack(fill=tk.X, pady=5)
 
+        # Subtotal Label in white box
+        self.subtotal_var = tk.StringVar(value="Subtotal: $0.00")
+        self.subtotal_label = tk.Label(subtotal_frame, textvariable=self.subtotal_var, bg="white", font=("Arial", 10, "bold"))
+        self.subtotal_label.pack(padx=10, pady=10)
+
+        tk.Button(order_details_frame, text="Submit Order", command=self.submit_order).pack(pady=5)
         # Process Payment Frame
         process_payment_frame = tk.Frame(self)
         process_payment_frame.pack(fill=tk.X, padx=10, pady=5)
@@ -118,6 +126,8 @@ class Application(tk.Tk):
             self.company.add_order_item(self.current_order, product_name, quantity)
             product = self.company.find_product(product_name)
             self.order_details_text.insert(tk.END, f"{product.productName} x {quantity} = ${product.productPrice * quantity:.2f}\n")
+            subtotal = self.current_order.calculate_subtotal()
+            self.subtotal_var.set(f"Subtotal: ${subtotal:.2f}")
         else:
             messagebox.showerror("Error", "No order started. Please create an order first.")
 

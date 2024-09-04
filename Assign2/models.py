@@ -17,7 +17,6 @@ class Customer:
 
     @customerBalance.setter
     def customerBalance(self, value):
-
         self._customerBalance = value
         
     def add_order(self, order):
@@ -42,6 +41,10 @@ class Order:
 
     def add_item(self, item):
         self.items.append(item)
+        
+    def calculate_subtotal(self):
+        subtotal = sum(item.product.productPrice * item.quantity for item in self.items)
+        return subtotal    
 
     def total(self):
         return sum(item.total_price() for item in self.items)

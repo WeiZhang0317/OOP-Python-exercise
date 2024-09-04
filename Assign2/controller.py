@@ -54,6 +54,8 @@ class Company:
         if product is not None:
             order_item = OrderItem(product, quantity)
             order.add_item(order_item)
+            subtotal = order.calculate_subtotal()
+            return subtotal
         else:
             raise ValueError(f"Product '{product_name}' not found.")
 
