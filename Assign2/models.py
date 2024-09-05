@@ -43,8 +43,8 @@ class Order:
         self.items.append(item)
         
     def calculate_subtotal(self):
-        subtotal = sum(item.product.productPrice * item.quantity for item in self.items)
-        return subtotal    
+            subtotal = sum(float(item.product.productPrice) * int(item.quantity) for item in self.items)
+            return subtotal 
 
     def total(self):
         return sum(item.total_price() for item in self.items)

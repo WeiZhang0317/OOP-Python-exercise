@@ -2,6 +2,47 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from controller import Company
 
+import tkinter as tk
+
+class ToolTip:
+    def __init__(self, widget, text, bg="#ffffe0", fg="black", font=("Arial", 10, "normal"), wraplength=150):
+        self.widget = widget
+        self.text = text
+        self.bg = bg
+        self.fg = fg
+        self.font = font
+        self.wraplength = wraplength
+        self.tip_window = None
+        self.widget.bind("<Enter>", self.show_tip)
+        self.widget.bind("<Leave>", self.hide_tip)
+
+    def show_tip(self, event=None):
+        if self.tip_window or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx() + 25
+        y = y + cy + self.widget.winfo_rooty() + 25
+        self.tip_window = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(True)
+        tw.wm_geometry(f"+{x}+{y}")
+        label = tk.Label(
+            tw, 
+            text=self.text, 
+            justify='left', 
+            background=self.bg, 
+            foreground=self.fg, 
+            relief=tk.SOLID, 
+            borderwidth=1,
+            font=self.font, 
+            wraplength=self.wraplength
+        )
+        label.pack(ipadx=5, ipady=5)
+
+    def hide_tip(self, event=None):
+        if self.tip_window:
+            self.tip_window.destroy()
+            self.tip_window = None
+
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -13,6 +54,18 @@ class Application(tk.Tk):
 
         # UI Components
         self.create_widgets()
+    
+    def validate_payment(self, value_if_allowed):
+        # 检查输入是否为有效的浮点数且大于 0
+        if value_if_allowed == "":
+            return True  # 允许空输入（可以根据需求调整）
+        try:
+            value = float(value_if_allowed)
+            return value > 0
+        except ValueError:
+            return False  # 如果输入不是数字则无效
+
+
 
     def create_widgets(self):
         # Customer Information Frame
@@ -23,7 +76,14 @@ class Application(tk.Tk):
         tk.Label(customer_info_frame, text="Select Customer:").grid(row=0, column=0)
         self.customer_var = tk.StringVar()
         self.customer_combo = ttk.Combobox(customer_info_frame, textvariable=self.customer_var, state="readonly")
+            
         self.customer_combo.grid(row=0, column=1)
+  
+        # Adding tooltip for customer combobox
+
+        self.customer_combo_tooltip = ToolTip(self.customer_combo, text="Select a customer and click on 'New Order' button")
+
+        
         self.customer_combo.bind("<<ComboboxSelected>>", self.display_customer_info)
 
         self.customer_info_text = tk.Text(customer_info_frame, height=4, width=50)
@@ -41,11 +101,17 @@ class Application(tk.Tk):
         self.product_var = tk.StringVar()
         self.product_combo = ttk.Combobox(process_order_frame, textvariable=self.product_var, state="readonly")
         self.product_combo.grid(row=0, column=1)
+        # Adding tooltip for product combobox
+        self.product_combo_tooltip = ToolTip(self.product_combo, text="Select a product and its quantity, then click on 'Add Product'button.")
         self.update_product_list()
 
+      
         tk.Label(process_order_frame, text="Quantity:").grid(row=0, column=2)
-        self.quantity_var = tk.IntVar(value=1)
-        tk.Entry(process_order_frame, textvariable=self.quantity_var).grid(row=0, column=3)
+        self.quantity_var = tk.StringVar(value="1")  # default is 1
+        self.quantity_combo = ttk.Combobox(process_order_frame, textvariable=self.quantity_var, state="readonly")
+        self.quantity_combo['values'] = [str(i) for i in range(1, 1001)] 
+        self.quantity_combo.grid(row=0, column=3)
+
 
         tk.Button(process_order_frame, text="Add Product", command=self.add_order_item).grid(row=0, column=4)
 
@@ -75,10 +141,11 @@ class Application(tk.Tk):
 
         tk.Label(process_payment_frame, text="Payment Amount:").grid(row=0, column=0)
         self.payment_var = tk.DoubleVar()
+        vcmd = (self.register(self.validate_payment), '%P')
         tk.Entry(process_payment_frame, textvariable=self.payment_var).grid(row=0, column=1)
 
         tk.Button(process_payment_frame, text="Pay", command=self.create_payment).grid(row=0, column=2)
-
+    
         # Reports Frame
         reports_frame = tk.Frame(self)
         reports_frame.pack(fill=tk.X, padx=10, pady=5)
@@ -116,6 +183,9 @@ class Application(tk.Tk):
 
     def create_order(self):
         selected_customer_name = self.customer_var.get()
+        if not selected_customer_name:
+            messagebox.showerror("Error", "Please select a customer to create an order")
+            return
         customer = self.company.find_customer(selected_customer_name)
         if customer:
             self.current_order = self.company.create_order(customer)
@@ -123,8 +193,15 @@ class Application(tk.Tk):
             self.order_details_text.insert(tk.END, f"Order for {customer.customerName}\n")
 
     def add_order_item(self):
+   
+        if not self.product_var.get():
+            messagebox.showerror("Error", "Please select a product")
+            return
+        if not hasattr(self, 'current_order'):
+            messagebox.showerror("Error", "Please create an order for the customer first")
+            return
         product_name = self.product_var.get()
-        quantity = self.quantity_var.get()
+        quantity = int(self.quantity_var.get())
         if hasattr(self, 'current_order'):
             self.company.add_order_item(self.current_order, product_name, quantity)
             product = self.company.find_product(product_name)
