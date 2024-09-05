@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from controller import Company
 
-
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -17,7 +16,8 @@ class Application(tk.Tk):
 
     def create_widgets(self):
         # Customer Information Frame
-        customer_info_frame = tk.Frame(self)
+        tk.Label(self, text="Customer Information", font=('Helvetica', 14, 'bold')).pack(pady=10)
+        customer_info_frame = tk.Frame(self, bd=2, relief="groove")
         customer_info_frame.pack(fill=tk.X, padx=10, pady=5)
 
         tk.Label(customer_info_frame, text="Select Customer:").grid(row=0, column=0)
@@ -33,7 +33,8 @@ class Application(tk.Tk):
         tk.Button(customer_info_frame, text="New Order", command=self.create_order).grid(row=0, column=3)
 
         # Process Order Frame
-        process_order_frame = tk.Frame(self)
+        tk.Label(self, text="Process Order", font=('Helvetica', 14, 'bold')).pack(pady=10)
+        process_order_frame = tk.Frame(self, bd=2, relief="groove")
         process_order_frame.pack(fill=tk.X, padx=10, pady=5)
 
         tk.Label(process_order_frame, text="Select Product:").grid(row=0, column=0)
@@ -49,24 +50,27 @@ class Application(tk.Tk):
         tk.Button(process_order_frame, text="Add Product", command=self.add_order_item).grid(row=0, column=4)
 
         # Order Details Frame
-        order_details_frame = tk.Frame(self)
+        tk.Label(self, text="Order Details", font=('Helvetica', 14, 'bold')).pack(pady=10)
+        order_details_frame = tk.Frame(self, bd=2, relief="groove")
         order_details_frame.pack(fill=tk.BOTH, padx=10, pady=5, expand=True)
 
         self.order_details_text = tk.Text(order_details_frame, height=10)
         self.order_details_text.pack(fill=tk.BOTH, expand=True)
 
-        # Subtotal Frame (with white background and border)
+        # Subtotal Frame
         subtotal_frame = tk.Frame(order_details_frame, bg="white", relief=tk.SOLID, borderwidth=1)
         subtotal_frame.pack(fill=tk.X, pady=5)
 
-        # Subtotal Label in white box
+        # Subtotal Label
         self.subtotal_var = tk.StringVar(value="Subtotal: $0.00")
         self.subtotal_label = tk.Label(subtotal_frame, textvariable=self.subtotal_var, bg="white", font=("Arial", 10, "bold"))
         self.subtotal_label.pack(padx=10, pady=10)
 
         tk.Button(order_details_frame, text="Submit Order", command=self.submit_order).pack(pady=5)
+
         # Process Payment Frame
-        process_payment_frame = tk.Frame(self)
+        tk.Label(self, text="Process Payment", font=('Helvetica', 14, 'bold')).pack(pady=10)
+        process_payment_frame = tk.Frame(self, bd=2, relief="groove")
         process_payment_frame.pack(fill=tk.X, padx=10, pady=5)
 
         tk.Label(process_payment_frame, text="Payment Amount:").grid(row=0, column=0)
@@ -100,7 +104,6 @@ class Application(tk.Tk):
             print(f"Products in dropdown: {products}")
         else:
             print("self.company is None in update_product_list")
-
 
     def display_customer_info(self, event):
         selected_customer_name = self.customer_var.get()
