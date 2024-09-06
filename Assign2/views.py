@@ -47,7 +47,7 @@ class Application(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Lincoln Office Supplies Order App")
-        self.geometry("800x600")
+        self.geometry("800x900")
         
         # Create an instance of Company
         self.company = None
