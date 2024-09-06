@@ -55,15 +55,6 @@ class Application(tk.Tk):
         # UI Components
         self.create_widgets()
     
-    def validate_payment(self, value_if_allowed):
-        # 检查输入是否为有效的浮点数且大于 0
-        if value_if_allowed == "":
-            return True  # 允许空输入（可以根据需求调整）
-        try:
-            value = float(value_if_allowed)
-            return value > 0
-        except ValueError:
-            return False  # 如果输入不是数字则无效
 
 
 
@@ -140,9 +131,10 @@ class Application(tk.Tk):
         process_payment_frame.pack(fill=tk.X, padx=10, pady=5)
 
         tk.Label(process_payment_frame, text="Payment Amount:").grid(row=0, column=0)
-        self.payment_var = tk.DoubleVar()
-        vcmd = (self.register(self.validate_payment), '%P')
+        self.payment_var =  tk.StringVar()
+ 
         tk.Entry(process_payment_frame, textvariable=self.payment_var).grid(row=0, column=1)
+
 
         tk.Button(process_payment_frame, text="Pay", command=self.create_payment).grid(row=0, column=2)
     
@@ -223,13 +215,17 @@ class Application(tk.Tk):
         selected_customer_name = self.customer_var.get()
         customer = self.company.find_customer(selected_customer_name)
         amount = self.payment_var.get()
-        if customer and amount > 0:
-            self.company.create_payment(customer, amount)
-            messagebox.showinfo("Payment Processed", "Payment has been processed successfully!")
-            self.display_customer_info(None)  # Update customer balance
-        else:
-            messagebox.showerror("Error", "Invalid payment amount or customer.")
-
+        try:
+            amount = float(amount)
+            if customer and amount > 0:
+                self.company.create_payment(customer, amount)
+                messagebox.showinfo("Payment Processed", "Payment has been processed successfully!")
+                self.display_customer_info(None)  # Update customer balance
+            else:
+                messagebox.showerror("Error", "Invalid payment amount or customer.")
+        except ValueError:
+            messagebox.showerror("Error", "Please enter a valid amount")
+            
     def list_customer_orders(self):
         selected_customer_name = self.customer_var.get()
         customer = self.company.find_customer(selected_customer_name)
