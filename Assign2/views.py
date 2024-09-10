@@ -205,7 +205,9 @@ class Application(tk.Tk):
 
     def submit_order(self):
         if hasattr(self, 'current_order'):
-            self.company.submit_order(self.current_order)
+            total = self.current_order.total()
+            customer = self.current_order.customer
+            customer.customerBalance -= total
             messagebox.showinfo("Order Submitted", "The order has been submitted successfully!")
             self.display_customer_info(None)  # Update customer balance
         else:

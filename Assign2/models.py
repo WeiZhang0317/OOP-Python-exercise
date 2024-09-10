@@ -77,7 +77,7 @@ class Payment:
         self.paymentAmount = amount
         self.paymentDate = datetime.date.today()
         self.customer = customer
-        customer.customerBalance -= amount
+        customer.customerBalance += amount
 
     def __str__(self):
         return f"Payment of {self.paymentAmount} by Customer {self.customer.customerName} on {self.paymentDate}"
