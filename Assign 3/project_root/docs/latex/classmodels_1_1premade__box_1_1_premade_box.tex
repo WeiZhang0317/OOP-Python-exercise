@@ -1,0 +1,156 @@
+\doxysection{models.\+premade\+\_\+box.\+Premade\+Box Class Reference}
+\hypertarget{classmodels_1_1premade__box_1_1_premade_box}{}\label{classmodels_1_1premade__box_1_1_premade_box}\index{models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}}
+
+
+Represents a premade box that can be customized with available vegetables.  
+
+
+
+
+Inheritance diagram for models.\+premade\+\_\+box.\+Premade\+Box\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{classmodels_1_1premade__box_1_1_premade_box__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for models.\+premade\+\_\+box.\+Premade\+Box\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{classmodels_1_1premade__box_1_1_premade_box__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_a2cbfa3ea4f9f9955f1bc21435452e543}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str name, float price, int quantity, str \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_ab0d604169a6d4b5b6e8be9e0d39839cd}{size}})
+\begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1premade__box_1_1_premade_box}{Premade\+Box} class. \end{DoxyCompactList}\item 
+None \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_aadf7999c23bb41c6e56cba45ad993e36}{customize\+Box}} (self, List\mbox{[}\mbox{\hyperlink{classmodels_1_1item_1_1_item}{Item}}\mbox{]} \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_a35c4baffd00e08bd4c7637b0f52ce18c}{custom\+Items}})
+\begin{DoxyCompactList}\small\item\em Customizes the contents of the premade box based on the available items. \end{DoxyCompactList}\item 
+str \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_ab185023fb4d7ad4a1f6363a23c029a09}{get\+Box\+Details}} (self)
+\begin{DoxyCompactList}\small\item\em Returns the details of the premade box, including size and customized contents. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classmodels_1_1item_1_1_item}{models.\+item.\+Item}}}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{classmodels_1_1item_1_1_item_aec374076f75c6c7d8b416308aec28519}{calculate\+Item\+Total}} (self)
+\begin{DoxyCompactList}\small\item\em Calculates the total cost for the item based on its price and quantity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_ab0d604169a6d4b5b6e8be9e0d39839cd}{size}} = size
+\item 
+list \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_a35c4baffd00e08bd4c7637b0f52ce18c}{custom\+Items}} = \mbox{[}$\,$\mbox{]}
+\item 
+str \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_a35c4baffd00e08bd4c7637b0f52ce18c}{custom\+Items}} = "{}Custom Items\+:\textbackslash{}n"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a premade box that can be customized with available vegetables. 
+
+Inherits from Item. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodels_1_1premade__box_1_1_premade_box_a2cbfa3ea4f9f9955f1bc21435452e543}\index{models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classmodels_1_1premade__box_1_1_premade_box_a2cbfa3ea4f9f9955f1bc21435452e543} 
+models.\+premade\+\_\+box.\+Premade\+Box.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{name}{, }\item[{float}]{price}{, }\item[{int}]{quantity}{, }\item[{str}]{size}{}\end{DoxyParamCaption})}
+
+
+
+Constructor for \doxylink{classmodels_1_1premade__box_1_1_premade_box}{Premade\+Box} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the premade box. \\
+\hline
+{\em price} & The price of the premade box. \\
+\hline
+{\em quantity} & The number of premade boxes ordered. \\
+\hline
+{\em size} & The size of the box, either \textquotesingle{}small\textquotesingle{}, \textquotesingle{}medium\textquotesingle{}, or \textquotesingle{}large\textquotesingle{}. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9}{models.\+item.\+Item}}.
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=231pt]{classmodels_1_1premade__box_1_1_premade_box_a2cbfa3ea4f9f9955f1bc21435452e543_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=231pt]{classmodels_1_1premade__box_1_1_premade_box_a2cbfa3ea4f9f9955f1bc21435452e543_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodels_1_1premade__box_1_1_premade_box_aadf7999c23bb41c6e56cba45ad993e36}\index{models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}!customizeBox@{customizeBox}}
+\index{customizeBox@{customizeBox}!models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{customizeBox()}{customizeBox()}}
+{\footnotesize\ttfamily \label{classmodels_1_1premade__box_1_1_premade_box_aadf7999c23bb41c6e56cba45ad993e36} 
+ None models.\+premade\+\_\+box.\+Premade\+Box.\+customize\+Box (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{List\mbox{[}\mbox{\hyperlink{classmodels_1_1item_1_1_item}{Item}}\mbox{]}}]{custom\+Items}{}\end{DoxyParamCaption})}
+
+
+
+Customizes the contents of the premade box based on the available items. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em custom\+Items} & A list of Item objects to replace the default items in the box. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodels_1_1premade__box_1_1_premade_box_ab185023fb4d7ad4a1f6363a23c029a09}\index{models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}!getBoxDetails@{getBoxDetails}}
+\index{getBoxDetails@{getBoxDetails}!models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{getBoxDetails()}{getBoxDetails()}}
+{\footnotesize\ttfamily \label{classmodels_1_1premade__box_1_1_premade_box_ab185023fb4d7ad4a1f6363a23c029a09} 
+ str models.\+premade\+\_\+box.\+Premade\+Box.\+get\+Box\+Details (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Returns the details of the premade box, including size and customized contents. 
+
+\begin{DoxyReturn}{Returns}
+A string describing the premade box\textquotesingle{}s size and customized items. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmodels_1_1premade__box_1_1_premade_box_a35c4baffd00e08bd4c7637b0f52ce18c}\index{models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}!customItems@{customItems}}
+\index{customItems@{customItems}!models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{customItems}{customItems}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodels_1_1premade__box_1_1_premade_box_a35c4baffd00e08bd4c7637b0f52ce18c} 
+str models.\+premade\+\_\+box.\+Premade\+Box.\+custom\+Items = \mbox{[}$\,$\mbox{]}}
+
+\Hypertarget{classmodels_1_1premade__box_1_1_premade_box_a35c4baffd00e08bd4c7637b0f52ce18c}\index{models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}!customItems@{customItems}}
+\index{customItems@{customItems}!models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{customItems}{customItems}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodels_1_1premade__box_1_1_premade_box_a35c4baffd00e08bd4c7637b0f52ce18c} 
+str models.\+premade\+\_\+box.\+Premade\+Box.\+custom\+Items = "{}Custom Items\+:\textbackslash{}n"{}}
+
+\Hypertarget{classmodels_1_1premade__box_1_1_premade_box_ab0d604169a6d4b5b6e8be9e0d39839cd}\index{models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}!size@{size}}
+\index{size@{size}!models.premade\_box.PremadeBox@{models.premade\_box.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{size}{size}}
+{\footnotesize\ttfamily \label{classmodels_1_1premade__box_1_1_premade_box_ab0d604169a6d4b5b6e8be9e0d39839cd} 
+models.\+premade\+\_\+box.\+Premade\+Box.\+size = size}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+models/\mbox{\hyperlink{premade__box_8py}{premade\+\_\+box.\+py}}\end{DoxyCompactItemize}

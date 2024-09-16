@@ -1,0 +1,95 @@
+\doxysection{models.\+item.\+Premade\+Box Class Reference}
+\hypertarget{classmodels_1_1item_1_1_premade_box}{}\label{classmodels_1_1item_1_1_premade_box}\index{models.item.PremadeBox@{models.item.PremadeBox}}
+
+
+Represents a premade box that can be customized with available vegetables.  
+
+
+
+
+Inheritance diagram for models.\+item.\+Premade\+Box\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{classmodels_1_1item_1_1_premade_box__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for models.\+item.\+Premade\+Box\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{classmodels_1_1item_1_1_premade_box__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_premade_box_a05cf495d2689914cbf08fd62f74734c1}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str name, float price, int quantity, str size)
+\begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1item_1_1_premade_box}{Premade\+Box} class. \end{DoxyCompactList}\item 
+None \mbox{\hyperlink{classmodels_1_1item_1_1_premade_box_aac8f1258d62bf86be343983a7647be5c}{customize\+Box}} (self, list custom\+Items)
+\begin{DoxyCompactList}\small\item\em Customizes the contents of the premade box based on the availability of vegetables. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classmodels_1_1item_1_1_item}{models.\+item.\+Item}}}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{classmodels_1_1item_1_1_item_aec374076f75c6c7d8b416308aec28519}{calculate\+Item\+Total}} (self)
+\begin{DoxyCompactList}\small\item\em Calculates the total cost for the item based on its price and quantity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a premade box that can be customized with available vegetables. 
+
+Inherits from \doxylink{classmodels_1_1item_1_1_item}{Item}. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodels_1_1item_1_1_premade_box_a05cf495d2689914cbf08fd62f74734c1}\index{models.item.PremadeBox@{models.item.PremadeBox}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!models.item.PremadeBox@{models.item.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_premade_box_a05cf495d2689914cbf08fd62f74734c1} 
+models.\+item.\+Premade\+Box.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{name}{, }\item[{float}]{price}{, }\item[{int}]{quantity}{, }\item[{str}]{size}{}\end{DoxyParamCaption})}
+
+
+
+Constructor for \doxylink{classmodels_1_1item_1_1_premade_box}{Premade\+Box} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the premade box. \\
+\hline
+{\em price} & The price of the premade box. \\
+\hline
+{\em quantity} & The number of boxes. \\
+\hline
+{\em size} & The size of the box, either \textquotesingle{}small\textquotesingle{}, \textquotesingle{}medium\textquotesingle{}, or \textquotesingle{}large\textquotesingle{}. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9}{models.\+item.\+Item}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodels_1_1item_1_1_premade_box_aac8f1258d62bf86be343983a7647be5c}\index{models.item.PremadeBox@{models.item.PremadeBox}!customizeBox@{customizeBox}}
+\index{customizeBox@{customizeBox}!models.item.PremadeBox@{models.item.PremadeBox}}
+\doxysubsubsection{\texorpdfstring{customizeBox()}{customizeBox()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_premade_box_aac8f1258d62bf86be343983a7647be5c} 
+ None models.\+item.\+Premade\+Box.\+customize\+Box (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{list}]{custom\+Items}{}\end{DoxyParamCaption})}
+
+
+
+Customizes the contents of the premade box based on the availability of vegetables. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em custom\+Items} & A list of \doxylink{classmodels_1_1item_1_1_item}{Item} objects that will replace the default items in the box. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+models/\mbox{\hyperlink{item_8py}{item.\+py}}\end{DoxyCompactItemize}

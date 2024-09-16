@@ -1,0 +1,96 @@
+\doxysection{models.\+order.\+Order Class Reference}
+\hypertarget{classmodels_1_1order_1_1_order}{}\label{classmodels_1_1order_1_1_order}\index{models.order.Order@{models.order.Order}}
+
+
+Represents an order placed by a customer.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1order_1_1_order_a07b7cd15a4dbc0be94c8d20bc5aaedb0}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, int order\+Id, \mbox{\hyperlink{classmodels_1_1customer_1_1_customer}{Customer}} customer, List\mbox{[}\mbox{\hyperlink{classmodels_1_1item_1_1_item}{Item}}\mbox{]} items, bool delivery, str payment\+Method)
+\begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1order_1_1_order}{Order} class. \end{DoxyCompactList}\item 
+None \mbox{\hyperlink{classmodels_1_1order_1_1_order_ae7945f963cb896c4eaeff76e3c34a141}{add\+Item}} (self, \mbox{\hyperlink{classmodels_1_1item_1_1_item}{Item}} item)
+\begin{DoxyCompactList}\small\item\em Adds an item to the order. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{classmodels_1_1order_1_1_order_a0e11ba98233d64298d62c84baf217219}{calculate\+Total}} (self)
+\begin{DoxyCompactList}\small\item\em Calculates the total cost of the order, including any delivery fees if applicable. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classmodels_1_1order_1_1_order_ac085ff9ef7c4f06e67bce64cb8c3cede}{process\+Payment}} (self)
+\begin{DoxyCompactList}\small\item\em Processes the payment for the order. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents an order placed by a customer. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodels_1_1order_1_1_order_a07b7cd15a4dbc0be94c8d20bc5aaedb0}\index{models.order.Order@{models.order.Order}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!models.order.Order@{models.order.Order}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classmodels_1_1order_1_1_order_a07b7cd15a4dbc0be94c8d20bc5aaedb0} 
+models.\+order.\+Order.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{order\+Id}{, }\item[{\mbox{\hyperlink{classmodels_1_1customer_1_1_customer}{Customer}}}]{customer}{, }\item[{List\mbox{[}\mbox{\hyperlink{classmodels_1_1item_1_1_item}{Item}}\mbox{]}}]{items}{, }\item[{bool}]{delivery}{, }\item[{str}]{payment\+Method}{}\end{DoxyParamCaption})}
+
+
+
+Constructor for \doxylink{classmodels_1_1order_1_1_order}{Order} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em order\+Id} & The unique identifier for the order. \\
+\hline
+{\em customer} & The Customer object placing the order. \\
+\hline
+{\em items} & A list of Item objects that the customer is ordering. \\
+\hline
+{\em delivery} & A boolean indicating if the order is for delivery (True) or for pickup (False). \\
+\hline
+{\em payment\+Method} & The payment method used for the order (e.\+g., "{}credit"{}, "{}debit"{}, "{}account"{}). \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodels_1_1order_1_1_order_ae7945f963cb896c4eaeff76e3c34a141}\index{models.order.Order@{models.order.Order}!addItem@{addItem}}
+\index{addItem@{addItem}!models.order.Order@{models.order.Order}}
+\doxysubsubsection{\texorpdfstring{addItem()}{addItem()}}
+{\footnotesize\ttfamily \label{classmodels_1_1order_1_1_order_ae7945f963cb896c4eaeff76e3c34a141} 
+ None models.\+order.\+Order.\+add\+Item (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\mbox{\hyperlink{classmodels_1_1item_1_1_item}{Item}}}]{item}{}\end{DoxyParamCaption})}
+
+
+
+Adds an item to the order. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & The Item object to be added to the order. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodels_1_1order_1_1_order_a0e11ba98233d64298d62c84baf217219}\index{models.order.Order@{models.order.Order}!calculateTotal@{calculateTotal}}
+\index{calculateTotal@{calculateTotal}!models.order.Order@{models.order.Order}}
+\doxysubsubsection{\texorpdfstring{calculateTotal()}{calculateTotal()}}
+{\footnotesize\ttfamily \label{classmodels_1_1order_1_1_order_a0e11ba98233d64298d62c84baf217219} 
+ float models.\+order.\+Order.\+calculate\+Total (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Calculates the total cost of the order, including any delivery fees if applicable. 
+
+\begin{DoxyReturn}{Returns}
+A float representing the total cost of the order. 
+\end{DoxyReturn}
+\Hypertarget{classmodels_1_1order_1_1_order_ac085ff9ef7c4f06e67bce64cb8c3cede}\index{models.order.Order@{models.order.Order}!processPayment@{processPayment}}
+\index{processPayment@{processPayment}!models.order.Order@{models.order.Order}}
+\doxysubsubsection{\texorpdfstring{processPayment()}{processPayment()}}
+{\footnotesize\ttfamily \label{classmodels_1_1order_1_1_order_ac085ff9ef7c4f06e67bce64cb8c3cede} 
+ bool models.\+order.\+Order.\+process\+Payment (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Processes the payment for the order. 
+
+\begin{DoxyReturn}{Returns}
+True if the payment was successful, otherwise False. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+models/\mbox{\hyperlink{order_8py}{order.\+py}}\end{DoxyCompactItemize}

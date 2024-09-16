@@ -1,0 +1,5 @@
+<map id="models.item.PremadeBox" name="models.item.PremadeBox">
+<area shape="rect" id="Node000001" title="Represents a premade box that can be customized with available vegetables." alt="" coords="5,80,177,107"/>
+<area shape="rect" id="Node000002" href="$classmodels_1_1item_1_1_item.html" title="Represents an individual item that can be ordered by a customer." alt="" coords="30,5,152,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,48,94,80,88,80,88,48"/>
+</map>

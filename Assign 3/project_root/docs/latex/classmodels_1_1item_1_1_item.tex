@@ -1,0 +1,74 @@
+\doxysection{models.\+item.\+Item Class Reference}
+\hypertarget{classmodels_1_1item_1_1_item}{}\label{classmodels_1_1item_1_1_item}\index{models.item.Item@{models.item.Item}}
+
+
+Represents an individual item that can be ordered by a customer.  
+
+
+
+
+Inheritance diagram for models.\+item.\+Item\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classmodels_1_1item_1_1_item__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str name, float price, int quantity)
+\begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1item_1_1_item}{Item} class. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{classmodels_1_1item_1_1_item_aec374076f75c6c7d8b416308aec28519}{calculate\+Item\+Total}} (self)
+\begin{DoxyCompactList}\small\item\em Calculates the total cost for the item based on its price and quantity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents an individual item that can be ordered by a customer. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9}\index{models.item.Item@{models.item.Item}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9} 
+models.\+item.\+Item.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{name}{, }\item[{float}]{price}{, }\item[{int}]{quantity}{}\end{DoxyParamCaption})}
+
+
+
+Constructor for \doxylink{classmodels_1_1item_1_1_item}{Item} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the item (e.\+g., Carrot, Apple Pack). \\
+\hline
+{\em price} & The price of the item per unit, weight, or pack. \\
+\hline
+{\em quantity} & The quantity of the item being ordered (units, weight, or packs). \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{classmodels_1_1item_1_1_premade_box_a05cf495d2689914cbf08fd62f74734c1}{models.\+item.\+Premade\+Box}}, and \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_a2cbfa3ea4f9f9955f1bc21435452e543}{models.\+premade\+\_\+box.\+Premade\+Box}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodels_1_1item_1_1_item_aec374076f75c6c7d8b416308aec28519}\index{models.item.Item@{models.item.Item}!calculateItemTotal@{calculateItemTotal}}
+\index{calculateItemTotal@{calculateItemTotal}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{calculateItemTotal()}{calculateItemTotal()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_aec374076f75c6c7d8b416308aec28519} 
+ float models.\+item.\+Item.\+calculate\+Item\+Total (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Calculates the total cost for the item based on its price and quantity. 
+
+\begin{DoxyReturn}{Returns}
+A float representing the total cost for this item. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+models/\mbox{\hyperlink{item_8py}{item.\+py}}\end{DoxyCompactItemize}
