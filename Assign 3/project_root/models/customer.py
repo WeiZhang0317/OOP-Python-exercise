@@ -38,6 +38,15 @@ class Customer:
         """
         pass
 
+    def viewBalance(self) -> float:
+        """!
+        Returns the customer's balance.
+        @return: The balance as a float.
+        """
+        pass
+
+
+
 
 class PrivateCustomer(Customer):
     """!

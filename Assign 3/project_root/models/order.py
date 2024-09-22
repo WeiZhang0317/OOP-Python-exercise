@@ -7,7 +7,7 @@ class Order:
     Represents an order placed by a customer.
     """
 
-    def __init__(self, orderId: int, customer: Customer, items: List[Item], delivery: bool, paymentMethod: str):
+    def __init__(self, orderId: int, customer: Customer, items: List[Item], delivery: bool, paymentMethod: str) -> None:
         """!
         Constructor for Order class.
         @param orderId: The unique identifier for the order.
@@ -18,6 +18,7 @@ class Order:
         """
         pass
 
+
     def addItem(self, item: Item) -> None:
         """!
         Adds an item to the order.
@@ -25,16 +26,19 @@ class Order:
         """
         pass
 
+
     def calculateTotal(self) -> float:
         """!
         Calculates the total cost of the order, including any delivery fees if applicable.
-        @return A float representing the total cost of the order.
+        @return: A float representing the total cost of the order.
         """
         pass
 
-    def processPayment(self) -> bool:
+
+    def processPayment(self, amount: float) -> bool:
         """!
-        Processes the payment for the order.
-        @return True if the payment was successful, otherwise False.
+        Processes a payment for the order.
+        @param amount: The amount to pay towards the order.
+        @return: True if the payment was successful, otherwise False.
         """
         pass
