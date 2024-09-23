@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['getboxdetails_0',['getBoxDetails',['../classmodels_1_1premade__box_1_1_premade_box.html#ab185023fb4d7ad4a1f6363a23c029a09',1,'models::premade_box::PremadeBox']]],
-  ['getdiscount_1',['getDiscount',['../classmodels_1_1customer_1_1_corporate_customer.html#a2772a5b3ee438e619f1ec63e9223cf66',1,'models::customer::CorporateCustomer']]]
+  ['firstname_0',['firstName',['../classmodels_1_1customer_1_1_customer.html#addbe0b73d6b42b279d2cce9703d8f11c',1,'models::customer::Customer']]],
+  ['fullname_1',['fullName',['../classmodels_1_1customer_1_1_customer.html#a07476e515c3e36c688b3f860db52be86',1,'models::customer::Customer']]]
 ];

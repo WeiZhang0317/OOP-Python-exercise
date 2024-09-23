@@ -8,37 +8,46 @@ Represents an individual item that can be ordered by a customer.
 
 
 Inheritance diagram for models.\+item.\+Item\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{classmodels_1_1item_1_1_item__inherit__graph}
-\end{center}
-\end{figure}
+% FIG 0
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str name, float price, int quantity)
+None \mbox{\hyperlink{classmodels_1_1item_1_1_item_a1b983ff6eef943dac6a36b9e117779ab}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str \mbox{\hyperlink{classmodels_1_1item_1_1_item_ab0c971f86921a3c35de2ea2415071158}{name}}, float price, int \mbox{\hyperlink{classmodels_1_1item_1_1_item_a857609e832bd49ab15d28ab877588673}{quantity}}, str \mbox{\hyperlink{classmodels_1_1item_1_1_item_a397028911b8b6887599ab2dc60a17334}{category}}, str \mbox{\hyperlink{classmodels_1_1item_1_1_item_afc807671e3cbb5bbc2ef55f5da200ba2}{unit\+\_\+type}})
 \begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1item_1_1_item}{Item} class. \end{DoxyCompactList}\item 
 float \mbox{\hyperlink{classmodels_1_1item_1_1_item_aec374076f75c6c7d8b416308aec28519}{calculate\+Item\+Total}} (self)
-\begin{DoxyCompactList}\small\item\em Calculates the total cost for the item based on its price and quantity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Calculates the total cost for the item based on its price and quantity. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{classmodels_1_1item_1_1_item_a398de4a431eede17b06d5a596481ee9b}{get\+Price}} (self)
+\begin{DoxyCompactList}\small\item\em Returns the price of the item. \end{DoxyCompactList}\item 
+None \mbox{\hyperlink{classmodels_1_1item_1_1_item_aa003f1f6d77518380979dc766db407ff}{set\+Price}} (self, float new\+Price)
+\begin{DoxyCompactList}\small\item\em Updates the price of the item. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_ab0c971f86921a3c35de2ea2415071158}{name}} = name
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_a857609e832bd49ab15d28ab877588673}{quantity}} = quantity
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_a397028911b8b6887599ab2dc60a17334}{category}} = category
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_afc807671e3cbb5bbc2ef55f5da200ba2}{unit\+\_\+type}} = unit\+\_\+type
+\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 Represents an individual item that can be ordered by a customer. 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9}\index{models.item.Item@{models.item.Item}!\_\_init\_\_@{\_\_init\_\_}}
+\Hypertarget{classmodels_1_1item_1_1_item_a1b983ff6eef943dac6a36b9e117779ab}\index{models.item.Item@{models.item.Item}!\_\_init\_\_@{\_\_init\_\_}}
 \index{\_\_init\_\_@{\_\_init\_\_}!models.item.Item@{models.item.Item}}
 \doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
-{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_a2535222d38d22e559c527c9a43a4c4e9} 
-models.\+item.\+Item.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{name}{, }\item[{float}]{price}{, }\item[{int}]{quantity}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_a1b983ff6eef943dac6a36b9e117779ab} 
+ None models.\+item.\+Item.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{name}{, }\item[{float}]{price}{, }\item[{int}]{quantity}{, }\item[{str}]{category}{, }\item[{str}]{unit\+\_\+type}{}\end{DoxyParamCaption})}
 
 
 
 Constructor for \doxylink{classmodels_1_1item_1_1_item}{Item} class. 
 
-
+Initializes the name, price, quantity, category, and unit type for the item. 
 \begin{DoxyParams}{Parameters}
 {\em name} & The name of the item (e.\+g., Carrot, Apple Pack). \\
 \hline
@@ -46,10 +55,14 @@ Constructor for \doxylink{classmodels_1_1item_1_1_item}{Item} class.
 \hline
 {\em quantity} & The quantity of the item being ordered (units, weight, or packs). \\
 \hline
+{\em category} & The category of the vegetable (e.\+g., leafy greens, root vegetables). \\
+\hline
+{\em unit\+\_\+type} & The unit type for ordering (e.\+g., bunch, weight, punnet, pack). \\
+\hline
 \end{DoxyParams}
 
 
-Reimplemented in \mbox{\hyperlink{classmodels_1_1item_1_1_premade_box_a05cf495d2689914cbf08fd62f74734c1}{models.\+item.\+Premade\+Box}}, and \mbox{\hyperlink{classmodels_1_1premade__box_1_1_premade_box_a2cbfa3ea4f9f9955f1bc21435452e543}{models.\+premade\+\_\+box.\+Premade\+Box}}.
+Reimplemented in \mbox{\hyperlink{classmodels_1_1item_1_1_premade_box_a77147a640cfaa03fcc81ae51fd7d3dd9}{models.\+item.\+Premade\+Box}}, and \mbox{\hyperlink{classmodels_1_1item_1_1_vegetable_aeadb75803626562d9b48d76909f4363f}{models.\+item.\+Vegetable}}.
 
 
 
@@ -65,8 +78,63 @@ Reimplemented in \mbox{\hyperlink{classmodels_1_1item_1_1_premade_box_a05cf495d2
 Calculates the total cost for the item based on its price and quantity. 
 
 \begin{DoxyReturn}{Returns}
-A float representing the total cost for this item. 
+\+: A float representing the total cost for this item. 
 \end{DoxyReturn}
+\Hypertarget{classmodels_1_1item_1_1_item_a398de4a431eede17b06d5a596481ee9b}\index{models.item.Item@{models.item.Item}!getPrice@{getPrice}}
+\index{getPrice@{getPrice}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{getPrice()}{getPrice()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_a398de4a431eede17b06d5a596481ee9b} 
+ float models.\+item.\+Item.\+get\+Price (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Returns the price of the item. 
+
+\begin{DoxyReturn}{Returns}
+\+: The price as a float. 
+\end{DoxyReturn}
+\Hypertarget{classmodels_1_1item_1_1_item_aa003f1f6d77518380979dc766db407ff}\index{models.item.Item@{models.item.Item}!setPrice@{setPrice}}
+\index{setPrice@{setPrice}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{setPrice()}{setPrice()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_aa003f1f6d77518380979dc766db407ff} 
+ None models.\+item.\+Item.\+set\+Price (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{float}]{new\+Price}{}\end{DoxyParamCaption})}
+
+
+
+Updates the price of the item. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em new\+Price} & The new price to be set for the item. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmodels_1_1item_1_1_item_a397028911b8b6887599ab2dc60a17334}\index{models.item.Item@{models.item.Item}!category@{category}}
+\index{category@{category}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{category}{category}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_a397028911b8b6887599ab2dc60a17334} 
+models.\+item.\+Item.\+category = category}
+
+\Hypertarget{classmodels_1_1item_1_1_item_ab0c971f86921a3c35de2ea2415071158}\index{models.item.Item@{models.item.Item}!name@{name}}
+\index{name@{name}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{name}{name}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_ab0c971f86921a3c35de2ea2415071158} 
+models.\+item.\+Item.\+name = name}
+
+\Hypertarget{classmodels_1_1item_1_1_item_a857609e832bd49ab15d28ab877588673}\index{models.item.Item@{models.item.Item}!quantity@{quantity}}
+\index{quantity@{quantity}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{quantity}{quantity}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_a857609e832bd49ab15d28ab877588673} 
+models.\+item.\+Item.\+quantity = quantity}
+
+\Hypertarget{classmodels_1_1item_1_1_item_afc807671e3cbb5bbc2ef55f5da200ba2}\index{models.item.Item@{models.item.Item}!unit\_type@{unit\_type}}
+\index{unit\_type@{unit\_type}!models.item.Item@{models.item.Item}}
+\doxysubsubsection{\texorpdfstring{unit\_type}{unit\_type}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_item_afc807671e3cbb5bbc2ef55f5da200ba2} 
+models.\+item.\+Item.\+unit\+\_\+type = unit\+\_\+type}
+
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

@@ -1,0 +1,91 @@
+\doxysection{models.\+report.\+Report Class Reference}
+\hypertarget{classmodels_1_1report_1_1_report}{}\label{classmodels_1_1report_1_1_report}\index{models.report.Report@{models.report.Report}}
+
+
+Generates various reports for the company, including sales, customer, and item popularity reports.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+None \mbox{\hyperlink{classmodels_1_1report_1_1_report_ad1d11f26cc0f24997e8172538289d9ae}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, dict report\+Data)
+\begin{DoxyCompactList}\small\item\em Constructor for the \doxylink{classmodels_1_1report_1_1_report}{Report} class. \end{DoxyCompactList}\item 
+str \mbox{\hyperlink{classmodels_1_1report_1_1_report_a6e37454f8bee1a0b0b57a99d0c1da2d9}{generate\+Sales\+Report}} (self, str time\+Period)
+\begin{DoxyCompactList}\small\item\em Generates a sales report for the specified time period (e.\+g., week, month, year). \end{DoxyCompactList}\item 
+str \mbox{\hyperlink{classmodels_1_1report_1_1_report_a225caa69b2fb2aae440d3653645007a3}{generate\+Customer\+Report}} (self)
+\begin{DoxyCompactList}\small\item\em Generates a report of all private and corporate customers. \end{DoxyCompactList}\item 
+str \mbox{\hyperlink{classmodels_1_1report_1_1_report_a0e3d178d5e2b5adf9d45600dc44bb7c9}{generate\+Item\+Popularity\+Report}} (self)
+\begin{DoxyCompactList}\small\item\em Generates a report on the most and least popular items. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Generates various reports for the company, including sales, customer, and item popularity reports. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodels_1_1report_1_1_report_ad1d11f26cc0f24997e8172538289d9ae}\index{models.report.Report@{models.report.Report}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!models.report.Report@{models.report.Report}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classmodels_1_1report_1_1_report_ad1d11f26cc0f24997e8172538289d9ae} 
+ None models.\+report.\+Report.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{dict}]{report\+Data}{}\end{DoxyParamCaption})}
+
+
+
+Constructor for the \doxylink{classmodels_1_1report_1_1_report}{Report} class. 
+
+Initializes the report data that will be used for generating different reports. 
+\begin{DoxyParams}{Parameters}
+{\em report\+Data} & A dictionary containing all the data required for report generation. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodels_1_1report_1_1_report_a225caa69b2fb2aae440d3653645007a3}\index{models.report.Report@{models.report.Report}!generateCustomerReport@{generateCustomerReport}}
+\index{generateCustomerReport@{generateCustomerReport}!models.report.Report@{models.report.Report}}
+\doxysubsubsection{\texorpdfstring{generateCustomerReport()}{generateCustomerReport()}}
+{\footnotesize\ttfamily \label{classmodels_1_1report_1_1_report_a225caa69b2fb2aae440d3653645007a3} 
+ str models.\+report.\+Report.\+generate\+Customer\+Report (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Generates a report of all private and corporate customers. 
+
+This method would typically compile and return a list of customers. \begin{DoxyReturn}{Returns}
+\+: A string representing the customer report. 
+\end{DoxyReturn}
+\Hypertarget{classmodels_1_1report_1_1_report_a0e3d178d5e2b5adf9d45600dc44bb7c9}\index{models.report.Report@{models.report.Report}!generateItemPopularityReport@{generateItemPopularityReport}}
+\index{generateItemPopularityReport@{generateItemPopularityReport}!models.report.Report@{models.report.Report}}
+\doxysubsubsection{\texorpdfstring{generateItemPopularityReport()}{generateItemPopularityReport()}}
+{\footnotesize\ttfamily \label{classmodels_1_1report_1_1_report_a0e3d178d5e2b5adf9d45600dc44bb7c9} 
+ str models.\+report.\+Report.\+generate\+Item\+Popularity\+Report (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Generates a report on the most and least popular items. 
+
+This method would typically analyze item data to rank items by popularity. \begin{DoxyReturn}{Returns}
+\+: A string representing the item popularity report. 
+\end{DoxyReturn}
+\Hypertarget{classmodels_1_1report_1_1_report_a6e37454f8bee1a0b0b57a99d0c1da2d9}\index{models.report.Report@{models.report.Report}!generateSalesReport@{generateSalesReport}}
+\index{generateSalesReport@{generateSalesReport}!models.report.Report@{models.report.Report}}
+\doxysubsubsection{\texorpdfstring{generateSalesReport()}{generateSalesReport()}}
+{\footnotesize\ttfamily \label{classmodels_1_1report_1_1_report_a6e37454f8bee1a0b0b57a99d0c1da2d9} 
+ str models.\+report.\+Report.\+generate\+Sales\+Report (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{time\+Period}{}\end{DoxyParamCaption})}
+
+
+
+Generates a sales report for the specified time period (e.\+g., week, month, year). 
+
+This method would typically filter the report data based on the time period. 
+\begin{DoxyParams}{Parameters}
+{\em time\+Period} & The time period for the report. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: A string representing the sales report. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+models/\mbox{\hyperlink{report_8py}{report.\+py}}\end{DoxyCompactItemize}

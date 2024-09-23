@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vieworderhistory_0',['viewOrderHistory',['../classmodels_1_1customer_1_1_customer.html#a21cfd7d42b9235a3033693d607d0abba',1,'models::customer::Customer']]]
+  ['setprice_0',['setPrice',['../classmodels_1_1item_1_1_item.html#aa003f1f6d77518380979dc766db407ff',1,'models::item::Item']]]
 ];

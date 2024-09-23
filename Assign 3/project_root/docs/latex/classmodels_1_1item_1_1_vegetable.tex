@@ -1,0 +1,114 @@
+\doxysection{models.\+item.\+Vegetable Class Reference}
+\hypertarget{classmodels_1_1item_1_1_vegetable}{}\label{classmodels_1_1item_1_1_vegetable}\index{models.item.Vegetable@{models.item.Vegetable}}
+
+
+Represents a vegetable item that can be purchased individually or included in a premade box.  
+
+
+
+
+Inheritance diagram for models.\+item.\+Vegetable\+:
+% FIG 0
+
+
+Collaboration diagram for models.\+item.\+Vegetable\+:
+% FIG 1
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+None \mbox{\hyperlink{classmodels_1_1item_1_1_vegetable_aeadb75803626562d9b48d76909f4363f}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str \mbox{\hyperlink{classmodels_1_1item_1_1_item_ab0c971f86921a3c35de2ea2415071158}{name}}, float price, int available\+\_\+quantity)
+\begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1item_1_1_vegetable}{Vegetable} class. \end{DoxyCompactList}\item 
+None \mbox{\hyperlink{classmodels_1_1item_1_1_vegetable_a37cb0c6faa2cf86d134b66e687a6b3a4}{purchase}} (self, int \mbox{\hyperlink{classmodels_1_1item_1_1_item_a857609e832bd49ab15d28ab877588673}{quantity}})
+\begin{DoxyCompactList}\small\item\em Allows purchasing a specified quantity of the vegetable. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classmodels_1_1item_1_1_vegetable_af2983c952f10b4501f2264bea2b97939}{get\+Available\+Quantity}} (self)
+\begin{DoxyCompactList}\small\item\em Returns the available quantity of the vegetable. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classmodels_1_1item_1_1_item}{models.\+item.\+Item}}}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{classmodels_1_1item_1_1_item_aec374076f75c6c7d8b416308aec28519}{calculate\+Item\+Total}} (self)
+\begin{DoxyCompactList}\small\item\em Calculates the total cost for the item based on its price and quantity. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{classmodels_1_1item_1_1_item_a398de4a431eede17b06d5a596481ee9b}{get\+Price}} (self)
+\begin{DoxyCompactList}\small\item\em Returns the price of the item. \end{DoxyCompactList}\item 
+None \mbox{\hyperlink{classmodels_1_1item_1_1_item_aa003f1f6d77518380979dc766db407ff}{set\+Price}} (self, float new\+Price)
+\begin{DoxyCompactList}\small\item\em Updates the price of the item. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{classmodels_1_1item_1_1_item}{models.\+item.\+Item}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_ab0c971f86921a3c35de2ea2415071158}{name}} = name
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_a857609e832bd49ab15d28ab877588673}{quantity}} = quantity
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_a397028911b8b6887599ab2dc60a17334}{category}} = category
+\item 
+\mbox{\hyperlink{classmodels_1_1item_1_1_item_afc807671e3cbb5bbc2ef55f5da200ba2}{unit\+\_\+type}} = unit\+\_\+type
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a vegetable item that can be purchased individually or included in a premade box. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodels_1_1item_1_1_vegetable_aeadb75803626562d9b48d76909f4363f}\index{models.item.Vegetable@{models.item.Vegetable}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!models.item.Vegetable@{models.item.Vegetable}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_vegetable_aeadb75803626562d9b48d76909f4363f} 
+ None models.\+item.\+Vegetable.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{name}{, }\item[{float}]{price}{, }\item[{int}]{available\+\_\+quantity}{}\end{DoxyParamCaption})}
+
+
+
+Constructor for \doxylink{classmodels_1_1item_1_1_vegetable}{Vegetable} class. 
+
+Initializes the vegetable\textquotesingle{}s name, price, and available quantity. 
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the vegetable. \\
+\hline
+{\em price} & The price of the vegetable per unit. \\
+\hline
+{\em available\+\_\+quantity} & The quantity of the vegetable available for purchase. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classmodels_1_1item_1_1_item_a1b983ff6eef943dac6a36b9e117779ab}{models.\+item.\+Item}}.
+
+Here is the call graph for this function\+:
+% FIG 2
+Here is the caller graph for this function\+:
+% FIG 3
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodels_1_1item_1_1_vegetable_af2983c952f10b4501f2264bea2b97939}\index{models.item.Vegetable@{models.item.Vegetable}!getAvailableQuantity@{getAvailableQuantity}}
+\index{getAvailableQuantity@{getAvailableQuantity}!models.item.Vegetable@{models.item.Vegetable}}
+\doxysubsubsection{\texorpdfstring{getAvailableQuantity()}{getAvailableQuantity()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_vegetable_af2983c952f10b4501f2264bea2b97939} 
+ int models.\+item.\+Vegetable.\+get\+Available\+Quantity (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Returns the available quantity of the vegetable. 
+
+\begin{DoxyReturn}{Returns}
+\+: The available quantity as an integer. 
+\end{DoxyReturn}
+\Hypertarget{classmodels_1_1item_1_1_vegetable_a37cb0c6faa2cf86d134b66e687a6b3a4}\index{models.item.Vegetable@{models.item.Vegetable}!purchase@{purchase}}
+\index{purchase@{purchase}!models.item.Vegetable@{models.item.Vegetable}}
+\doxysubsubsection{\texorpdfstring{purchase()}{purchase()}}
+{\footnotesize\ttfamily \label{classmodels_1_1item_1_1_vegetable_a37cb0c6faa2cf86d134b66e687a6b3a4} 
+ None models.\+item.\+Vegetable.\+purchase (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{quantity}{}\end{DoxyParamCaption})}
+
+
+
+Allows purchasing a specified quantity of the vegetable. 
+
+Updates the available quantity after purchase. 
+\begin{DoxyParams}{Parameters}
+{\em quantity} & The quantity of the vegetable to purchase. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+models/\mbox{\hyperlink{item_8py}{item.\+py}}\end{DoxyCompactItemize}

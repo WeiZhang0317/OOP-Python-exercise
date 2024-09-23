@@ -91,40 +91,58 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classmodels_1_1order_1_1_order-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">models.order.Order Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Represents an order placed by a customer.  
+<p>Represents an order placed by a customer in the Fresh Harvest Veggies system.  
  <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a07b7cd15a4dbc0be94c8d20bc5aaedb0" id="r_a07b7cd15a4dbc0be94c8d20bc5aaedb0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07b7cd15a4dbc0be94c8d20bc5aaedb0">__init__</a> (self, int orderId, <a class="el" href="classmodels_1_1customer_1_1_customer.html">Customer</a> customer, List[<a class="el" href="classmodels_1_1item_1_1_item.html">Item</a>] items, bool delivery, str paymentMethod)</td></tr>
-<tr class="memdesc:a07b7cd15a4dbc0be94c8d20bc5aaedb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for <a class="el" href="classmodels_1_1order_1_1_order.html" title="Represents an order placed by a customer.">Order</a> class.  <br /></td></tr>
-<tr class="separator:a07b7cd15a4dbc0be94c8d20bc5aaedb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad284656d8527a443c89f567c85a7180a" id="r_ad284656d8527a443c89f567c85a7180a"><td class="memItemLeft" align="right" valign="top">None&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad284656d8527a443c89f567c85a7180a">__init__</a> (self, int orderId, <a class="el" href="classmodels_1_1customer_1_1_customer.html">Customer</a> <a class="el" href="#a25a4c78afc1a4f752d5ffc64b5dca420">customer</a>, List[<a class="el" href="classmodels_1_1item_1_1_item.html">Item</a>] <a class="el" href="#a0ebec9ac9b4e69f992ea3e97a366b0c3">items</a>, bool <a class="el" href="#a74715f5f2350a5d1fde5de461206a7b9">delivery</a>, str <a class="el" href="#a34e2e3c54c3c38f0979b5cd04e8447a8">paymentMethod</a>)</td></tr>
+<tr class="memdesc:ad284656d8527a443c89f567c85a7180a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for the <a class="el" href="classmodels_1_1order_1_1_order.html" title="Represents an order placed by a customer in the Fresh Harvest Veggies system.">Order</a> class.  <br /></td></tr>
+<tr class="separator:ad284656d8527a443c89f567c85a7180a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7945f963cb896c4eaeff76e3c34a141" id="r_ae7945f963cb896c4eaeff76e3c34a141"><td class="memItemLeft" align="right" valign="top">None&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7945f963cb896c4eaeff76e3c34a141">addItem</a> (self, <a class="el" href="classmodels_1_1item_1_1_item.html">Item</a> item)</td></tr>
 <tr class="memdesc:ae7945f963cb896c4eaeff76e3c34a141"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an item to the order.  <br /></td></tr>
 <tr class="separator:ae7945f963cb896c4eaeff76e3c34a141"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e11ba98233d64298d62c84baf217219" id="r_a0e11ba98233d64298d62c84baf217219"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e11ba98233d64298d62c84baf217219">calculateTotal</a> (self)</td></tr>
 <tr class="memdesc:a0e11ba98233d64298d62c84baf217219"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the total cost of the order, including any delivery fees if applicable.  <br /></td></tr>
 <tr class="separator:a0e11ba98233d64298d62c84baf217219"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac085ff9ef7c4f06e67bce64cb8c3cede" id="r_ac085ff9ef7c4f06e67bce64cb8c3cede"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac085ff9ef7c4f06e67bce64cb8c3cede">processPayment</a> (self)</td></tr>
-<tr class="memdesc:ac085ff9ef7c4f06e67bce64cb8c3cede"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the payment for the order.  <br /></td></tr>
-<tr class="separator:ac085ff9ef7c4f06e67bce64cb8c3cede"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbaab1b8907d4b26ee78d055902d1716" id="r_afbaab1b8907d4b26ee78d055902d1716"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afbaab1b8907d4b26ee78d055902d1716">processPayment</a> (self, float amount)</td></tr>
+<tr class="memdesc:afbaab1b8907d4b26ee78d055902d1716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes a payment for the order.  <br /></td></tr>
+<tr class="separator:afbaab1b8907d4b26ee78d055902d1716"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9617b78d4874619e78fa1da2272c0684" id="r_a9617b78d4874619e78fa1da2272c0684"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9617b78d4874619e78fa1da2272c0684">getOrderId</a> (self)</td></tr>
+<tr class="memdesc:a9617b78d4874619e78fa1da2272c0684"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the unique order ID.  <br /></td></tr>
+<tr class="separator:a9617b78d4874619e78fa1da2272c0684"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aa3ef7e3da2e821953643705a7b3467" id="r_a6aa3ef7e3da2e821953643705a7b3467"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6aa3ef7e3da2e821953643705a7b3467">getTotalCost</a> (self)</td></tr>
+<tr class="memdesc:a6aa3ef7e3da2e821953643705a7b3467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the total cost of the order.  <br /></td></tr>
+<tr class="separator:a6aa3ef7e3da2e821953643705a7b3467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a25a4c78afc1a4f752d5ffc64b5dca420" id="r_a25a4c78afc1a4f752d5ffc64b5dca420"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25a4c78afc1a4f752d5ffc64b5dca420">customer</a> = customer</td></tr>
+<tr class="separator:a25a4c78afc1a4f752d5ffc64b5dca420"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ebec9ac9b4e69f992ea3e97a366b0c3" id="r_a0ebec9ac9b4e69f992ea3e97a366b0c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ebec9ac9b4e69f992ea3e97a366b0c3">items</a> = items</td></tr>
+<tr class="separator:a0ebec9ac9b4e69f992ea3e97a366b0c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74715f5f2350a5d1fde5de461206a7b9" id="r_a74715f5f2350a5d1fde5de461206a7b9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74715f5f2350a5d1fde5de461206a7b9">delivery</a> = delivery</td></tr>
+<tr class="separator:a74715f5f2350a5d1fde5de461206a7b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34e2e3c54c3c38f0979b5cd04e8447a8" id="r_a34e2e3c54c3c38f0979b5cd04e8447a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34e2e3c54c3c38f0979b5cd04e8447a8">paymentMethod</a> = paymentMethod</td></tr>
+<tr class="separator:a34e2e3c54c3c38f0979b5cd04e8447a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Represents an order placed by a customer. </p>
+<div class="textblock"><p>Represents an order placed by a customer in the Fresh Harvest Veggies system. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a07b7cd15a4dbc0be94c8d20bc5aaedb0" name="a07b7cd15a4dbc0be94c8d20bc5aaedb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07b7cd15a4dbc0be94c8d20bc5aaedb0">&#9670;&#160;</a></span>__init__()</h2>
+<a id="ad284656d8527a443c89f567c85a7180a" name="ad284656d8527a443c89f567c85a7180a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad284656d8527a443c89f567c85a7180a">&#9670;&#160;</a></span>__init__()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">models.order.Order.__init__ </td>
+          <td class="memname"> None models.order.Order.__init__ </td>
           <td>(</td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
         </tr>
@@ -156,13 +174,13 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Constructor for <a class="el" href="classmodels_1_1order_1_1_order.html" title="Represents an order placed by a customer.">Order</a> class. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Constructor for the <a class="el" href="classmodels_1_1order_1_1_order.html" title="Represents an order placed by a customer in the Fresh Harvest Veggies system.">Order</a> class. </p>
+<p>Initializes the order with a unique order ID, customer, items, delivery preference, and payment method. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">orderId</td><td>The unique identifier for the order. </td></tr>
     <tr><td class="paramname">customer</td><td>The Customer object placing the order. </td></tr>
     <tr><td class="paramname">items</td><td>A list of Item objects that the customer is ordering. </td></tr>
-    <tr><td class="paramname">delivery</td><td>A boolean indicating if the order is for delivery (True) or for pickup (False). </td></tr>
+    <tr><td class="paramname">delivery</td><td>A boolean indicating if the order is for delivery (True) or pickup (False). </td></tr>
     <tr><td class="paramname">paymentMethod</td><td>The payment method used for the order (e.g., "credit", "debit", "account"). </td></tr>
   </table>
   </dd>
@@ -191,7 +209,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Adds an item to the order. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Updates the total cost of the order based on the added item. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">item</td><td>The Item object to be added to the order. </td></tr>
   </table>
@@ -216,18 +234,23 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Calculates the total cost of the order, including any delivery fees if applicable. </p>
-<dl class="section return"><dt>Returns</dt><dd>A float representing the total cost of the order. </dd></dl>
+<p>If delivery is True, an extra fee is added. </p><dl class="section return"><dt>Returns</dt><dd>A float representing the total cost of the order. </dd></dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmodels_1_1order_1_1_order_a0e11ba98233d64298d62c84baf217219_icgraph.png" border="0" usemap="#aclassmodels_1_1order_1_1_order_a0e11ba98233d64298d62c84baf217219_icgraph" alt=""/></div>
+</div>
 
 </div>
 </div>
-<a id="ac085ff9ef7c4f06e67bce64cb8c3cede" name="ac085ff9ef7c4f06e67bce64cb8c3cede"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac085ff9ef7c4f06e67bce64cb8c3cede">&#9670;&#160;</a></span>processPayment()</h2>
+<a id="a9617b78d4874619e78fa1da2272c0684" name="a9617b78d4874619e78fa1da2272c0684"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9617b78d4874619e78fa1da2272c0684">&#9670;&#160;</a></span>getOrderId()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"> bool models.order.Order.processPayment </td>
+          <td class="memname"> int models.order.Order.getOrderId </td>
           <td>(</td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
           <td></td>
@@ -235,8 +258,120 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Processes the payment for the order. </p>
+<p>Returns the unique order ID. </p>
+<dl class="section return"><dt>Returns</dt><dd>The unique identifier for the order. </dd></dl>
+
+</div>
+</div>
+<a id="a6aa3ef7e3da2e821953643705a7b3467" name="a6aa3ef7e3da2e821953643705a7b3467"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6aa3ef7e3da2e821953643705a7b3467">&#9670;&#160;</a></span>getTotalCost()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> float models.order.Order.getTotalCost </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the total cost of the order. </p>
+<dl class="section return"><dt>Returns</dt><dd>The total cost of the order as a float. </dd></dl>
+
+</div>
+</div>
+<a id="afbaab1b8907d4b26ee78d055902d1716" name="afbaab1b8907d4b26ee78d055902d1716"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbaab1b8907d4b26ee78d055902d1716">&#9670;&#160;</a></span>processPayment()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> bool models.order.Order.processPayment </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>amount</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Processes a payment for the order. </p>
+<p>Ensures the payment is sufficient to cover the total cost. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">amount</td><td>The amount paid towards the order. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the payment was successful, otherwise False. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmodels_1_1order_1_1_order_afbaab1b8907d4b26ee78d055902d1716_cgraph.png" border="0" usemap="#aclassmodels_1_1order_1_1_order_afbaab1b8907d4b26ee78d055902d1716_cgraph" alt=""/></div>
+</div>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a25a4c78afc1a4f752d5ffc64b5dca420" name="a25a4c78afc1a4f752d5ffc64b5dca420"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25a4c78afc1a4f752d5ffc64b5dca420">&#9670;&#160;</a></span>customer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">models.order.Order.customer = customer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a74715f5f2350a5d1fde5de461206a7b9" name="a74715f5f2350a5d1fde5de461206a7b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74715f5f2350a5d1fde5de461206a7b9">&#9670;&#160;</a></span>delivery</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">models.order.Order.delivery = delivery</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0ebec9ac9b4e69f992ea3e97a366b0c3" name="a0ebec9ac9b4e69f992ea3e97a366b0c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ebec9ac9b4e69f992ea3e97a366b0c3">&#9670;&#160;</a></span>items</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">models.order.Order.items = items</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a34e2e3c54c3c38f0979b5cd04e8447a8" name="a34e2e3c54c3c38f0979b5cd04e8447a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34e2e3c54c3c38f0979b5cd04e8447a8">&#9670;&#160;</a></span>paymentMethod</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">models.order.Order.paymentMethod = paymentMethod</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

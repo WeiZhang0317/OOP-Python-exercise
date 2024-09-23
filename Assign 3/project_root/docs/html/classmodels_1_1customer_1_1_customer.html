@@ -91,6 +91,7 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classmodels_1_1customer_1_1_customer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">models.customer.Customer Class Reference</div></div>
 </div><!--header-->
@@ -102,29 +103,36 @@ $(function(){ initResizable(false); });
 Inheritance diagram for models.customer.Customer:</div>
 <div class="dyncontent">
 <div class="center"><img src="classmodels_1_1customer_1_1_customer__inherit__graph.png" border="0" usemap="#amodels_8customer_8_customer_inherit__map" alt="Inheritance graph"/></div>
-<map name="amodels_8customer_8_customer_inherit__map" id="amodels_8customer_8_customer_inherit__map">
-<area shape="rect" title="Represents a customer in the Fresh Harvest Veggies system." alt="" coords="119,5,301,32"/>
-<area shape="rect" href="classmodels_1_1customer_1_1_corporate_customer.html" title="Represents a corporate customer." alt="" coords="5,80,188,123"/>
-<area shape="poly" title=" " alt="" coords="181,43,127,82,124,77,178,39"/>
-<area shape="rect" href="classmodels_1_1customer_1_1_private_customer.html" title="Represents a private customer." alt="" coords="212,88,435,115"/>
-<area shape="poly" title=" " alt="" coords="241,39,307,85,304,90,238,43"/>
-</map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae3feb16b2bceccb0ea32202f0e307ff9" id="r_ae3feb16b2bceccb0ea32202f0e307ff9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae3feb16b2bceccb0ea32202f0e307ff9">__init__</a> (self, str firstName, str lastName, float balance, str address)</td></tr>
+<tr class="memitem:ae3feb16b2bceccb0ea32202f0e307ff9" id="r_ae3feb16b2bceccb0ea32202f0e307ff9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae3feb16b2bceccb0ea32202f0e307ff9">__init__</a> (self, str <a class="el" href="#addbe0b73d6b42b279d2cce9703d8f11c">firstName</a>, str <a class="el" href="#a8a87b9df0f13d6a69cc1d5abce0dfddd">lastName</a>, float balance, str <a class="el" href="#ab45d5faaae7afac4f5d299d95c8e41b0">address</a>)</td></tr>
 <tr class="memdesc:ae3feb16b2bceccb0ea32202f0e307ff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for <a class="el" href="classmodels_1_1customer_1_1_customer.html" title="Represents a customer in the Fresh Harvest Veggies system.">Customer</a> class.  <br /></td></tr>
 <tr class="separator:ae3feb16b2bceccb0ea32202f0e307ff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07476e515c3e36c688b3f860db52be86" id="r_a07476e515c3e36c688b3f860db52be86"><td class="memItemLeft" align="right" valign="top">str&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07476e515c3e36c688b3f860db52be86">fullName</a> (self)</td></tr>
-<tr class="memdesc:a07476e515c3e36c688b3f860db52be86"><td class="mdescLeft">&#160;</td><td class="mdescRight">The method fullName returns the full name of the customer by concatenating the first and last name.  <br /></td></tr>
+<tr class="memdesc:a07476e515c3e36c688b3f860db52be86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the full name of the customer by concatenating the first and last name.  <br /></td></tr>
 <tr class="separator:a07476e515c3e36c688b3f860db52be86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59424ac6c83f3be364f00e530f6c8e95" id="r_a59424ac6c83f3be364f00e530f6c8e95"><td class="memItemLeft" align="right" valign="top">None&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59424ac6c83f3be364f00e530f6c8e95">placeOrder</a> (self, <a class="el" href="classmodels_1_1order_1_1_order.html">Order</a> order)</td></tr>
-<tr class="memdesc:a59424ac6c83f3be364f00e530f6c8e95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places a new order for the customer.  <br /></td></tr>
+<tr class="memdesc:a59424ac6c83f3be364f00e530f6c8e95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Places a new order for the customer and appends it to the order history.  <br /></td></tr>
 <tr class="separator:a59424ac6c83f3be364f00e530f6c8e95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21cfd7d42b9235a3033693d607d0abba" id="r_a21cfd7d42b9235a3033693d607d0abba"><td class="memItemLeft" align="right" valign="top">List[<a class="el" href="classmodels_1_1order_1_1_order.html">Order</a>]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21cfd7d42b9235a3033693d607d0abba">viewOrderHistory</a> (self)</td></tr>
 <tr class="memdesc:a21cfd7d42b9235a3033693d607d0abba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the order history of the customer.  <br /></td></tr>
 <tr class="separator:a21cfd7d42b9235a3033693d607d0abba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad49c1dee830192f50d3e55bebbf5a22b" id="r_ad49c1dee830192f50d3e55bebbf5a22b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad49c1dee830192f50d3e55bebbf5a22b">viewBalance</a> (self)</td></tr>
+<tr class="memdesc:ad49c1dee830192f50d3e55bebbf5a22b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the customer's balance.  <br /></td></tr>
+<tr class="separator:ad49c1dee830192f50d3e55bebbf5a22b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:addbe0b73d6b42b279d2cce9703d8f11c" id="r_addbe0b73d6b42b279d2cce9703d8f11c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addbe0b73d6b42b279d2cce9703d8f11c">firstName</a> = firstName</td></tr>
+<tr class="separator:addbe0b73d6b42b279d2cce9703d8f11c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a87b9df0f13d6a69cc1d5abce0dfddd" id="r_a8a87b9df0f13d6a69cc1d5abce0dfddd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a87b9df0f13d6a69cc1d5abce0dfddd">lastName</a> = lastName</td></tr>
+<tr class="separator:a8a87b9df0f13d6a69cc1d5abce0dfddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab45d5faaae7afac4f5d299d95c8e41b0" id="r_ab45d5faaae7afac4f5d299d95c8e41b0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab45d5faaae7afac4f5d299d95c8e41b0">address</a> = address</td></tr>
+<tr class="separator:ab45d5faaae7afac4f5d299d95c8e41b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34d56c4585cdf0775308aa9843f60895" id="r_a34d56c4585cdf0775308aa9843f60895"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34d56c4585cdf0775308aa9843f60895">orderHistory</a> = []</td></tr>
+<tr class="separator:a34d56c4585cdf0775308aa9843f60895"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a customer in the Fresh Harvest Veggies system. </p>
@@ -164,7 +172,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Constructor for <a class="el" href="classmodels_1_1customer_1_1_customer.html" title="Represents a customer in the Fresh Harvest Veggies system.">Customer</a> class. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Initializes the customer's first name, last name, balance, and address. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">firstName</td><td>The customer's first name. </td></tr>
     <tr><td class="paramname">lastName</td><td>The customer's last name. </td></tr>
@@ -194,7 +202,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The method fullName returns the full name of the customer by concatenating the first and last name. </p>
+<p>Returns the full name of the customer by concatenating the first and last name. </p>
 <dl class="section return"><dt>Returns</dt><dd>A string that contains the full name of the customer. </dd></dl>
 
 </div>
@@ -218,13 +226,38 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Places a new order for the customer. </p>
+<p>Places a new order for the customer and appends it to the order history. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">order</td><td>The Order object to be placed by the customer. </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ad49c1dee830192f50d3e55bebbf5a22b" name="ad49c1dee830192f50d3e55bebbf5a22b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad49c1dee830192f50d3e55bebbf5a22b">&#9670;&#160;</a></span>viewBalance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> float models.customer.Customer.viewBalance </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the customer's balance. </p>
+<dl class="section return"><dt>Returns</dt><dd>The balance as a float. </dd></dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classmodels_1_1customer_1_1_customer_ad49c1dee830192f50d3e55bebbf5a22b_icgraph.png" border="0" usemap="#aclassmodels_1_1customer_1_1_customer_ad49c1dee830192f50d3e55bebbf5a22b_icgraph" alt=""/></div>
+</div>
 
 </div>
 </div>
@@ -245,6 +278,63 @@ Public Member Functions</h2></td></tr>
 
 <p>Returns the order history of the customer. </p>
 <dl class="section return"><dt>Returns</dt><dd>A list of Order objects representing the customer's order history. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ab45d5faaae7afac4f5d299d95c8e41b0" name="ab45d5faaae7afac4f5d299d95c8e41b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab45d5faaae7afac4f5d299d95c8e41b0">&#9670;&#160;</a></span>address</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">models.customer.Customer.address = address</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="addbe0b73d6b42b279d2cce9703d8f11c" name="addbe0b73d6b42b279d2cce9703d8f11c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addbe0b73d6b42b279d2cce9703d8f11c">&#9670;&#160;</a></span>firstName</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">models.customer.Customer.firstName = firstName</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8a87b9df0f13d6a69cc1d5abce0dfddd" name="a8a87b9df0f13d6a69cc1d5abce0dfddd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a87b9df0f13d6a69cc1d5abce0dfddd">&#9670;&#160;</a></span>lastName</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">models.customer.Customer.lastName = lastName</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a34d56c4585cdf0775308aa9843f60895" name="a34d56c4585cdf0775308aa9843f60895"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34d56c4585cdf0775308aa9843f60895">&#9670;&#160;</a></span>orderHistory</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">list models.customer.Customer.orderHistory = []</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -8,24 +8,31 @@ Represents a customer in the Fresh Harvest Veggies system.
 
 
 Inheritance diagram for models.\+customer.\+Customer\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{classmodels_1_1customer_1_1_customer__inherit__graph}
-\end{center}
-\end{figure}
+% FIG 0
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ae3feb16b2bceccb0ea32202f0e307ff9}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str first\+Name, str last\+Name, float balance, str address)
+\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ae3feb16b2bceccb0ea32202f0e307ff9}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_addbe0b73d6b42b279d2cce9703d8f11c}{first\+Name}}, str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a8a87b9df0f13d6a69cc1d5abce0dfddd}{last\+Name}}, float balance, str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ab45d5faaae7afac4f5d299d95c8e41b0}{address}})
 \begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1customer_1_1_customer}{Customer} class. \end{DoxyCompactList}\item 
 str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a07476e515c3e36c688b3f860db52be86}{full\+Name}} (self)
-\begin{DoxyCompactList}\small\item\em The method full\+Name returns the full name of the customer by concatenating the first and last name. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Returns the full name of the customer by concatenating the first and last name. \end{DoxyCompactList}\item 
 None \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a59424ac6c83f3be364f00e530f6c8e95}{place\+Order}} (self, \mbox{\hyperlink{classmodels_1_1order_1_1_order}{Order}} order)
-\begin{DoxyCompactList}\small\item\em Places a new order for the customer. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Places a new order for the customer and appends it to the order history. \end{DoxyCompactList}\item 
 List\mbox{[}\mbox{\hyperlink{classmodels_1_1order_1_1_order}{Order}}\mbox{]} \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a21cfd7d42b9235a3033693d607d0abba}{view\+Order\+History}} (self)
-\begin{DoxyCompactList}\small\item\em Returns the order history of the customer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Returns the order history of the customer. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ad49c1dee830192f50d3e55bebbf5a22b}{view\+Balance}} (self)
+\begin{DoxyCompactList}\small\item\em Returns the customer\textquotesingle{}s balance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_addbe0b73d6b42b279d2cce9703d8f11c}{first\+Name}} = first\+Name
+\item 
+\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a8a87b9df0f13d6a69cc1d5abce0dfddd}{last\+Name}} = last\+Name
+\item 
+\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ab45d5faaae7afac4f5d299d95c8e41b0}{address}} = address
+\item 
+list \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a34d56c4585cdf0775308aa9843f60895}{order\+History}} = \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -42,7 +49,7 @@ models.\+customer.\+Customer.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCapti
 
 Constructor for \doxylink{classmodels_1_1customer_1_1_customer}{Customer} class. 
 
-
+Initializes the customer\textquotesingle{}s first name, last name, balance, and address. 
 \begin{DoxyParams}{Parameters}
 {\em first\+Name} & The customer\textquotesingle{}s first name. \\
 \hline
@@ -68,7 +75,7 @@ Reimplemented in \mbox{\hyperlink{classmodels_1_1customer_1_1_corporate_customer
 
 
 
-The method full\+Name returns the full name of the customer by concatenating the first and last name. 
+Returns the full name of the customer by concatenating the first and last name. 
 
 \begin{DoxyReturn}{Returns}
 A string that contains the full name of the customer. 
@@ -81,13 +88,28 @@ A string that contains the full name of the customer.
 
 
 
-Places a new order for the customer. 
+Places a new order for the customer and appends it to the order history. 
 
 
 \begin{DoxyParams}{Parameters}
 {\em order} & The Order object to be placed by the customer. \\
 \hline
 \end{DoxyParams}
+\Hypertarget{classmodels_1_1customer_1_1_customer_ad49c1dee830192f50d3e55bebbf5a22b}\index{models.customer.Customer@{models.customer.Customer}!viewBalance@{viewBalance}}
+\index{viewBalance@{viewBalance}!models.customer.Customer@{models.customer.Customer}}
+\doxysubsubsection{\texorpdfstring{viewBalance()}{viewBalance()}}
+{\footnotesize\ttfamily \label{classmodels_1_1customer_1_1_customer_ad49c1dee830192f50d3e55bebbf5a22b} 
+ float models.\+customer.\+Customer.\+view\+Balance (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+
+
+Returns the customer\textquotesingle{}s balance. 
+
+\begin{DoxyReturn}{Returns}
+The balance as a float. 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+% FIG 1
 \Hypertarget{classmodels_1_1customer_1_1_customer_a21cfd7d42b9235a3033693d607d0abba}\index{models.customer.Customer@{models.customer.Customer}!viewOrderHistory@{viewOrderHistory}}
 \index{viewOrderHistory@{viewOrderHistory}!models.customer.Customer@{models.customer.Customer}}
 \doxysubsubsection{\texorpdfstring{viewOrderHistory()}{viewOrderHistory()}}
@@ -101,6 +123,33 @@ Returns the order history of the customer.
 \begin{DoxyReturn}{Returns}
 A list of Order objects representing the customer\textquotesingle{}s order history. 
 \end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmodels_1_1customer_1_1_customer_ab45d5faaae7afac4f5d299d95c8e41b0}\index{models.customer.Customer@{models.customer.Customer}!address@{address}}
+\index{address@{address}!models.customer.Customer@{models.customer.Customer}}
+\doxysubsubsection{\texorpdfstring{address}{address}}
+{\footnotesize\ttfamily \label{classmodels_1_1customer_1_1_customer_ab45d5faaae7afac4f5d299d95c8e41b0} 
+models.\+customer.\+Customer.\+address = address}
+
+\Hypertarget{classmodels_1_1customer_1_1_customer_addbe0b73d6b42b279d2cce9703d8f11c}\index{models.customer.Customer@{models.customer.Customer}!firstName@{firstName}}
+\index{firstName@{firstName}!models.customer.Customer@{models.customer.Customer}}
+\doxysubsubsection{\texorpdfstring{firstName}{firstName}}
+{\footnotesize\ttfamily \label{classmodels_1_1customer_1_1_customer_addbe0b73d6b42b279d2cce9703d8f11c} 
+models.\+customer.\+Customer.\+first\+Name = first\+Name}
+
+\Hypertarget{classmodels_1_1customer_1_1_customer_a8a87b9df0f13d6a69cc1d5abce0dfddd}\index{models.customer.Customer@{models.customer.Customer}!lastName@{lastName}}
+\index{lastName@{lastName}!models.customer.Customer@{models.customer.Customer}}
+\doxysubsubsection{\texorpdfstring{lastName}{lastName}}
+{\footnotesize\ttfamily \label{classmodels_1_1customer_1_1_customer_a8a87b9df0f13d6a69cc1d5abce0dfddd} 
+models.\+customer.\+Customer.\+last\+Name = last\+Name}
+
+\Hypertarget{classmodels_1_1customer_1_1_customer_a34d56c4585cdf0775308aa9843f60895}\index{models.customer.Customer@{models.customer.Customer}!orderHistory@{orderHistory}}
+\index{orderHistory@{orderHistory}!models.customer.Customer@{models.customer.Customer}}
+\doxysubsubsection{\texorpdfstring{orderHistory}{orderHistory}}
+{\footnotesize\ttfamily \label{classmodels_1_1customer_1_1_customer_a34d56c4585cdf0775308aa9843f60895} 
+list models.\+customer.\+Customer.\+order\+History = \mbox{[}$\,$\mbox{]}}
+
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

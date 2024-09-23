@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['models_0',['models',['../namespacemodels.html',1,'']]],
-  ['models_3a_3acustomer_1',['customer',['../namespacemodels_1_1customer.html',1,'models']]],
-  ['models_3a_3aitem_2',['item',['../namespacemodels_1_1item.html',1,'models']]],
-  ['models_3a_3aorder_3',['order',['../namespacemodels_1_1order.html',1,'models']]],
-  ['models_3a_3apremade_5fbox_4',['premade_box',['../namespacemodels_1_1premade__box.html',1,'models']]]
+  ['item_0',['Item',['../classmodels_1_1item_1_1_item.html',1,'models::item']]],
+  ['item_2epy_1',['item.py',['../item_8py.html',1,'']]],
+  ['items_2',['items',['../classmodels_1_1order_1_1_order.html#a0ebec9ac9b4e69f992ea3e97a366b0c3',1,'models::order::Order']]]
 ];

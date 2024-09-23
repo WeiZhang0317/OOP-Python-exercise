@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['customitems_0',['customItems',['../classmodels_1_1premade__box_1_1_premade_box.html#a35c4baffd00e08bd4c7637b0f52ce18c',1,'models.premade_box.PremadeBox.customItems'],['../classmodels_1_1premade__box_1_1_premade_box.html#a35c4baffd00e08bd4c7637b0f52ce18c',1,'models.premade_box.PremadeBox.customItems']]]
+  ['address_0',['address',['../classmodels_1_1customer_1_1_customer.html#ab45d5faaae7afac4f5d299d95c8e41b0',1,'models::customer::Customer']]]
 ];

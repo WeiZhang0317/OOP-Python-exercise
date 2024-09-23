@@ -8,27 +8,15 @@ Represents a private customer.
 
 
 Inheritance diagram for models.\+customer.\+Private\+Customer\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=248pt]{classmodels_1_1customer_1_1_private_customer__inherit__graph}
-\end{center}
-\end{figure}
+% FIG 0
 
 
 Collaboration diagram for models.\+customer.\+Private\+Customer\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=248pt]{classmodels_1_1customer_1_1_private_customer__coll__graph}
-\end{center}
-\end{figure}
+% FIG 1
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{classmodels_1_1customer_1_1_private_customer_a2e0bab1574bfde63098fbad72fae48a2}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str first\+Name, str last\+Name, float balance, str address)
+\mbox{\hyperlink{classmodels_1_1customer_1_1_private_customer_a2e0bab1574bfde63098fbad72fae48a2}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_addbe0b73d6b42b279d2cce9703d8f11c}{first\+Name}}, str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a8a87b9df0f13d6a69cc1d5abce0dfddd}{last\+Name}}, float balance, str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ab45d5faaae7afac4f5d299d95c8e41b0}{address}})
 \begin{DoxyCompactList}\small\item\em Constructor for \doxylink{classmodels_1_1customer_1_1_private_customer}{Private\+Customer} class. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{classmodels_1_1customer_1_1_private_customer_a278d03f66fa74efec4a82646d9db45a9}{can\+Place\+Order}} (self)
 \begin{DoxyCompactList}\small\item\em Checks if the private customer can place an order. \end{DoxyCompactList}\end{DoxyCompactItemize}
@@ -36,11 +24,25 @@ bool \mbox{\hyperlink{classmodels_1_1customer_1_1_private_customer_a278d03f66fa7
 \begin{DoxyCompactItemize}
 \item 
 str \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a07476e515c3e36c688b3f860db52be86}{full\+Name}} (self)
-\begin{DoxyCompactList}\small\item\em The method full\+Name returns the full name of the customer by concatenating the first and last name. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Returns the full name of the customer by concatenating the first and last name. \end{DoxyCompactList}\item 
 None \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a59424ac6c83f3be364f00e530f6c8e95}{place\+Order}} (self, \mbox{\hyperlink{classmodels_1_1order_1_1_order}{Order}} order)
-\begin{DoxyCompactList}\small\item\em Places a new order for the customer. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Places a new order for the customer and appends it to the order history. \end{DoxyCompactList}\item 
 List\mbox{[}\mbox{\hyperlink{classmodels_1_1order_1_1_order}{Order}}\mbox{]} \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a21cfd7d42b9235a3033693d607d0abba}{view\+Order\+History}} (self)
-\begin{DoxyCompactList}\small\item\em Returns the order history of the customer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Returns the order history of the customer. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ad49c1dee830192f50d3e55bebbf5a22b}{view\+Balance}} (self)
+\begin{DoxyCompactList}\small\item\em Returns the customer\textquotesingle{}s balance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{classmodels_1_1customer_1_1_customer}{models.\+customer.\+Customer}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_addbe0b73d6b42b279d2cce9703d8f11c}{first\+Name}} = first\+Name
+\item 
+\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a8a87b9df0f13d6a69cc1d5abce0dfddd}{last\+Name}} = last\+Name
+\item 
+\mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ab45d5faaae7afac4f5d299d95c8e41b0}{address}} = address
+\item 
+list \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_a34d56c4585cdf0775308aa9843f60895}{order\+History}} = \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -59,7 +61,7 @@ models.\+customer.\+Private\+Customer.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyP
 
 Constructor for \doxylink{classmodels_1_1customer_1_1_private_customer}{Private\+Customer} class. 
 
-
+Initializes the private customer\textquotesingle{}s first name, last name, balance, and address. 
 \begin{DoxyParams}{Parameters}
 {\em first\+Name} & The private customer\textquotesingle{}s first name. \\
 \hline
@@ -74,6 +76,10 @@ Constructor for \doxylink{classmodels_1_1customer_1_1_private_customer}{Private\
 
 Reimplemented from \mbox{\hyperlink{classmodels_1_1customer_1_1_customer_ae3feb16b2bceccb0ea32202f0e307ff9}{models.\+customer.\+Customer}}.
 
+Here is the call graph for this function\+:
+% FIG 2
+Here is the caller graph for this function\+:
+% FIG 3
 
 
 \doxysubsection{Member Function Documentation}
@@ -90,6 +96,8 @@ Checks if the private customer can place an order.
 Private customers cannot place orders if their balance exceeds \$100. \begin{DoxyReturn}{Returns}
 True if the balance is \texorpdfstring{$<$}{<}= \$100, otherwise False. 
 \end{DoxyReturn}
+Here is the call graph for this function\+:
+% FIG 4
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
