@@ -1,0 +1,5 @@
+<map id="models.order.Order.processPayment" name="models.order.Order.processPayment">
+<area shape="rect" id="Node000001" title="Processes a payment for the order." alt="" coords="5,5,188,48"/>
+<area shape="rect" id="Node000002" href="$classmodels_1_1order_1_1_order.html#a0e11ba98233d64298d62c84baf217219" title="Calculates the total cost of the order, including any delivery fees if applicable." alt="" coords="236,5,424,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,24,220,24,220,29,188,29"/>
+</map>

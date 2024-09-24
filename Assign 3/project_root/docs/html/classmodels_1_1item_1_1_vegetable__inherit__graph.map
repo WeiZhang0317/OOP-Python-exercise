@@ -1,0 +1,5 @@
+<map id="models.item.Vegetable" name="models.item.Vegetable">
+<area shape="rect" id="Node000001" title="Represents a vegetable item that can be purchased individually or included in a premade box." alt="" coords="5,251,157,363"/>
+<area shape="rect" id="Node000002" href="$classmodels_1_1item_1_1_item.html" title="Represents an individual item that can be ordered by a customer." alt="" coords="13,5,150,203"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,218,84,251,79,251,79,218"/>
+</map>

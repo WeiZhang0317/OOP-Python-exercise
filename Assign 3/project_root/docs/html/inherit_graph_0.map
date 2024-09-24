@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classmodels_1_1customer_1_1_customer.html" title="Represents a customer in the Fresh Harvest Veggies system." alt="" coords="5,43,188,69"/>
+<area shape="rect" id="Node000001" href="$classmodels_1_1customer_1_1_corporate_customer.html" title="Represents a corporate customer." alt="" coords="256,5,438,48"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="203,41,255,35,256,40,204,46"/>
+<area shape="rect" id="Node000002" href="$classmodels_1_1customer_1_1_private_customer.html" title="Represents a private customer." alt="" coords="236,72,459,99"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="204,66,235,70,235,75,203,71"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="models.customer.CorporateCustomer.canPlaceOrder" name="models.customer.CorporateCustomer.canPlaceOrder">
+<area shape="rect" id="Node000001" title="Checks if the corporate customer can place an order." alt="" coords="5,5,188,48"/>
+<area shape="rect" id="Node000002" href="$classmodels_1_1customer_1_1_customer.html#ad49c1dee830192f50d3e55bebbf5a22b" title="Returns the customer&#39;s balance." alt="" coords="236,5,449,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,24,220,24,220,29,188,29"/>
+</map>

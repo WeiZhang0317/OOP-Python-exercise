@@ -1,0 +1,7 @@
+<map id="models.customer.Customer.viewBalance" name="models.customer.Customer.viewBalance">
+<area shape="rect" id="Node000001" title="Returns the customer&#39;s balance." alt="" coords="302,39,515,81"/>
+<area shape="rect" id="Node000002" href="$classmodels_1_1customer_1_1_corporate_customer.html#a3b3707d8763c74c82fccb595049dfb87" title="Checks if the corporate customer can place an order." alt="" coords="38,5,221,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="286,48,221,40,222,35,286,43"/>
+<area shape="rect" id="Node000003" href="$classmodels_1_1customer_1_1_private_customer.html#a278d03f66fa74efec4a82646d9db45a9" title="Checks if the private customer can place an order." alt="" coords="5,72,254,115"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="286,77,254,81,254,76,286,72"/>
+</map>
