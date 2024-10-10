@@ -1,24 +1,14 @@
+# staff.py
+
 from datetime import datetime
 from typing import List
 from .customer import Customer
 from .order import Order
 from .item import PremadeBox, Vegetable
 from .report import Report
+from .person import Person
 
-class Person:
-    """!
-    Represents a person with basic attributes such as first name, last name, username, and password.
-    """
 
-    def __init__(self, first_name: str, last_name: str, username: str, password: str):
-        """!
-        Constructor for the Person class.
-        Initializes the person's first name, last name, username, and password.
-        """
-        self.first_name = first_name
-        self.last_name = last_name
-        self.username = username
-        self.__password = password  # Private attribute for password
 class Staff(Person):
     """!
     Represents a staff member in the Fresh Harvest Veggies system.
@@ -36,7 +26,7 @@ class Staff(Person):
         @param username: The username for staff login.
         @param password: The password for staff login.
         @param staff_id: The unique identifier for the staff member.
-        @param date_joined: The date when the staff joined the company.
+        @param date_joined: The date when the staff joined the company (format: YYYY-MM-DD).
         @param dept_name: The department name of the staff member.
         """
         super().__init__(first_name, last_name, username, password)  # Call base class constructor
@@ -56,9 +46,6 @@ class Staff(Person):
         """
         if customer not in self.list_of_customers:
             self.list_of_customers.append(customer)
-            print(f"Customer '{customer.get_full_name()}' added to staff ID {self.staff_id}'s customer list.")
-        else:
-            print(f"Customer '{customer.get_full_name()}' is already in the list.")
 
     def remove_customer(self, customer_id: int) -> None:
         """!
@@ -67,7 +54,6 @@ class Staff(Person):
         @param customer_id: The unique ID of the customer to be removed.
         """
         self.list_of_customers = [cust for cust in self.list_of_customers if cust.cust_id != customer_id]
-        print(f"Customer with ID {customer_id} removed from staff ID {self.staff_id}'s customer list.")
 
     def view_all_customers(self) -> str:
         """!
@@ -87,7 +73,6 @@ class Staff(Person):
         @param order: The Order object to be added.
         """
         self.list_of_orders.append(order)
-        print(f"Order ID {order.get_order_id()} added to staff ID {self.staff_id}'s order list.")
 
     def update_order_status(self, order_id: int, status: str) -> None:
         """!
@@ -99,9 +84,6 @@ class Staff(Person):
         order = next((order for order in self.list_of_orders if order.get_order_id() == order_id), None)
         if order:
             order.set_order_status(status)
-            print(f"Order ID {order_id} status updated to '{status}'.")
-        else:
-            print(f"Order ID {order_id} not found in staff ID {self.staff_id}'s order list.")
 
     def generate_report(self, report_type: str) -> str:
         """!
@@ -110,12 +92,7 @@ class Staff(Person):
         @param report_type: The type of report to generate.
         @return: A string containing the report details.
         """
-        report_data = {
-            'sales': [{'date': '2023-10-01', 'amount': 200.0}, {'date': '2023-10-02', 'amount': 150.0}],
-            'customers': [{'name': 'Alice', 'type': 'private'}, {'name': 'Bob Ltd.', 'type': 'corporate'}],
-            'items': [{'name': 'Carrot', 'quantity_sold': 100}, {'name': 'Spinach', 'quantity_sold': 50}]
-        }
-        report = Report(report_data)
+        report = Report()  # Create a Report instance
         if report_type == 'sales':
             return report.generate_sales_report("month")
         elif report_type == 'customers':
@@ -124,3 +101,13 @@ class Staff(Person):
             return report.generate_item_popularity_report()
         else:
             return f"Report type '{report_type}' is not recognized."
+
+    def __str__(self) -> str:
+        """!
+        Returns a string representation of the staff member.
+        @return: A string describing the staff member.
+        """
+        return (f"Staff ID: {self.staff_id}, Name: {self.get_full_name()}, Department: {self.dept_name}, "
+                f"Date Joined: {self.date_joined.strftime('%Y-%m-%d')}, "
+                f"Number of Managed Customers: {len(self.list_of_customers)}, "
+                f"Number of Managed Orders: {len(self.list_of_orders)}")
