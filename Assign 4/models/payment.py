@@ -1,3 +1,5 @@
+# payment.py
+
 from datetime import datetime
 
 
@@ -57,6 +59,7 @@ class CreditCardPayment(Payment):
         
         @return: True if the card number and expiry date are valid, otherwise False.
         """
+        # Check if the card number is 16 digits and if the card has not expired
         if len(self.card_number) == 16 and self.card_expiry_date > datetime.now().strftime("%Y-%m"):
             return True
         return False
@@ -99,7 +102,7 @@ class DebitCardPayment(Payment):
 
         @return: True if the debit card number is valid, otherwise False.
         """
-        return len(self.debit_card_number) == 16
+        return len(self.debit_card_number) == 16  # Simple check for 16-digit card number
 
     def get_payment_details(self) -> str:
         """!
