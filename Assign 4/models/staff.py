@@ -1,5 +1,7 @@
 # staff.py
-
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from db_config import Base
 from datetime import datetime
 from typing import List
 from .customer import Customer
@@ -9,11 +11,25 @@ from .report import Report
 from .person import Person
 
 
-class Staff(Person):
+class Staff(Person, Base):
+
     """!
     Represents a staff member in the Fresh Harvest Veggies system.
     Inherits from the Person class and adds staff-specific attributes and methods.
     """
+    __tablename__ = 'staff' 
+
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)  
+    staff_id = Column(Integer, unique=True, nullable=False)
+    date_joined = Column(DateTime, default=datetime)  
+    dept_name = Column(String(50), nullable=False) 
+
+
+    list_of_customers = relationship("Customer", backref="staff")  
+    list_of_orders = relationship("Order", backref="staff") 
+    premade_boxes = relationship("PremadeBox", backref="staff")  
+    veggies = relationship("Vegetable", backref="staff") 
 
     def __init__(self, first_name: str, last_name: str, username: str, password: str, staff_id: int, date_joined: str, dept_name: str):
         """!

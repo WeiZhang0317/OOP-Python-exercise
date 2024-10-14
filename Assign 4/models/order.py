@@ -1,5 +1,7 @@
 # order.py
-
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
+from db_config import Base 
 from typing import List
 from datetime import datetime
 from enum import Enum
@@ -22,7 +24,14 @@ class OrderLine:
     """!
     Represents a single line item in an order, associated with a specific item and quantity.
     """
+    __tablename__ = 'order_lines'
 
+    id = Column(Integer, primary_key=True, autoincrement=True)  
+    order_id = Column(Integer, ForeignKey('orders.id'))
+    item_id = Column(Integer, ForeignKey('items.id'))  
+    quantity = Column(Integer, nullable=False) 
+    line_total = Column(Float, nullable=False)  
+    
     def __init__(self, item: Item, quantity: int):
         """!
         Initializes the OrderLine with a specific item and quantity.
@@ -50,11 +59,21 @@ class OrderLine:
         return f"Item: {self.item.name}, Quantity: {self.quantity}, Line Total: ${self.get_line_total():.2f}"
 
 
-class Order:
+class Order(Base):
     """!
     Represents an order placed by a customer in the Fresh Harvest Veggies system.
     """
+    __tablename__ = 'orders'
 
+    id = Column(Integer, primary_key=True, autoincrement=True) 
+    order_number = Column(Integer, unique=True, nullable=False) 
+    customer_id = Column(Integer, ForeignKey('customers.cust_id')) 
+    order_date = Column(DateTime, default=datetime) 
+    order_status = Column(String(50), nullable=False)
+    total_cost = Column(Float, nullable=False) 
+
+    list_of_order_lines = relationship("OrderLine", backref="order")
+    
     def __init__(self, order_number: int, order_customer: Customer, list_of_order_lines: List[OrderLine], order_status: str = OrderStatus.PENDING.value):
         """!
         Initializes the order with a unique order number, customer, order lines, and order status.

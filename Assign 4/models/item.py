@@ -1,10 +1,20 @@
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from db_config import Base
+
 from typing import List
 
-
-class Item:
+class Item(Base):  
+    
     """!
     Represents an individual item that can be ordered by a customer.
     """
+    
+    __tablename__ = 'items' 
+
+    id = Column(Integer, primary_key=True, autoincrement=True) 
+    name = Column(String(50), nullable=False) 
+    price = Column(Float, nullable=False)  
+
 
     def __init__(self, name: str, price: float):
         """!
@@ -40,6 +50,11 @@ class Item:
 
 
 class Vegetable(Item):
+    __tablename__ = 'vegetables'
+
+    id = Column(Integer, ForeignKey('items.id'), primary_key=True)  
+    veg_name = Column(String(50), nullable=False)
+ 
     """!
     Represents a vegetable item that can be purchased individually or included in a premade box.
     """
@@ -60,6 +75,11 @@ class WeightedVeggie(Vegetable):
     """!
     Represents a vegetable that is priced based on weight.
     """
+    __tablename__ = 'weighted_veggies'
+
+    id = Column(Integer, ForeignKey('vegetables.id'), primary_key=True)
+    weight = Column(Float, nullable=False)  
+    weight_per_kilo = Column(Float, nullable=False) 
 
     def __init__(self, name: str, price: float, veg_name: str, weight: float, weight_per_kilo: float):
         """!
@@ -83,10 +103,16 @@ class WeightedVeggie(Vegetable):
         return self.weight * self.weight_per_kilo
 
 
+
 class PackVeggie(Vegetable):
     """!
     Represents a vegetable that is priced per pack.
     """
+    __tablename__ = 'pack_veggies'
+
+    id = Column(Integer, ForeignKey('vegetables.id'), primary_key=True)
+    num_of_pack = Column(Integer, nullable=False) 
+    price_per_pack = Column(Float, nullable=False)  
 
     def __init__(self, name: str, price: float, veg_name: str, num_of_pack: int, price_per_pack: float):
         """!
@@ -111,6 +137,11 @@ class PackVeggie(Vegetable):
 
 
 class UnitPriceVeggie(Vegetable):
+    __tablename__ = 'unit_price_veggies'
+
+    id = Column(Integer, ForeignKey('vegetables.id'), primary_key=True)
+    price_per_unit = Column(Float, nullable=False)  
+    quantity = Column(Integer, nullable=False)  
     """!
     Represents a vegetable that is priced per unit.
     """
@@ -142,7 +173,12 @@ class PremadeBox(Item):
     Represents a premade box that can be customized with available vegetables.
     Inherits from Item.
     """
+    __tablename__ = 'premade_boxes'
 
+    id = Column(Integer, ForeignKey('items.id'), primary_key=True) 
+    box_size = Column(String(20), nullable=False)  
+    num_of_boxes = Column(Integer, nullable=False)  
+    
     def __init__(self, name: str, price: float, box_size: str, num_of_boxes: int):
         """!
         Constructor for PremadeBox class.

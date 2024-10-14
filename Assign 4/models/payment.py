@@ -1,12 +1,17 @@
 # payment.py
-
+from sqlalchemy import Column, Integer, String, Float, DateTime,ForeignKey
 from datetime import datetime
+from db_config import Base
 
-
-class Payment:
+class Payment(Base): 
     """!
     Represents a payment made for an order in the Fresh Harvest Veggies system.
     """
+    __tablename__ = 'payments' 
+    id = Column(Integer, primary_key=True, autoincrement=True)  
+    payment_id = Column(Integer, unique=True, nullable=False)  
+    payment_amount = Column(Float, nullable=False) 
+    payment_date = Column(DateTime, default=datetime) 
 
     def __init__(self, payment_id: int, payment_amount: float, payment_date: datetime = None):
         """!
@@ -34,6 +39,13 @@ class CreditCardPayment(Payment):
     """!
     Represents a payment made using a credit card. Inherits from Payment.
     """
+    __tablename__ = 'credit_card_payments'
+    
+    id = Column(Integer, ForeignKey('payments.id'), primary_key=True)
+    card_number = Column(String(16), nullable=False)  
+    card_type = Column(String(20), nullable=False)  
+    card_expiry_date = Column(String(7), nullable=False) 
+
 
     def __init__(self, payment_id: int, payment_amount: float, card_number: str, card_type: str, card_expiry_date: str, payment_date: datetime = None):
         """!
@@ -78,7 +90,14 @@ class CreditCardPayment(Payment):
 class DebitCardPayment(Payment):
     """!
     Represents a payment made using a debit card. Inherits from Payment.
-    """
+    """  
+    
+    __tablename__ = 'debit_card_payments'
+
+
+    id = Column(Integer, ForeignKey('payments.id'), primary_key=True) 
+    bank_name = Column(String(50), nullable=False)  
+    debit_card_number = Column(String(16), nullable=False) 
 
     def __init__(self, payment_id: int, payment_amount: float, bank_name: str, debit_card_number: str, payment_date: datetime = None):
         """!

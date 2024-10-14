@@ -1,9 +1,19 @@
 # customer.py
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from db_config import Base
+from .person import Person
 
-from person import Person
 
+class Customer(Base,Person):
+    __tablename__ = 'customers' 
+    cust_id = Column(Integer, primary_key=True, index=True) 
+    cust_address = Column(String(100), nullable=False) 
+    cust_balance = Column(Float, default=0.0)  
+    max_owing = Column(Float, default=100.0)  
+    
+    list_of_orders = []  # A list to track customer's orders
+    list_of_payments = []  # A list to track customer's payments
 
-class Customer(Person):
     """!
     Represents a customer who can place orders and make payments.
     Inherits from the Person class and adds additional attributes and methods specific to customers.
@@ -96,7 +106,13 @@ class CorporateCustomer(Customer):
     """!
     Represents a corporate customer, inheriting from the Customer class and adding corporate-specific attributes.
     """
-
+    __tablename__ = 'corporate_customers'
+    
+    cust_id = Column(Integer, ForeignKey('customers.cust_id'), primary_key=True)  
+    discount_rate = Column(Float, default=0.10)  
+    max_credit = Column(Float, default=1000.0) 
+    min_balance = Column(Float, default=500.0)  
+    
     def __init__(self, first_name: str, last_name: str, username: str, password: str, cust_address: str, cust_id: int,
                  cust_balance: float = 0.0, discount_rate: float = 0.10, max_credit: float = 1000.0, min_balance: float = 500.0):
         """!

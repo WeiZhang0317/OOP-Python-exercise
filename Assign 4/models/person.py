@@ -1,9 +1,20 @@
 # person.py
+from sqlalchemy import Column, Integer, String, Float
+from db_config import Base
+
+
 
 class Person:
     """!
     Represents a person with basic attributes such as first name, last name, username, and password.
     """
+    __tablename__ = 'persons'  
+
+    id = Column(Integer, primary_key=True, index=True) 
+    first_name = Column(String(50), nullable=False)  
+    last_name = Column(String(50), nullable=False)  
+    username = Column(String(50), unique=True, nullable=False)  
+    __password = Column(String(100), nullable=False) 
 
     def __init__(self, first_name: str, last_name: str, username: str, password: str):
         """!
