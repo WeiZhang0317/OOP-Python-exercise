@@ -20,7 +20,7 @@ class OrderStatus(Enum):
     CANCELED = "Canceled"
 
 
-class OrderLine:
+class OrderLine(Base):
     """!
     Represents a single line item in an order, associated with a specific item and quantity.
     """

@@ -1,18 +1,24 @@
 # customer.py
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from db_config import Base
 from .person import Person
 
 
-class Customer(Base,Person):
-    __tablename__ = 'customers' 
-    cust_id = Column(Integer, primary_key=True, index=True) 
-    cust_address = Column(String(100), nullable=False) 
-    cust_balance = Column(Float, default=0.0)  
-    max_owing = Column(Float, default=100.0)  
-    
-    list_of_orders = []  # A list to track customer's orders
-    list_of_payments = []  # A list to track customer's payments
+class Customer(Person):
+    __tablename__ = 'customers'
+    cust_id = Column(Integer, ForeignKey('persons.id'), primary_key=True) 
+    cust_address = Column(String(100), nullable=False)
+    cust_balance = Column(Float, default=0.0)
+    max_owing = Column(Float, default=100.0)
+    __mapper_args__ = {
+        'inherit_condition': cust_id == Person.id  
+    }
+
+    # Relationships
+    list_of_orders = relationship("Order", back_populates="customer")
+    list_of_payments = relationship("Payment", back_populates="customer")
+
 
     """!
     Represents a customer who can place orders and make payments.

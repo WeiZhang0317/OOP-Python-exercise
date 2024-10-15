@@ -9,9 +9,8 @@ class Payment(Base):
     """
     __tablename__ = 'payments' 
     id = Column(Integer, primary_key=True, autoincrement=True)  
-    payment_id = Column(Integer, unique=True, nullable=False)  
     payment_amount = Column(Float, nullable=False) 
-    payment_date = Column(DateTime, default=datetime) 
+    payment_date = Column(DateTime, default=datetime.now) 
 
     def __init__(self, payment_id: int, payment_amount: float, payment_date: datetime = None):
         """!
@@ -47,7 +46,7 @@ class CreditCardPayment(Payment):
     card_expiry_date = Column(String(7), nullable=False) 
 
 
-    def __init__(self, payment_id: int, payment_amount: float, card_number: str, card_type: str, card_expiry_date: str, payment_date: datetime = None):
+    def __init__(self,  payment_amount: float, card_number: str, card_type: str, card_expiry_date: str, payment_date: datetime = None):
         """!
         Constructor for the CreditCardPayment class.
 
@@ -58,7 +57,7 @@ class CreditCardPayment(Payment):
         @param card_expiry_date: The expiration date of the credit card.
         @param payment_date: The date when the payment was made. If not provided, defaults to current date and time.
         """
-        super().__init__(payment_id, payment_amount, payment_date)
+        super().__init__(payment_amount, payment_date)
         self.card_number = card_number  # Credit card number
         self.card_type = card_type  # Type of credit card
         self.card_expiry_date = card_expiry_date  # Expiration date of the credit card
@@ -99,7 +98,7 @@ class DebitCardPayment(Payment):
     bank_name = Column(String(50), nullable=False)  
     debit_card_number = Column(String(16), nullable=False) 
 
-    def __init__(self, payment_id: int, payment_amount: float, bank_name: str, debit_card_number: str, payment_date: datetime = None):
+    def __init__(self, payment_amount: float, bank_name: str, debit_card_number: str, payment_date: datetime = None):
         """!
         Constructor for the DebitCardPayment class.
 
@@ -109,7 +108,7 @@ class DebitCardPayment(Payment):
         @param debit_card_number: The debit card number used for the payment.
         @param payment_date: The date when the payment was made. If not provided, defaults to current date and time.
         """
-        super().__init__(payment_id, payment_amount, payment_date)
+        super().__init__(payment_amount, payment_date)
         self.bank_name = bank_name  # Bank name associated with the debit card
         self.debit_card_number = debit_card_number  # Debit card number
 

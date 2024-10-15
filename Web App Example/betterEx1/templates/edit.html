@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="form-title">{% block title %} {% if student %} Edit {% else %} Add {% endif %} Student {% endblock %}</h1>
+    <form method="post" class="student-form">
+        <div class="form-group">
+            <label for="firstname">First Name</label>
+            <input type="text" name="firstname" id="firstname" placeholder="First name" value="{{ student.firstname if student else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <input type="text" name="lastname" id="lastname" placeholder="Last name" value="{{ student.lastname if student else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Student email" value="{{ student.email if student else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" name="age" id="age" placeholder="Age" value="{{ student.age if student else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea name="bio" id="bio" placeholder="Bio" rows="4" required>{{ student.bio if student else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="submit-btn">{% if student %} Update {% else %} Submit {% endif %}</button>
+        </div>
+    </form>
+{% endblock %}

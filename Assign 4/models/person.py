@@ -4,7 +4,7 @@ from db_config import Base
 
 
 
-class Person:
+class Person(Base):
     """!
     Represents a person with basic attributes such as first name, last name, username, and password.
     """

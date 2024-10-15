@@ -31,7 +31,8 @@ class Item(Base):
         Returns the price of the item.
         @return: The price as a float.
         """
-        return self.__price
+        return self.get_price()
+
 
     def set_price(self, new_price: float) -> None:
         """!
@@ -46,11 +47,11 @@ class Item(Base):
         @param quantity: The number of items being ordered.
         @return: A float representing the total cost for this item.
         """
-        return self.__price * quantity  # Access private price attribute
+        return self.get_price()* quantity  # Access private price attribute
 
 
-class Vegetable(Item):
-    __tablename__ = 'vegetables'
+class Veggie(Item):
+    __tablename__ = 'veggie'
 
     id = Column(Integer, ForeignKey('items.id'), primary_key=True)  
     veg_name = Column(String(50), nullable=False)
@@ -71,13 +72,13 @@ class Vegetable(Item):
         self.veg_name = veg_name  # Specific vegetable name
 
 
-class WeightedVeggie(Vegetable):
+class WeightedVeggie(Veggie):
     """!
     Represents a vegetable that is priced based on weight.
     """
-    __tablename__ = 'weighted_veggies'
+    __tablename__ = 'weighted_veggie'
 
-    id = Column(Integer, ForeignKey('vegetables.id'), primary_key=True)
+    id = Column(Integer, ForeignKey('veggie.id'), primary_key=True)
     weight = Column(Float, nullable=False)  
     weight_per_kilo = Column(Float, nullable=False) 
 
@@ -104,13 +105,13 @@ class WeightedVeggie(Vegetable):
 
 
 
-class PackVeggie(Vegetable):
+class PackVeggie(Veggie):
     """!
     Represents a vegetable that is priced per pack.
     """
-    __tablename__ = 'pack_veggies'
+    __tablename__ = 'pack_veggie'
 
-    id = Column(Integer, ForeignKey('vegetables.id'), primary_key=True)
+    id = Column(Integer, ForeignKey('veggie.id'), primary_key=True)
     num_of_pack = Column(Integer, nullable=False) 
     price_per_pack = Column(Float, nullable=False)  
 
@@ -136,10 +137,10 @@ class PackVeggie(Vegetable):
         return self.num_of_pack * self.price_per_pack
 
 
-class UnitPriceVeggie(Vegetable):
-    __tablename__ = 'unit_price_veggies'
+class UnitPriceVeggie(Veggie):
+    __tablename__ = 'unit_price_veggie'
 
-    id = Column(Integer, ForeignKey('vegetables.id'), primary_key=True)
+    id = Column(Integer, ForeignKey('veggie.id'), primary_key=True)
     price_per_unit = Column(Float, nullable=False)  
     quantity = Column(Integer, nullable=False)  
     """!
@@ -191,14 +192,14 @@ class PremadeBox(Item):
         super().__init__(name, price)
         self.box_size = box_size  # Public because it should be easily accessible
         self.num_of_boxes = num_of_boxes
-        self.box_content: List[Vegetable] = []  # Public for flexibility in customizing the box
+        self.box_content: List[Veggie] = []  # Public for flexibility in customizing the box
 
-    def add_content(self, veggies: List[Vegetable]) -> None:
+    def add_content(self, veggie: List[Veggie]) -> None:
         """!
         Adds a list of vegetables to the box content.
-        @param veggies: A list of Vegetable objects to include in the box.
+        @param veggie: A list of Vegetable objects to include in the box.
         """
-        self.box_content = veggies
+        self.box_content = veggie
 
     def get_box_details(self) -> str:
         """!
