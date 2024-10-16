@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from db_config import Base
 
 from typing import List
@@ -14,7 +15,9 @@ class Item(Base):
     id = Column(Integer, primary_key=True, autoincrement=True) 
     name = Column(String(50), nullable=False) 
     price = Column(Float, nullable=False)  
-
+    
+     # Relationship to the Inventory
+    inventory = relationship("Inventory", back_populates="item", uselist=False)  # One-to-one relationship
 
     def __init__(self, name: str, price: float):
         """!
@@ -24,7 +27,7 @@ class Item(Base):
         @param price: The price of the item.
         """
         self.name = name  # Public
-        self.__price = price  # Private because it can be modified only internally
+        self.__price = price  # Private
 
     def get_price(self) -> float:
         """!
@@ -215,3 +218,49 @@ class PremadeBox(Item):
         @return: The total price of the box.
         """
         return self.get_price() * self.num_of_boxes
+
+class Inventory(Base):
+    """!
+    Represents the inventory for items in the store.
+    Each item will have a quantity indicating the available stock.
+    """
+    __tablename__ = 'inventory'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    item_id = Column(Integer, ForeignKey('items.id'), nullable=False)  # ForeignKey to the Item table
+    quantity = Column(Integer, nullable=False)  # Number of items available in stock
+
+    # Relationship to the Item
+    item = relationship("Item", back_populates="inventory")
+
+    def __init__(self, item_id: int, quantity: int):
+        """!
+        Initializes the inventory for a specific item.
+        @param item_id: The ID of the item in the inventory.
+        @param quantity: The quantity of the item in stock.
+        """
+        self.item_id = item_id
+        self.quantity = quantity
+
+    def restock(self, additional_quantity: int):
+        """!
+        Adds stock to the current inventory.
+        @param additional_quantity: The amount to add to the current stock.
+        """
+        self.quantity += additional_quantity
+
+    def reduce_stock(self, quantity_sold: int):
+        """!
+        Reduces stock when an item is sold.
+        @param quantity_sold: The quantity to reduce from stock.
+        """
+        if self.quantity >= quantity_sold:
+            self.quantity -= quantity_sold
+        else:
+            raise ValueError("Not enough stock available")
+
+    def __str__(self):
+        """!
+        String representation of the inventory item.
+        """
+        return f"Item ID: {self.item_id}, Quantity: {self.quantity}"
