@@ -18,6 +18,7 @@ class Item(Base):
     
      # Relationship to the Inventory
     inventory = relationship("Inventory", back_populates="item", uselist=False)  # One-to-one relationship
+    order_lines = relationship("OrderLine", back_populates="item")
 
     def __init__(self, name: str, price: float):
         """!

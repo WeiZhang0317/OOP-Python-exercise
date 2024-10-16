@@ -16,8 +16,8 @@ class Customer(Person):
     }
 
     # Relationships
-    list_of_orders = relationship("Order", back_populates="customer")
     list_of_payments = relationship("Payment", back_populates="customer")
+    list_of_orders = relationship("Order", back_populates="customer")
 
 
     """!
@@ -25,7 +25,7 @@ class Customer(Person):
     Inherits from the Person class and adds additional attributes and methods specific to customers.
     """
 
-    def __init__(self, first_name: str, last_name: str, username: str, password: str, cust_address: str, cust_id: int, cust_balance: float = 0.0):
+    def __init__(self, first_name: str, last_name: str, username: str, password: str, cust_address: str,  cust_balance: float = 0.0):
         """!
         Initializes the Customer class with additional attributes specific to customers.
         @param first_name: The first name of the customer.
@@ -38,7 +38,7 @@ class Customer(Person):
         """
         super().__init__(first_name, last_name, username, password)  # Call the parent class (Person) constructor
         self.cust_address = cust_address
-        self.cust_id = cust_id
+      
         self.cust_balance = cust_balance
         self.max_owing = 100.0  # Maximum amount the customer can owe before being restricted from placing new orders
         self.list_of_orders = []  # A list to track customer's orders
@@ -119,7 +119,7 @@ class CorporateCustomer(Customer):
     max_credit = Column(Float, default=1000.0) 
     min_balance = Column(Float, default=500.0)  
     
-    def __init__(self, first_name: str, last_name: str, username: str, password: str, cust_address: str, cust_id: int,
+    def __init__(self, first_name: str, last_name: str, username: str, password: str, cust_address: str,
                  cust_balance: float = 0.0, discount_rate: float = 0.10, max_credit: float = 1000.0, min_balance: float = 500.0):
         """!
         Initializes the CorporateCustomer class with additional attributes.
@@ -127,7 +127,7 @@ class CorporateCustomer(Customer):
         @param max_credit: Maximum credit allowed for corporate customers.
         @param min_balance: Minimum balance to maintain before placing new orders.
         """
-        super().__init__(first_name, last_name, username, password, cust_address, cust_id, cust_balance)
+        super().__init__(first_name, last_name, username, password, cust_address, cust_balance)
         self.discount_rate = discount_rate
         self.max_credit = max_credit
         self.min_balance = min_balance

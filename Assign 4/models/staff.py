@@ -21,14 +21,15 @@ class Staff(Person):
 
     
     id = Column(Integer, ForeignKey('persons.id'), primary_key=True)
+    
     date_joined = Column(DateTime, default=datetime.now)  
     dept_name = Column(String(50), nullable=False) 
 
 
-    list_of_customers = relationship("Customer", backref="staff")  
-    list_of_orders = relationship("Order", backref="staff") 
-    premade_boxes = relationship("PremadeBox", backref="staff")  
-    veggie = relationship("Veggie", backref="staff") 
+
+    list_of_orders = relationship("Order", back_populates="staff")
+
+
 
     def __init__(self, first_name: str, last_name: str, username: str, password: str, staff_id: int, date_joined: str, dept_name: str):
         """!

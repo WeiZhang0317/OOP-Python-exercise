@@ -2,6 +2,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime,ForeignKey
 from datetime import datetime
 from db_config import Base
+from sqlalchemy.orm import relationship
 
 class Payment(Base): 
     """!
@@ -11,6 +12,10 @@ class Payment(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)  
     payment_amount = Column(Float, nullable=False) 
     payment_date = Column(DateTime, default=datetime.now) 
+    
+    customer_id = Column(Integer, ForeignKey('customers.cust_id'), nullable=False)
+
+    customer = relationship("Customer", back_populates="list_of_payments")
 
     def __init__(self, payment_id: int, payment_amount: float, payment_date: datetime = None):
         """!

@@ -32,6 +32,10 @@ class OrderLine(Base):
     quantity = Column(Integer, nullable=False) 
     line_total = Column(Float, nullable=False)  
     
+     # Relationship with Order and Item
+    order = relationship("Order", back_populates="list_of_order_lines")  
+    item = relationship("Item", back_populates="order_lines") 
+    
     def __init__(self, item: Item, quantity: int):
         """!
         Initializes the OrderLine with a specific item and quantity.
@@ -72,7 +76,11 @@ class Order(Base):
     order_status = Column(String(50), nullable=False)
     total_cost = Column(Float, nullable=False) 
 
-    list_of_order_lines = relationship("OrderLine", backref="order")
+    staff_id = Column(Integer, ForeignKey('staff.id'))
+
+    list_of_order_lines = relationship("OrderLine",  back_populates="order")
+    customer = relationship("Customer", back_populates="list_of_orders") 
+    staff = relationship("Staff", back_populates="list_of_orders")
     
     def __init__(self, order_number: int, order_customer: Customer, list_of_order_lines: List[OrderLine], order_status: str = OrderStatus.PENDING.value):
         """!
