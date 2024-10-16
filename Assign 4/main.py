@@ -1,4 +1,5 @@
 # main.py
+# For table creation
 
 from db_config import engine, Base  
 from models.customer import Customer,CorporateCustomer
