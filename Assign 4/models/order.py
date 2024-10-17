@@ -82,14 +82,14 @@ class Order(Base):
     customer = relationship("Customer", back_populates="list_of_orders")
     staff = relationship("Staff", back_populates="list_of_orders")
 
-    def __init__(self, order_number: int, customer: Customer, staff_id: int, order_status: str, total_cost: float):
+    def __init__(self, order_number: int, customer_id: int, staff_id: int, order_status: str, total_cost: float):
         """!
         Initializes the order with a unique order number, customer, staff, order status, and total cost.
         The order date is automatically set to the current date and time.
         """
        
         self.order_number = order_number
-        self.customer_id = customer.cust_id  # Sets the foreign key to customer
+        self.customer_id = customer_id  # Sets the foreign key to customer
         self.staff_id = staff_id
         self.order_date = datetime.now()  # Automatically set to the current date and time
         self.order_status = order_status

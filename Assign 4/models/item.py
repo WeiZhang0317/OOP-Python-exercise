@@ -28,14 +28,14 @@ class Item(Base):
         @param price: The price of the item.
         """
         self.name = name  # Public
-        self.__price = price  # Private
+        self.price = price # Public
 
     def get_price(self) -> float:
         """!
         Returns the price of the item.
         @return: The price as a float.
         """
-        return self.get_price()
+        return self.price
 
 
     def set_price(self, new_price: float) -> None:
@@ -43,7 +43,7 @@ class Item(Base):
         Updates the price of the item.
         @param new_price: The new price to be set for the item.
         """
-        self.__price = new_price  # Encapsulation: price is modified through a method
+        self.price = new_price  # Encapsulation: price is modified through a method
 
     def calculate_total(self, quantity: int) -> float:
         """!

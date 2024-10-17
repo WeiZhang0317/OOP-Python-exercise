@@ -4,7 +4,7 @@ from models.customer import Customer, CorporateCustomer
 from models.person import Person
 from models.staff import Staff
 from models.order import Order, OrderLine, OrderStatus
-from models.item import Veggie, WeightedVeggie, PackVeggie, UnitPriceVeggie, PremadeBox
+from models.item import Item, Veggie, WeightedVeggie, PackVeggie, UnitPriceVeggie, PremadeBox
 from models.payment import Payment, CreditCardPayment, DebitCardPayment
 from datetime import datetime
 
@@ -47,6 +47,86 @@ if not session.query(Staff).filter_by(username="alicewilliams").first():
 if not session.query(Staff).filter_by(username="bobtaylor").first():
     staff2 = Staff(first_name="Bob", last_name="Taylor", username="bobtaylor", password="Staff456", dept_name="Logistics")
     session.add(staff2)
+
+# 提交事务，获取生成的 ID
+session.commit()
+
+# 获取 customer_id 和 staff_id
+customer1 = session.query(Customer).filter_by(username="mikejohnson").first()
+customer2 = session.query(Customer).filter_by(username="lucybrown").first()
+staff1 = session.query(Staff).filter_by(username="alicewilliams").first()
+staff2 = session.query(Staff).filter_by(username="bobtaylor").first()
+
+# 检查并插入 Item 及其子类数据
+
+# 插入 Veggie 数据
+if not session.query(Veggie).filter_by(name="Carrot").first():
+    veggie1 = Veggie(name="Carrot", price=2.0, veg_name="Carrot")
+    session.add(veggie1)
+else:
+    veggie1 = session.query(Veggie).filter_by(name="Carrot").first()
+
+if not session.query(Veggie).filter_by(name="Spinach").first():
+    veggie2 = Veggie(name="Spinach", price=3.0, veg_name="Spinach")
+    session.add(veggie2)
+else:
+    veggie2 = session.query(Veggie).filter_by(name="Spinach").first()
+
+# 插入 WeightedVeggie 数据
+if not session.query(WeightedVeggie).filter_by(name="Potato").first():
+    weighted_veggie = WeightedVeggie(name="Potato", price=3.0, veg_name="Potato", weight=2.0, weight_per_kilo=1.5)
+    session.add(weighted_veggie)
+else:
+    weighted_veggie = session.query(WeightedVeggie).filter_by(name="Potato").first()
+
+# 插入 PackVeggie 数据
+if not session.query(PackVeggie).filter_by(name="Tomato Pack").first():
+    pack_veggie = PackVeggie(name="Tomato Pack", price=5.0, veg_name="Tomato", num_of_pack=1, price_per_pack=5.0)
+    session.add(pack_veggie)
+else:
+    pack_veggie = session.query(PackVeggie).filter_by(name="Tomato Pack").first()
+
+# 插入 UnitPriceVeggie 数据
+if not session.query(UnitPriceVeggie).filter_by(name="Cucumber").first():
+    unit_price_veggie = UnitPriceVeggie(name="Cucumber", price=4.0, veg_name="Cucumber", price_per_unit=0.8, quantity=5)
+    session.add(unit_price_veggie)
+else:
+    unit_price_veggie = session.query(UnitPriceVeggie).filter_by(name="Cucumber").first()
+
+# 插入 PremadeBox 数据
+if not session.query(PremadeBox).filter_by(name="Veggie Box").first():
+    premade_box = PremadeBox(name="Veggie Box", price=20.0, box_size="Medium", num_of_boxes=1)
+    premade_box.add_content([veggie1, veggie2])  # 添加内容
+    session.add(premade_box)
+else:
+    premade_box = session.query(PremadeBox).filter_by(name="Veggie Box").first()
+
+# 提交事务，获取生成的 item_id
+session.commit()
+
+# 检查并插入 Order 使用外键 ID
+if customer1 and staff1 and not session.query(Order).filter_by(order_number=1001).first():
+    order1 = Order(order_number=1001, customer_id=customer1.cust_id, staff_id=staff1.id, order_status=OrderStatus.PENDING.value, total_cost=200.0)
+    session.add(order1)
+
+if customer2 and staff2 and not session.query(Order).filter_by(order_number=1002).first():
+    order2 = Order(order_number=1002, customer_id=customer2.cust_id, staff_id=staff2.id, order_status=OrderStatus.SHIPPED.value, total_cost=150.0)
+    session.add(order2)
+
+# 提交事务，获取生成的 order_id
+session.commit()
+
+# 插入 OrderLine 数据
+order1 = session.query(Order).filter_by(order_number=1001).first()
+order2 = session.query(Order).filter_by(order_number=1002).first()
+
+if order1 and veggie1 and not session.query(OrderLine).filter_by(order_id=order1.id, item_id=veggie1.id).first():
+    order_line1 = OrderLine(order_id=order1.id, item_id=veggie1.id, quantity=2, line_total=veggie1.get_price() * 2)
+    session.add(order_line1)
+
+if order2 and pack_veggie and not session.query(OrderLine).filter_by(order_id=order2.id, item_id=pack_veggie.id).first():
+    order_line2 = OrderLine(order_id=order2.id, item_id=pack_veggie.id, quantity=1, line_total=pack_veggie.get_price())
+    session.add(order_line2)
 
 # 提交事务
 session.commit()
