@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # 数据库连接 URL
-DATABASE_URL = "mysql+pymysql://root:123456@localhost:3306/fresh_harvest1"
+DATABASE_URL = "mysql+pymysql://root:123456@localhost:3306/fresh_harvest12"
 
 # 创建引擎
 engine = create_engine(DATABASE_URL)

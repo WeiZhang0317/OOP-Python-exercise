@@ -36,15 +36,18 @@ class OrderLine(Base):
     order = relationship("Order", back_populates="list_of_order_lines")  
     item = relationship("Item", back_populates="order_lines") 
     
-    def __init__(self, item: Item, quantity: int):
+    def __init__(self, order_id: int, item_id: int, quantity: int, line_total: float):
         """!
-        Initializes the OrderLine with a specific item and quantity.
-
-        @param item: The Item object being ordered.
-        @param quantity: The number of units of the item.
+        Initializes an OrderLine object with the provided details.
+        @param order_id: The ID of the order associated with this line item.
+        @param item_id: The ID of the item in this line item.
+        @param quantity: The quantity of the item ordered.
+        @param line_total: The total cost for this line item.
         """
-        self.item = item  # The item being ordered
-        self.quantity = quantity  # The number of units of the item
+        self.order_id = order_id
+        self.item_id = item_id
+        self.quantity = quantity
+        self.line_total = line_total
 
     def get_line_total(self) -> float:
         """!
@@ -64,38 +67,33 @@ class OrderLine(Base):
 
 
 class Order(Base):
-    """!
-    Represents an order placed by a customer in the Fresh Harvest Veggies system.
-    """
     __tablename__ = 'orders'
 
-    id = Column(Integer, primary_key=True, autoincrement=True) 
-    order_number = Column(Integer, unique=True, nullable=False) 
-    customer_id = Column(Integer, ForeignKey('customers.cust_id')) 
-    order_date = Column(DateTime, default=datetime) 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    order_number = Column(Integer, unique=True, nullable=False)
+    customer_id = Column(Integer, ForeignKey('customers.cust_id'))
+    order_date = Column(DateTime, default=datetime.now)
     order_status = Column(String(50), nullable=False)
-    total_cost = Column(Float, nullable=False) 
+    total_cost = Column(Float, nullable=False)
 
     staff_id = Column(Integer, ForeignKey('staff.id'))
 
-    list_of_order_lines = relationship("OrderLine",  back_populates="order")
-    customer = relationship("Customer", back_populates="list_of_orders") 
+    list_of_order_lines = relationship("OrderLine", back_populates="order")
+    customer = relationship("Customer", back_populates="list_of_orders")
     staff = relationship("Staff", back_populates="list_of_orders")
-    
-    def __init__(self, order_number: int, order_customer: Customer, list_of_order_lines: List[OrderLine], order_status: str = OrderStatus.PENDING.value):
-        """!
-        Initializes the order with a unique order number, customer, order lines, and order status.
 
-        @param order_number: The unique identifier for the order.
-        @param order_customer: The Customer object placing the order.
-        @param list_of_order_lines: A list of OrderLine objects that the customer is ordering.
-        @param order_status: The initial status of the order, defaults to 'Pending'.
+    def __init__(self, order_number: int, customer: Customer, staff_id: int, order_status: str, total_cost: float):
+        """!
+        Initializes the order with a unique order number, customer, staff, order status, and total cost.
+        The order date is automatically set to the current date and time.
         """
-        self.order_number = order_number  # Order number (unique)
-        self.order_customer = order_customer  # The customer who places the order
-        self.list_of_order_lines = list_of_order_lines  # List of order lines in the order
-        self.order_status = order_status  # Initial order status
-        self.order_date = datetime.now()  # Set the order date to current datetime
+       
+        self.order_number = order_number
+        self.customer_id = customer.cust_id  # Sets the foreign key to customer
+        self.staff_id = staff_id
+        self.order_date = datetime.now()  # Automatically set to the current date and time
+        self.order_status = order_status
+        self.total_cost = total_cost
 
     def add_order_line(self, order_line: OrderLine) -> None:
         """!

@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from db_config import Base
 from datetime import datetime
 from typing import List
-from .customer import Customer
+from models.customer import Customer 
 from .order import Order
 from .item import PremadeBox, Veggie
 from .report import Report
@@ -31,7 +31,7 @@ class Staff(Person):
 
 
 
-    def __init__(self, first_name: str, last_name: str, username: str, password: str, staff_id: int, date_joined: str, dept_name: str):
+    def __init__(self, first_name: str, last_name: str, username: str, password: str,  dept_name: str):
         """!
         Constructor for the Staff class.
 
@@ -46,8 +46,6 @@ class Staff(Person):
         @param dept_name: The department name of the staff member.
         """
         super().__init__(first_name, last_name, username, password)  # Call base class constructor
-        self.staff_id = staff_id  # Unique identifier for staff
-        self.date_joined = datetime.strptime(date_joined, '%Y-%m-%d')  # Convert string date to datetime object
         self.dept_name = dept_name  # Department name
         self.list_of_customers: List[Customer] = []  # List to hold managed customers
         self.list_of_orders: List[Order] = []  # List to hold managed orders
