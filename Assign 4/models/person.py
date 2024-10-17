@@ -14,7 +14,7 @@ class Person(Base):
     first_name = Column(String(50), nullable=False)  
     last_name = Column(String(50), nullable=False)  
     username = Column(String(50), unique=True, nullable=False)  
-    __password = Column(String(100), nullable=False) 
+    __password = Column(String(255), nullable=False) 
 
     def __init__(self, first_name: str, last_name: str, username: str, password: str):
         """!

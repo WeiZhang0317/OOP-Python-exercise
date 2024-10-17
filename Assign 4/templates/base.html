@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+
+    <title>{% block title %}Dashboard{% endblock %}</title>
+
+    <!-- Bootstrap core CSS from static folder -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles from static folder -->
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/checkout.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/view_vegetables.css') }}" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <header>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Store Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+
+            <!-- 菜单根据用户角色显示 -->
+            {% if current_user.is_authenticated %}
+              {% if current_user.role == 'customer' %}
+                <!-- Customer-specific options -->
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('view_vegetables') }}">View Vegetables</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('place_order') }}">Place Order</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('current_order') }}">Current Order</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('previous_orders') }}">Previous Orders</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('customer_details') }}">View Profile</a>
+                </li>
+              {% elif current_user.role == 'staff' %}
+                <!-- Staff-specific options -->
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('view_all_vegetables') }}">View All Vegetables</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('current_orders') }}">Current Orders</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('previous_orders_staff') }}">Previous Orders</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('customer_list') }}">View All Customers</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('generate_sales_report') }}">Sales Report</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('popular_items') }}">Most Popular Items</a>
+                </li>
+              {% endif %}
+            {% endif %}
+          </ul>
+
+          <!-- 登录/登出 -->
+          <ul class="navbar-nav ml-auto">
+            {% if current_user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main role="main" class="container">
+      <div class="content">
+        {% block content %}
+        <!-- 子页面的内容将会放在这里 -->
+        {% endblock %}
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <span class="text-muted">&copy; 2024 Store Dashboard. All rights reserved.</span>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
