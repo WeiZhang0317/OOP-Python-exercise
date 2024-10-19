@@ -30,9 +30,9 @@ def login():
         password = request.form['password']
 
         # Find the person in the database by username
-        person = Person.query.filter_by(username=username).first()  # 使用 db.Model 的 query 功能
+        person = Person.query.filter_by(username=username).first()
 
-        if person and person.check_password(password):  # 检查密码
+        if person and check_password_hash(person.password, password):
             session['user_id'] = person.id  # Store the user ID in session
             session['role'] = person.role  # Assuming Person model has a role attribute
             flash('Login successful!', 'success')
@@ -44,6 +44,7 @@ def login():
             flash('Invalid username or password. Please try again.', 'danger')
 
     return render_template('login.html')
+
 
 # Logout Route
 @app.route('/logout')

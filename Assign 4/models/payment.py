@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from datetime import datetime
 from db_config import Base
 from sqlalchemy.orm import relationship
+from models.customer import Customer 
 
 class Payment(Base): 
     """!
@@ -16,7 +17,7 @@ class Payment(Base):
 
     customer = relationship("Customer", back_populates="list_of_payments")
 
-    def __init__(self, payment_amount: float, customer, payment_date: datetime = None):
+    def __init__(self, payment_amount: float, customer: Customer, payment_date: datetime = None):
         """!
         Constructor for the Payment class.
         @param payment_amount: The amount paid.
@@ -53,7 +54,7 @@ class CreditCardPayment(Payment):
         'polymorphic_identity': 'credit_card'
     }
 
-    def __init__(self, payment_amount: float, customer, card_number: str, card_type: str, card_expiry_date: str, payment_date: datetime = None):
+    def __init__(self, payment_amount: float, customer: Customer, card_number: str, card_type: str, card_expiry_date: str, payment_date: datetime = None):
         super().__init__(payment_amount, customer, payment_date)
         self.card_number = card_number
         self.card_type = card_type
@@ -86,7 +87,7 @@ class DebitCardPayment(Payment):
         'polymorphic_identity': 'debit_card'
     }
 
-    def __init__(self, payment_amount: float, customer, bank_name: str, debit_card_number: str, payment_date: datetime = None):
+    def __init__(self, payment_amount: float, customer: Customer, bank_name: str, debit_card_number: str, payment_date: datetime = None):
         super().__init__(payment_amount, customer, payment_date)
         self.bank_name = bank_name
         self.debit_card_number = debit_card_number
