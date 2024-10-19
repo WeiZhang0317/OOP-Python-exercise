@@ -10,7 +10,7 @@ from datetime import datetime
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@localhost:3306/fresh_harvest'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@localhost:3306/fresh_harvest12'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
