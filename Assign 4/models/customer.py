@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from db_config import Base
 from .person import Person
+from models.payment import Payment
 
 
 class Customer(Person):
@@ -18,7 +19,6 @@ class Customer(Person):
     # Relationships
     list_of_payments = relationship("Payment", back_populates="customer")
     list_of_orders = relationship("Order", back_populates="customer")
-
 
     """!
     Represents a customer who can place orders and make payments.

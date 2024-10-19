@@ -35,7 +35,8 @@ class OrderLine(Base):
      # Relationship with Order and Item
     order = relationship("Order", back_populates="list_of_order_lines")  
     item = relationship("Item", back_populates="order_lines") 
-    
+    customer = relationship("Customer", back_populates="list_of_orders")
+
     def __init__(self, order_id: int, item_id: int, quantity: int, line_total: float):
         """!
         Initializes an OrderLine object with the provided details.

@@ -1,34 +1,38 @@
 # person.py
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String
 from db_config import Base
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy()  # 这里初始化SQLAlchemy
 
+class Person(db.Model):
 
-class Person(Base):
     """!
     Represents a person with basic attributes such as first name, last name, username, and password.
     """
-    __tablename__ = 'persons'  
+    __tablename__ = 'persons'
 
-    id = Column(Integer, primary_key=True, index=True) 
-    first_name = Column(String(50), nullable=False)  
-    last_name = Column(String(50), nullable=False)  
-    username = Column(String(50), unique=True, nullable=False)  
-    __password = Column(String(255), nullable=False) 
+    id = Column(Integer, primary_key=True, index=True)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
+    username = Column(String(50), unique=True, nullable=False)
+    __password = Column(String(255), nullable=False)
 
     def __init__(self, first_name: str, last_name: str, username: str, password: str):
         """!
         Constructor for the Person class.
         Initializes the person's first name, last name, username, and password.
+        Password will be hashed before storing.
         @param first_name: The first name of the person.
         @param last_name: The last name of the person.
         @param username: The username of the person for login.
-        @param password: The password of the person.
+        @param password: The password of the person (it will be hashed before storing).
         """
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
-        self.__password = password  # Private attribute for storing password
+        self.set_password(password)  # Encrypts the password during initialization
 
     def get_full_name(self) -> str:
         """!
@@ -39,35 +43,18 @@ class Person(Base):
 
     def set_password(self, new_password: str) -> None:
         """!
-        Sets a new password for the person.
-        @param new_password: The new password to be set.
-        @raise ValueError: If the new password does not meet the required criteria.
+        Sets a new password for the person and hashes it before storing.
+        @param new_password: The new password to be hashed and stored.
         """
-        if self.__validate_password(new_password):
-            self.__password = new_password
-        else:
-            raise ValueError("Password must contain at least 8 characters, including one uppercase, one lowercase, and one number.")
+        self.__password = generate_password_hash(new_password)
 
     def check_password(self, password: str) -> bool:
         """!
-        Checks if the provided password matches the stored password.
-        @param password: The password to check against the stored password.
+        Checks if the provided password matches the hashed password stored.
+        @param password: The plain-text password to check against the hashed password.
         @return: True if the password matches, otherwise False.
         """
-        return self.__password == password
-
-    def __validate_password(self, password: str) -> bool:
-        """!
-        Validates if the password meets the required criteria.
-        @param password: The password to validate.
-        @return: True if the password is valid, otherwise False.
-        """
-        if len(password) < 8:
-            return False
-        has_upper = any(char.isupper() for char in password)
-        has_lower = any(char.islower() for char in password)
-        has_digit = any(char.isdigit() for char in password)
-        return has_upper and has_lower and has_digit
+        return check_password_hash(self.__password, password)
 
     def __str__(self) -> str:
         """!
