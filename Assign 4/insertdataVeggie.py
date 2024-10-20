@@ -4,9 +4,11 @@ from models.customer import Customer, CorporateCustomer
 from models.person import Person
 from models.staff import Staff
 from models.order import Order, OrderLine, OrderStatus
-from models.item import Item, Veggie, WeightedVeggie, PackVeggie, UnitPriceVeggie, PremadeBox
+from models.item import Item, Veggie, WeightedVeggie, PackVeggie, UnitPriceVeggie, PremadeBox,Inventory
 from models.payment import Payment, CreditCardPayment, DebitCardPayment
+
 from datetime import datetime
+import random
 
 # 创建session
 Session = sessionmaker(bind=engine)
@@ -57,21 +59,31 @@ if not session.query(UnitPriceVeggie).filter_by(name="Spring onion").first():
     session.add(unit_price_veggie2)
 
 # 插入 PremadeBox 数据
-# 小盒子 max_content 为 3
 if not session.query(PremadeBox).filter_by(name="Small Veggie Box").first():
     small_premade_box = PremadeBox(name="Small Veggie Box", price=15.0, box_size="small")
     session.add(small_premade_box)
 
-# 中盒子 max_content 为 6
 if not session.query(PremadeBox).filter_by(name="Medium Veggie Box").first():
     medium_premade_box = PremadeBox(name="Medium Veggie Box", price=20.0, box_size="medium")
     session.add(medium_premade_box)
 
-# 大盒子 max_content 为 9
 if not session.query(PremadeBox).filter_by(name="Large Veggie Box").first():
     large_premade_box = PremadeBox(name="Large Veggie Box", price=30.0, box_size="large")
     session.add(large_premade_box)
 
-# 提交事务
+# 提交事务保存Item数据
+session.commit()
+
+# 为每个Item插入库存数据到Inventory表
+items = session.query(Item).all()
+for item in items:
+    # 随机生成库存数量
+    quantity = random.randint(80, 200)
+    
+    # 插入库存数据
+    inventory_entry = Inventory(item_id=item.id, quantity=quantity)
+    session.add(inventory_entry)
+
+# 提交事务保存库存数据
 session.commit()
 
