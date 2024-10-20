@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Available Vegetables and Premade Boxes{% endblock %}
+{% block title %}Our Vegetables and Premade Boxes{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -15,36 +15,47 @@
     <div class="col-md-4">
       <div class="card mb-4 box-shadow">
         <div class="card-header">
-          <h4 class="my-0 font-weight-normal">{{ item.name }}</h4>
+          <!-- 根据商品类型显示不同的标题 -->
+          {% if item.type == 'veggie' %}
+            <h4 class="my-0 font-weight-normal">Vegetable (by each)</h4>
+          {% elif item.type == 'weighted_veggie' %}
+            <h4 class="my-0 font-weight-normal">Weighted Vegetable</h4>
+          {% elif item.type == 'pack_veggie' %}
+            <h4 class="my-0 font-weight-normal">Pack Vegetable</h4>
+          {% elif item.type == 'unit_price_veggie' %}
+            <h4 class="my-0 font-weight-normal">Unit Priced Vegetable</h4>
+          {% elif item.type == 'premade_box' %}
+            <h4 class="my-0 font-weight-normal">Premade Box</h4>
+          {% endif %}
         </div>
         <div class="card-body">
-          <h1 class="card-title pricing-card-title">${{ item.price }}</h1>
-          <ul class="list-unstyled mt-3 mb-4">
-            <!-- 根据商品类型显示不同的信息 -->
-            {% if item.__class__.__name__ == 'Veggie' %}
-              <li>Type: Vegetable</li>
-              <li>Name: {{ item.veg_name }}</li>
-            {% elif item.__class__.__name__ == 'PremadeBox' %}
-              <li>Type: Premade Box</li>
-              <li>Size: {{ item.box_size }}</li>
-              <li>Contains:
-                <ul>
-                  {% for content_item in item.contents %}
-                    <li>{{ content_item.name }}</li>
-                  {% endfor %}
-                </ul>
-              </li>
-            {% else %}
-              <li>Type: {{ item.__class__.__name__ }}</li>
+          <!-- 将商品名称作为 card-title -->
+          <h3 class="card-title">{{ item.name }}</h3>
+          <!-- 使用小一点的字体显示价格 -->
+          <h5 class="card-subtitle mb-2 text-muted">
+            {% if item.type == 'veggie' %}
+              ${{ item.price }} each
+            {% elif item.type == 'weighted_veggie' %}
+              ${{ item.price }} per {{ item.unit_type }}
+            {% elif item.type == 'pack_veggie' %}
+              ${{ item.price }} per pack ({{ item.num_of_pack }} in pack)
+            {% elif item.type == 'unit_price_veggie' %}
+              ${{ item.price }} per {{ item.unit_type }}
+            {% elif item.type == 'premade_box' %}
+              ${{ item.price }} per box
             {% endif %}
+          </h5>
+          <ul class="list-unstyled mt-3 mb-4">
+            <!-- 显示库存 -->
+            <li class="text-success">Stock: {{ item.inventory.quantity }} available</li>
           </ul>
           <!-- 添加到购物车按钮 -->
-          <form action="{{ url_for('add_to_cart', item_id=item.id) }}" method="post">
+          <form action="#" method="post">
             <div class="form-group">
               <label for="quantity_{{ item.id }}">Quantity:</label>
-              <input type="number" class="form-control" id="quantity_{{ item.id }}" name="quantity" value="1" min="1">
+              <input type="number" class="form-control" id="quantity_{{ item.id }}" name="quantity" value="1" min="1" max="{{ item.inventory.quantity }}">
             </div>
-            <button type="submit" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
+            <button type="button" class="btn btn-lg btn-block btn-secondary" disabled>Add to Cart (Coming Soon)</button>
           </form>
         </div>
       </div>
@@ -52,7 +63,7 @@
     {% endfor %}
   </div>
 
-  <!-- 购物车侧栏 -->
+  <!-- 购物车侧栏 (尚未实现)
   <div class="row">
     <div class="col-md-4 offset-md-8">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -74,8 +85,9 @@
           <strong>${{ total_price }}</strong>
         </li>
       </ul>
-      <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-block">Proceed to Checkout</a>
+      <a href="#" class="btn btn-primary btn-block">Proceed to Checkout</a>
     </div>
   </div>
+  -->
 </div>
 {% endblock %}

@@ -1,7 +1,8 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
-from models import db, Person, Item, Order, OrderLine  # 从 models 中导入 db 和其他模型
+from models import db, Person, Item, Order, OrderLine, WeightedVeggie, PackVeggie, UnitPriceVeggie  # 从 models 中导入 db 和其他模型
+
 from datetime import datetime
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -80,15 +81,25 @@ def dashboard():
         return redirect(url_for('login'))
 
 
-# # View vegetables and premade boxes
-# @app.route('/customer/view_vegetables')
-# def view_vegetables():
-#     if 'user_id' not in session or session.get('role') != 'customer':
-#         flash('Please log in as a customer.', 'warning')
-#         return redirect(url_for('login'))
+# View vegetables and premade boxes
+@app.route('/view_vegetables')
+def view_vegetables():
+    if 'user_id' not in session or session.get('role') != 'customer':
+        flash('Please log in as a customer.', 'warning')
+        return redirect(url_for('login'))
     
-#     items = Item.query.all()
-#     return render_template('customer/view_vegetables.html', items=items)
+    items = (
+    db.session.query(Item)
+    .outerjoin(WeightedVeggie, Item.id == WeightedVeggie.id)
+    .outerjoin(PackVeggie, Item.id == PackVeggie.id)
+    .outerjoin(UnitPriceVeggie, Item.id == UnitPriceVeggie.id)
+    .all()
+    )
+
+
+    return render_template('view_vegetables.html', items=items)
+
+
 
 
 # # Add items to cart
