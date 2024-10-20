@@ -38,10 +38,8 @@ def login():
             session['user_id'] = person.id  # 将用户 ID 存入 session
             session['role'] = person.role  # 假设有 role 属性
             flash('登录成功！', 'success')
-            if person.role == 'customer':
-                return redirect(url_for('coverpage'))
-            elif person.role == 'staff':
-                return redirect(url_for('coverpage'))
+            return redirect(url_for('dashboard'))
+       
         else:
             flash('用户名或密码错误，请重试。', 'danger')
 
@@ -55,24 +53,31 @@ def logout():
     flash('你已成功注销。', 'info')
     return redirect(url_for('login'))
 
-# 启动应用
-if __name__ == '__main__':
-    app.run(debug=True)
 
 
 # #######################
 # # Customer-related routes
 # #######################
 
-# # Customer Dashboard
-# @app.route('/customer/dashboard')
-# def customer_dashboard():
-#     if 'user_id' not in session or session.get('role') != 'customer':
-#         flash('Please log in as a customer to access the dashboard.', 'warning')
-#         return redirect(url_for('login'))
-    
-#     items = Item.query.all()
-#     return render_template('customer/dashboard.html', items=items)
+# Customer Dashboard
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        flash('请登录以访问控制面板。', 'warning')
+        return redirect(url_for('login'))
+
+    # 根据用户角色显示不同的内容
+    if session.get('role') == 'customer':
+        items = Item.query.all()  # 客户查看商品
+        return render_template('dashboard.html', items=items, role='customer')
+
+    elif session.get('role') == 'staff':
+        orders = Order.query.all()  # 员工管理订单
+        return render_template('dashboard.html', orders=orders, role='staff')
+
+    else:
+        flash('未授权的访问。', 'danger')
+        return redirect(url_for('login'))
 
 
 # # View vegetables and premade boxes
@@ -154,14 +159,8 @@ if __name__ == '__main__':
 # # Staff-related routes
 # #######################
 
-# # Staff Dashboard
-# @app.route('/staff/dashboard')
-# def staff_dashboard():
-#     if 'user_id' not in session or session.get('role') != 'staff':
-#         flash('Please log in as staff to access the dashboard.', 'warning')
-#         return redirect(url_for('login'))
-    
-#     return render_template('staff/dashboard.html')
+# Staff Dashboard
+
 
 
 # # View all vegetables and premade boxes
@@ -198,5 +197,7 @@ if __name__ == '__main__':
 #     return redirect(url_for('current_orders'))
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+
+# 启动应用
+if __name__ == '__main__':
+    app.run(debug=True)

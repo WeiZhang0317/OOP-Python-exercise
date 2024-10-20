@@ -33,43 +33,43 @@
             </li>
 
             <!-- 菜单根据用户角色显示 -->
-            {% if current_user.is_authenticated %}
-              {% if current_user.role == 'customer' %}
+            {% if session['user_id'] %}
+              {% if session['role'] == 'customer' %}
                 <!-- Customer-specific options -->
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('view_vegetables') }}">View Vegetables</a>
+                  <a class="nav-link" href="#">View Vegetables</a> <!-- 可以添加 # 作为占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('place_order') }}">Place Order</a>
+                  <a class="nav-link" href="#">Place Order</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('current_order') }}">Current Order</a>
+                  <a class="nav-link" href="#">Current Order</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('previous_orders') }}">Previous Orders</a>
+                  <a class="nav-link" href="#">Previous Orders</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('customer_details') }}">View Profile</a>
+                  <a class="nav-link" href="#">View Profile</a> <!-- 添加占位符 -->
                 </li>
-              {% elif current_user.role == 'staff' %}
+              {% elif session['role'] == 'staff' %}
                 <!-- Staff-specific options -->
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('view_all_vegetables') }}">View All Vegetables</a>
+                  <a class="nav-link" href="#">View All Vegetables</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('current_orders') }}">Current Orders</a>
+                  <a class="nav-link" href="#">Current Orders</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('previous_orders_staff') }}">Previous Orders</a>
+                  <a class="nav-link" href="#">Previous Orders</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('customer_list') }}">View All Customers</a>
+                  <a class="nav-link" href="#">View All Customers</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('generate_sales_report') }}">Sales Report</a>
+                  <a class="nav-link" href="#">Sales Report</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('popular_items') }}">Most Popular Items</a>
+                  <a class="nav-link" href="#">Most Popular Items</a> <!-- 添加占位符 -->
                 </li>
               {% endif %}
             {% endif %}
@@ -77,7 +77,7 @@
 
           <!-- 登录/登出 -->
           <ul class="navbar-nav ml-auto">
-            {% if current_user.is_authenticated %}
+            {% if session['user_id'] %}
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
               </li>
