@@ -16,7 +16,11 @@ class Item(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True) 
     name = Column(String(50), nullable=False) 
     price = Column(Float, nullable=False)  
-    
+    type = Column(String(50))  
+    __mapper_args__ = {
+        'polymorphic_on': type,  
+        'polymorphic_identity': 'item'
+    }
      # Relationship to the Inventory
     inventory = relationship("Inventory", back_populates="item", uselist=False)  # One-to-one relationship
     order_lines = relationship("OrderLine", back_populates="item")
@@ -60,9 +64,13 @@ class Veggie(Item):
 
     id = Column(Integer, ForeignKey('items.id'), primary_key=True)  
     veg_name = Column(String(50), nullable=False)
+    __mapper_args__ = {
+    'polymorphic_identity': 'veggie'  
+}
+
  
     """!
-    Represents a vegetable item that can be purchased individually or included in a premade box.
+    Represents a vegetable item that can be purchased individually.
     """
 
     def __init__(self, name: str, price: float, veg_name: str):
@@ -84,31 +92,42 @@ class WeightedVeggie(Veggie):
     __tablename__ = 'weighted_veggie'
 
     id = Column(Integer, ForeignKey('veggie.id'), primary_key=True)
-    weight = Column(Float, nullable=False)  
-    weight_per_kilo = Column(Float, nullable=False) 
+    weight_per_kilo = Column(Float, nullable=False)  # Price per kilogram or other weight unit
+    unit_type = Column(String(20), nullable=False)  # Unit type (e.g., 'kg', 'g')
 
-    def __init__(self, name: str, price: float, veg_name: str, weight: float, weight_per_kilo: float):
+    __mapper_args__ = {
+        'polymorphic_identity': 'weighted_veggie'
+    }
+
+    def __init__(self, name: str, price: float, veg_name: str, weight_per_kilo: float, unit_type: str):
         """!
         Constructor for WeightedVeggie class.
-        Initializes the weighted vegetable with name, price, and weight attributes.
+        Initializes the weighted vegetable with name, price per kilo, and unit type.
         @param name: The name of the item.
-        @param price: The price of the item.
+        @param price: The base price of the item.
         @param veg_name: The specific vegetable name (e.g., Carrot).
-        @param weight: The weight of the vegetable.
         @param weight_per_kilo: The price per kilo for this vegetable.
+        @param unit_type: The unit of measurement (e.g., 'kg', 'g').
         """
         super().__init__(name, price, veg_name)
-        self.weight = weight
         self.weight_per_kilo = weight_per_kilo
+        self.unit_type = unit_type  # Set the measurement unit (e.g., 'kg', 'g')
 
-    def calculate_total_weight_price(self) -> float:
+    def get_weight_price(self) -> str:
         """!
-        Calculates the total price based on the weight and price per kilo.
-        @return: The total price based on weight.
+        Returns a string with the unit type and price per weight unit.
+        @return: A string displaying price per unit and weight unit (e.g., '3.0 per kg').
         """
-        return self.weight * self.weight_per_kilo
-
-
+        return f"{self.weight_per_kilo} per {self.unit_type}"
+    
+    def calculate_total(self, quantity: float) -> float:
+        """!
+        Calculates the total price based on the weight (treated as quantity) chosen by the customer.
+        @param quantity: The amount of weight (e.g., 2 kg).
+        @return: The total price.
+        """
+        return self.weight_per_kilo * quantity
+    
 
 class PackVeggie(Veggie):
     """!
@@ -118,60 +137,79 @@ class PackVeggie(Veggie):
 
     id = Column(Integer, ForeignKey('veggie.id'), primary_key=True)
     num_of_pack = Column(Integer, nullable=False) 
-    price_per_pack = Column(Float, nullable=False)  
 
-    def __init__(self, name: str, price: float, veg_name: str, num_of_pack: int, price_per_pack: float):
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'pack_veggie'
+    } 
+
+    def __init__(self, name: str, price: float, veg_name: str, num_in_pack: int):
         """!
         Constructor for PackVeggie class.
         Initializes the packed vegetable with name, price, and pack attributes.
         @param name: The name of the item.
         @param price: The price of the item.
         @param veg_name: The specific vegetable name.
-        @param num_of_pack: The number of packs.
+        @param num_of_pack: The number in packs.
         @param price_per_pack: The price per pack.
         """
         super().__init__(name, price, veg_name)
-        self.num_of_pack = num_of_pack
-        self.price_per_pack = price_per_pack
-
-    def calculate_total_pack_price(self) -> float:
+        self.num_of_pack = num_in_pack
+        
+    def calculate_total(self, quantity: int) -> float:
         """!
-        Calculates the total price based on the number of packs and price per pack.
-        @return: The total price for all packs.
+        Calculates the total price based on the number of packs chosen by the customer.
+        @param quantity: The number of packs (e.g., 3 packs).
+        @return: The total price.
         """
-        return self.num_of_pack * self.price_per_pack
+        return self.price * quantity
 
 
 class UnitPriceVeggie(Veggie):
     __tablename__ = 'unit_price_veggie'
 
     id = Column(Integer, ForeignKey('veggie.id'), primary_key=True)
-    price_per_unit = Column(Float, nullable=False)  
-    quantity = Column(Integer, nullable=False)  
+    price_per_unit = Column(Float, nullable=False)  # Price per unit (e.g., price per piece, per bunch)
+    unit_type = Column(String(20), nullable=False)  # Unit type (e.g., 'piece', 'bunch', 'bundle')
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'unit_price_veggie'
+    }
+
     """!
-    Represents a vegetable that is priced per unit.
+    Represents a vegetable that is priced per unit (e.g., 'piece', 'bunch').
     """
 
-    def __init__(self, name: str, price: float, veg_name: str, price_per_unit: float, quantity: int):
+
+    def __init__(self, name: str, price: float, veg_name: str, price_per_unit: float, unit_type: str):
         """!
         Constructor for UnitPriceVeggie class.
-        Initializes the unit-priced vegetable with name, price, and quantity attributes.
+        Initializes the unit-priced vegetable with name, price, and unit type.
         @param name: The name of the item.
         @param price: The price of the item.
         @param veg_name: The specific vegetable name.
         @param price_per_unit: The price per unit.
-        @param quantity: The quantity of units.
+        @param unit_type: The type of unit (e.g., 'piece', 'bunch').
         """
         super().__init__(name, price, veg_name)
         self.price_per_unit = price_per_unit
-        self.quantity = quantity
+        self.unit_type = unit_type  # Set the measurement unit (e.g., 'piece', 'bunch')
 
-    def calculate_total_unit_price(self) -> float:
+    def get_unit_price(self) -> str:
         """!
-        Calculates the total price based on the number of units and price per unit.
-        @return: The total price for all units.
+        Returns a string with the unit type and price.
+        @return: A string displaying price per unit and unit type.
         """
-        return self.quantity * self.price_per_unit
+        return f"{self.price_per_unit} per {self.unit_type}"
+    
+    
+    def calculate_total(self, quantity: int) -> float:
+        """!
+        Calculates the total price based on the quantity chosen by the customer.
+        @param quantity: The number of units (e.g., 5 pieces).
+        @return: The total price.
+        """
+        return self.price_per_unit * quantity
 
 
 class PremadeBox(Item):
@@ -182,29 +220,42 @@ class PremadeBox(Item):
     __tablename__ = 'premade_boxes'
 
     id = Column(Integer, ForeignKey('items.id'), primary_key=True) 
-    box_size = Column(String(20), nullable=False)  
-    num_of_boxes = Column(Integer, nullable=False)  
-    
-    def __init__(self, name: str, price: float, box_size: str, num_of_boxes: int):
+    box_size = Column(String(20), nullable=False)  # Box size: 'small', 'medium', or 'large'
+    max_content = Column(Integer, nullable=False)  # Maximum number of veggies allowed in the box
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'premade_box'
+    }
+
+    def __init__(self, name: str, price: float, box_size: str):
         """!
         Constructor for PremadeBox class.
-        Initializes the premade box with name, price, box size, and number of boxes.
+        Initializes the premade box with name, price, and box size.
         @param name: The name of the premade box.
         @param price: The price of the premade box.
         @param box_size: The size of the box, either 'small', 'medium', or 'large'.
-        @param num_of_boxes: The number of boxes.
         """
         super().__init__(name, price)
-        self.box_size = box_size  # Public because it should be easily accessible
-        self.num_of_boxes = num_of_boxes
-        self.box_content: List[Veggie] = []  # Public for flexibility in customizing the box
+        self.box_size = box_size
+        self.box_content: List[Veggie] = []  # A list to store the vegetables added to the box
 
-    def add_content(self, veggie: List[Veggie]) -> None:
+        # Set the maximum content based on the box size
+        if box_size == 'small':
+            self.max_content = 3
+        elif box_size == 'medium':
+            self.max_content = 6
+        elif box_size == 'large':
+            self.max_content = 9
+
+    def add_content(self, veggie: Veggie) -> None:
         """!
-        Adds a list of vegetables to the box content.
-        @param veggie: A list of Vegetable objects to include in the box.
+        Adds a vegetable to the box content if the box is not full.
+        @param veggie: A Veggie object to include in the box.
         """
-        self.box_content = veggie
+        if len(self.box_content) < self.max_content:
+            self.box_content.append(veggie)
+        else:
+            raise ValueError(f"The {self.box_size} box can only contain {self.max_content} veggies.")
 
     def get_box_details(self) -> str:
         """!
@@ -216,12 +267,22 @@ class PremadeBox(Item):
 
     def calculate_box_total(self) -> float:
         """!
-        Calculates the total price for the entire box.
+        Calculates the total price for the premade box.
+        If you want the price to be fixed based on size, use self.get_price().
+        Otherwise, sum the individual prices of the contents.
         @return: The total price of the box.
         """
-        return self.get_price() * self.num_of_boxes
+        if self.box_size == 'small':
+            return 15.0  
+        elif self.box_size == 'medium':
+            return 20.0 
+        elif self.box_size == 'large':
+            return 30.0  
     
-class Inventory(db.Model):  # 使用 db.Model 而非 Base
+
+
+
+class Inventory(db.Model): 
     """!
     Represents the inventory for items in the store.
     Each item will have a quantity indicating the available stock.
