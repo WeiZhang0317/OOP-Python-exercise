@@ -1,10 +1,11 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from db_config import Base
+from models import db
 
 from typing import List
 
-class Item(Base):  
+
+class Item(db.Model):
     
     """!
     Represents an individual item that can be ordered by a customer.
@@ -219,8 +220,8 @@ class PremadeBox(Item):
         @return: The total price of the box.
         """
         return self.get_price() * self.num_of_boxes
-
-class Inventory(Base):
+    
+class Inventory(db.Model):  # 使用 db.Model 而非 Base
     """!
     Represents the inventory for items in the store.
     Each item will have a quantity indicating the available stock.
