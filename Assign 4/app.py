@@ -80,7 +80,6 @@ def dashboard():
         flash('未授权的访问。', 'danger')
         return redirect(url_for('login'))
 
-
 # View vegetables and premade boxes
 @app.route('/view_vegetables')
 def view_vegetables():
@@ -88,23 +87,29 @@ def view_vegetables():
         flash('Please log in as a customer.', 'warning')
         return redirect(url_for('login'))
     
+    # Query items and join relevant tables
     items = (
-    db.session.query(Item)
-    .outerjoin(WeightedVeggie, Item.id == WeightedVeggie.id)
-    .outerjoin(PackVeggie, Item.id == PackVeggie.id)
-    .outerjoin(UnitPriceVeggie, Item.id == UnitPriceVeggie.id)
-    .all()
+        db.session.query(Item)
+        .outerjoin(WeightedVeggie, Item.id == WeightedVeggie.id)
+        .outerjoin(PackVeggie, Item.id == PackVeggie.id)
+        .outerjoin(UnitPriceVeggie, Item.id == UnitPriceVeggie.id)
+        .all()
     )
 
+     # Get the cart from session, or an empty list if it doesn't exist
+    cart = session.get('cart', [])
 
-    return render_template('view_vegetables.html', items=items)
+    # Calculate the total price of the cart
+    total_price = sum(item['line_total'] for item in cart)
+
+    return render_template('view_vegetables.html', items=items, cart=cart, total_price=total_price)
 
 @app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
 def customize_premade_box(box_id):
     box = PremadeBox.query.get(box_id)
     max_content = box.max_content
     
-
+    # Query items that are not premade boxes and are in stock
     items = (
         db.session.query(Item)
         .filter(Item.type != 'premade_box')
@@ -117,22 +122,128 @@ def customize_premade_box(box_id):
         selected_items = request.form.getlist('selected_items')
         quantities = request.form.getlist('quantity')
 
-        # 计算用户选择的总蔬菜数量
         total_quantity = sum(int(q) for q in quantities)
 
         if total_quantity > max_content:
             flash(f"Total items exceed the box limit! Maximum allowed: {max_content}", "danger")
             return redirect(url_for('customize_premade_box', box_id=box_id))
 
-        # 如果数量合法，进行处理（保存数据或进行下一步）
-        # 保存逻辑（依赖于项目的特定处理逻辑）
-
         flash('Premade Box customized successfully!', 'success')
         return redirect(url_for('view_vegetables'))
 
     return render_template('customize_premade_box.html', items=items, box=box)
 
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
 
+    # Get item_id and quantity from the form data
+    item_id = request.form.get('item_id')
+    quantity = int(request.form.get('quantity', 0))
+
+    # Debugging output
+    print(f"Received item_id: {item_id}, quantity: {quantity}")
+
+    # Retrieve the item from the database
+    item = Item.query.get(item_id)
+
+    # Handle missing or incorrect items
+    if not item:
+        print("Item not found!")
+        flash('Item not found!', 'danger')
+        return redirect(url_for('view_vegetables'))
+
+    # Handle stock shortages
+    if item.inventory.quantity < quantity:
+        print(f"Insufficient stock! Available: {item.inventory.quantity}, Requested: {quantity}")
+        flash('Insufficient stock!', 'danger')
+        return redirect(url_for('view_vegetables'))
+
+    # Initialize the cart if it's not already in the session
+    if 'cart' not in session:
+        session['cart'] = []
+
+    cart = session['cart']
+
+    # Check if the item is already in the cart
+    item_in_cart = next((cart_item for cart_item in cart if cart_item['item_id'] == int(item_id)), None)
+    
+    if item_in_cart:
+        # Update quantity and line total if item already exists in the cart
+        item_in_cart['quantity'] += quantity
+        item_in_cart['line_total'] = item.calculate_total(item_in_cart['quantity'])
+        print(f"Updated item in cart: {item_in_cart}")
+    else:
+        # Add new item to the cart
+        new_cart_item = {
+            'item_id': int(item_id),  # Cast to int for consistency
+            'name': item.name,
+            'price': item.get_price(),
+            'quantity': quantity,
+            'line_total': item.calculate_total(quantity)
+        }
+        cart.append(new_cart_item)
+        print(f"Added new item to cart: {new_cart_item}")
+    
+    # Update the session with the modified cart
+    session['cart'] = cart
+
+    # Debug output to check the updated session data
+    print(f"Session cart updated: {session['cart']}")
+
+    flash(f'{item.name} added to your cart!', 'success')
+    return redirect(url_for('view_vegetables'))
+
+
+
+# @app.route('/checkout', methods=['GET', 'POST'])
+# def checkout():
+#     if 'user_id' not in session:
+#         flash('Please log in to continue!', 'warning')
+#         return redirect(url_for('login'))
+
+#     if 'cart' not in session or len(session['cart']) == 0:
+#         flash('Your cart is empty, please add some items first.', 'warning')
+#         return redirect(url_for('view_vegetables'))
+
+#     # Create a new order for the customer
+#     order = Order(
+#         order_number=generate_order_number(),
+#         customer_id=session['user_id'],
+#         staff_id=1,  # Assuming 1 is the default staff handling the order
+#         order_status=OrderStatus.PENDING.value,
+#         total_cost=0
+#     )
+#     db.session.add(order)
+#     db.session.commit()
+
+#     total_cost = 0
+#     for cart_item in session['cart']:
+#         item = Item.query.get(cart_item['item_id'])
+#         if item and item.inventory.quantity >= cart_item['quantity']:
+#             # Create an order line and add it to the order
+#             line_total = item.calculate_total(cart_item['quantity'])
+#             order_line = OrderLine(order_id=order.id, item_id=item.id, quantity=cart_item['quantity'], line_total=line_total)
+#             db.session.add(order_line)
+
+#             # Reduce inventory
+#             item.inventory.reduce_stock(cart_item['quantity'])
+#             total_cost += line_total
+#         else:
+#             flash(f'Insufficient stock for {cart_item["name"]}.', 'danger')
+#             return redirect(url_for('view_vegetables'))
+
+#     # Update the order with the total cost
+#     order.total_cost = total_cost
+#     db.session.commit()
+
+#     # Clear the cart after successful checkout
+#     session.pop('cart', None)
+
+#     flash('Your order was successfully placed!', 'success')
+#     return redirect(url_for('dashboard'))
 
 # # Add items to cart
 # @app.route('/customer/add_to_cart/<int:item_id>', methods=['POST'])
