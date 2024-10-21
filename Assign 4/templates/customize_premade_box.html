@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Customize Your Premade Box{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="py-5 text-center">
+    <h2>Customize Your Premade Box</h2>
+    <p class="lead">You can add up to {{ box.max_content }} items to this premade box.</p>
+  </div>
+
+  <form method="post" action="{{ url_for('customize_premade_box', box_id=box.id) }}">
+    <div class="row">
+      <!-- 商品列表（除 Premade Box 外的其他蔬菜） -->
+      {% for item in items %}
+      <div class="col-md-4">
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <!-- 根据商品类型显示不同的标题 -->
+            {% if item.type == 'veggie' %}
+              <h4 class="my-0 font-weight-normal">Vegetable (by each)</h4>
+            {% elif item.type == 'weighted_veggie' %}
+              <h4 class="my-0 font-weight-normal">Weighted Vegetable</h4>
+            {% elif item.type == 'pack_veggie' %}
+              <h4 class="my-0 font-weight-normal">Pack Vegetable</h4>
+            {% elif item.type == 'unit_price_veggie' %}
+              <h4 class="my-0 font-weight-normal">Unit Priced Vegetable</h4>
+            {% endif %}
+          </div>
+          <div class="card-body">
+            <!-- 商品名称作为 card-title -->
+            <h3 class="card-title">{{ item.name }}</h3>
+
+            <ul class="list-unstyled mt-3 mb-4">
+              <li style="color: #28a745;">Stock: {{ item.inventory.quantity }} available</li>
+            </ul>
+
+            <!-- 输入数量 -->
+            <div class="form-group">
+              <label for="quantity_{{ item.id }}">Quantity:</label>
+              <input type="number" class="form-control" id="quantity_{{ item.id }}" name="quantity_{{ item.id }}" 
+                     value="0" min="0" max="{{ item.inventory.quantity }}">
+            </div>
+
+            <!-- Add to Premade Box 按钮 -->
+            <button type="submit" class="btn btn-block btn-primary">Add to Premade Box</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- 提交和取消按钮 -->
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <button type="submit" class="btn btn-lg btn-block btn-primary">Submit Customization</button>
+      </div>
+      <div class="col-md-6">
+        <!-- Cancel 按钮 -->
+        <button type="button" class="btn btn-lg btn-block btn-secondary" 
+                onclick="location.href='{{ url_for('view_vegetables') }}';">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -55,7 +55,19 @@
               <label for="quantity_{{ item.id }}">Quantity:</label>
               <input type="number" class="form-control" id="quantity_{{ item.id }}" name="quantity" value="1" min="1" max="{{ item.inventory.quantity }}">
             </div>
-            <button type="button" class="btn btn-lg btn-block btn-secondary" disabled>Add to Cart (Coming Soon)</button>
+            {% if item.type == 'premade_box' %}
+            <button type="button" class="btn btn-lg btn-block btn-primary" 
+            onclick="console.log('Navigating to: {{ url_for('customize_premade_box', box_id=item.id) }}'); window.location.href='{{ url_for('customize_premade_box', box_id=item.id) }}';">
+        Customize Premade Box
+    </button>
+    
+    
+        {% else %}
+                <button type="button" class="btn btn-lg btn-block btn-secondary" disabled>
+                    Add to Cart (Coming Soon)
+                </button>
+            {% endif %}
+
           </form>
         </div>
       </div>

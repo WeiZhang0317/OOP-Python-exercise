@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
-from models import db, Person, Item, Order, OrderLine, WeightedVeggie, PackVeggie, UnitPriceVeggie  # 从 models 中导入 db 和其他模型
+from models import db, Person, Item, Order, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
 
 from datetime import datetime
 
@@ -99,6 +99,38 @@ def view_vegetables():
 
     return render_template('view_vegetables.html', items=items)
 
+@app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
+def customize_premade_box(box_id):
+    box = PremadeBox.query.get(box_id)
+    max_content = box.max_content
+    
+
+    items = (
+        db.session.query(Item)
+        .filter(Item.type != 'premade_box')
+        .join(Inventory)
+        .filter(Inventory.quantity > 0)
+        .all()
+    )
+    
+    if request.method == 'POST':
+        selected_items = request.form.getlist('selected_items')
+        quantities = request.form.getlist('quantity')
+
+        # 计算用户选择的总蔬菜数量
+        total_quantity = sum(int(q) for q in quantities)
+
+        if total_quantity > max_content:
+            flash(f"Total items exceed the box limit! Maximum allowed: {max_content}", "danger")
+            return redirect(url_for('customize_premade_box', box_id=box_id))
+
+        # 如果数量合法，进行处理（保存数据或进行下一步）
+        # 保存逻辑（依赖于项目的特定处理逻辑）
+
+        flash('Premade Box customized successfully!', 'success')
+        return redirect(url_for('view_vegetables'))
+
+    return render_template('customize_premade_box.html', items=items, box=box)
 
 
 
