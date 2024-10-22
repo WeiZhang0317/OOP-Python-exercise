@@ -1,8 +1,7 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
-from models import db, Person, Item, Order, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
-
+from models import db, Person, Item, Order,Cart, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
 from datetime import datetime
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -80,15 +79,13 @@ def dashboard():
         flash('未授权的访问。', 'danger')
         return redirect(url_for('login'))
 
-# View vegetables and premade boxes
 @app.route('/view_vegetables')
 def view_vegetables():
     if 'user_id' not in session or session.get('role') != 'customer':
         flash('Please log in as a customer.', 'warning')
         return redirect(url_for('login'))
-    
-        
-    # Query items and join relevant tables
+
+    # 获取商品列表
     items = (
         db.session.query(Item)
         .outerjoin(WeightedVeggie, Item.id == WeightedVeggie.id)
@@ -97,17 +94,11 @@ def view_vegetables():
         .all()
     )
 
-    if 'cart' not in session:
-        session['cart'] = []
-    cart = session['cart']
-    total_price = sum(item['line_total'] for item in cart) if cart else 0
+    # 获取购物车对象并计算总价
+    cart = Cart(session.get('cart'))
+    total_price = cart.get_total_price()
 
-     # Get the cart from session, or an empty list if it doesn't exist
-
-
-  
-
-    return render_template('view_vegetables.html', items=items, cart=cart, total_price=total_price)
+    return render_template('view_vegetables.html', items=items, cart=cart.get_cart(), total_price=total_price)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -115,122 +106,99 @@ def add_to_cart():
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
 
-    # Get item_id and quantity from the form data
+    # 获取商品ID和数量
     item_id = request.form.get('item_id')
     quantity = int(request.form.get('quantity', 0))
 
-    # Debugging output
-    print(f"Received item_id: {item_id}, quantity: {quantity}")
-
-    # Retrieve the item from the database
+    # 从数据库中获取商品
     item = Item.query.get(item_id)
-
-    # Handle missing or incorrect items
     if not item:
-        print("Item not found!")
         flash('Item not found!', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # Handle stock shortages
+    # 检查库存
     if item.inventory.quantity < quantity:
-        print(f"Insufficient stock! Available: {item.inventory.quantity}, Requested: {quantity}")
         flash('Insufficient stock!', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # Initialize the cart if it's not already in the session
-    if 'cart' not in session:
-        session['cart'] = []
+    # 获取购物车对象
+    cart = Cart(session.get('cart'))
 
-    cart = session['cart']
+    # 添加商品到购物车
+    cart.add_item(item, quantity)
 
-    # Check if the item is already in the cart
-    item_in_cart = next((cart_item for cart_item in cart if cart_item['item_id'] == int(item_id)), None)
-    
-    if item_in_cart:
-        # Update quantity and line total if item already exists in the cart
-        item_in_cart['quantity'] += quantity
-        item_in_cart['line_total'] = item.calculate_total(item_in_cart['quantity'])
-        print(f"Updated item in cart: {item_in_cart}")
-    else:
-        # Add new item to the cart
-        new_cart_item = {
-            'item_id': int(item_id),  # Cast to int for consistency
-            'name': item.name,
-            'price': item.get_price(),
-            'quantity': quantity,
-            'line_total': item.calculate_total(quantity)
-        }
-        cart.append(new_cart_item)
-        print(f"Added new item to cart: {new_cart_item}")
-    
-    # Update the session with the modified cart
-    session['cart'] = cart
-
-    # Debug output to check the updated session data
-    print(f"Session cart updated: {session['cart']}")
-
+    # 更新session
+    session['cart'] = cart.get_cart()
     flash(f'{item.name} added to your cart!', 'success')
+
     return redirect(url_for('view_vegetables'))
 
 
 @app.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():
-    # 检查用户是否已登录
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
 
-    # 获取要删除的 item_id
+    # 获取要删除的商品ID
     item_id = int(request.form.get('item_id'))
 
-    # 初始化购物车（如果没有则创建空列表）
-    if 'cart' not in session:
-        session['cart'] = []
+    # 获取购物车对象
+    cart = Cart(session.get('cart'))
 
-    cart = session['cart']
+    # 从购物车移除商品
+    cart.remove_item(item_id)
 
-    # 过滤掉要删除的商品
-    session['cart'] = [item for item in cart if item['item_id'] != item_id]
-
-    # 更新后的购物车
-    print(f"Updated cart after removal: {session['cart']}")
-
+    # 更新session
+    session['cart'] = cart.get_cart()
     flash('Item removed from cart', 'success')
+
     return redirect(url_for('view_vegetables'))
 
 
 @app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
 def customize_premade_box(box_id):
     box = PremadeBox.query.get(box_id)
-    max_content = box.max_content
     
-
-    items = (
-        db.session.query(Item)
-        .filter(Item.type != 'premade_box')
-        .join(Inventory)
-        .filter(Inventory.quantity > 0)
-        .all()
-    )
-    
-    if request.method == 'POST':
-        selected_items = request.form.getlist('selected_items')
-        quantities = request.form.getlist('quantity')
-
-        # 计算用户选择的总蔬菜数量
-        total_quantity = sum(int(q) for q in quantities)
-
-        if total_quantity > max_content:
-            flash(f"Total items exceed the box limit! Maximum allowed: {max_content}", "danger")
-            return redirect(url_for('customize_premade_box', box_id=box_id))
-
-        # 如果数量合法，进行处理（保存数据或进行下一步）
-        # 保存逻辑（依赖于项目的特定处理逻辑）
-
-        flash('Premade Box customized successfully!', 'success')
+    if not box:
+        flash('Premade Box not found.', 'danger')
         return redirect(url_for('view_vegetables'))
 
+    # 获取可添加到预设箱子的蔬菜
+    items = (
+        db.session.query(Item)
+        .filter(Item.type != 'premade_box')  # 只选择蔬菜，不包括其他预设箱子
+        .join(Inventory)
+        .filter(Inventory.quantity > 0)  # 过滤掉库存不足的蔬菜
+        .all()
+    )
+
+    if request.method == 'POST':
+        # 获取用户选择的蔬菜和对应数量
+        selected_item_ids = request.form.getlist('selected_items')
+        quantities = [int(q) for q in request.form.getlist('quantity')]
+
+        # 查询数据库中的所选商品
+        selected_items = Item.query.filter(Item.id.in_(selected_item_ids)).all()
+
+        try:
+            # 遍历所选商品和数量，并将它们添加到预设箱子中
+            for item, qty in zip(selected_items, quantities):
+                if qty > 0:
+                    # 调用 PremadeBox 类中的 add_content 方法
+                    for _ in range(qty):  # 如果用户选择了多个同样的蔬菜，逐个加入
+                        box.add_content(item)
+
+            flash('Premade Box customized successfully!', 'success')
+            return redirect(url_for('view_vegetables'))
+        
+        except ValueError as e:
+            # 捕捉到的错误（如超出箱子容量）将显示给用户
+            flash(str(e), 'danger')
+            return redirect(url_for('customize_premade_box', box_id=box_id))
+
     return render_template('customize_premade_box.html', items=items, box=box)
+
 
 # @app.route('/checkout', methods=['GET', 'POST'])
 # def checkout():
