@@ -51,17 +51,20 @@
                 <!-- 显示库存 -->
                 <li class="text-success">Stock: {{ item.inventory.quantity }} available</li>
               </ul>
-              <!-- 添加到购物车按钮 -->
-              <form action="{{ url_for('add_to_cart') }}" method="post">
-                <!-- Hidden field for item_id -->
+              {% if item.type == 'premade_box' %}
+              <!-- 如果是 Premade Box，显示定制按钮 -->
+              <a href="{{ url_for('customize_premade_box', box_id=item.id) }}" class="btn btn-lg btn-block btn-warning">Customize</a>
+            {% else %}
+              <!-- 对于其他商品类型，显示 Add to Cart 按钮 -->
+              <form action="{{ url_for('add_to_cart') }}" method="post" onsubmit="return validateQuantity(this, {{ item.id }});">
                 <input type="hidden" name="item_id" value="{{ item.id }}">
-                
                 <div class="form-group">
                   <label for="quantity_{{ item.id }}">Quantity:</label>
                   <input type="number" class="form-control" id="quantity_{{ item.id }}" name="quantity" value="0" min="0" max="{{ item.inventory.quantity }}">
                 </div>
                 <button type="submit" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
               </form>
+            {% endif %}
               
             </div>
           </div>
@@ -80,15 +83,21 @@
           </h4>
         </div>
         <div class="card-body">
-          {% if cart|length > 0 %}
+          {% if cart and cart|length > 0 %}
           <ul class="list-group mb-3">
             {% for cart_item in cart %}
             <li class="list-group-item d-flex justify-content-between lh-condensed">
               <div>
-                <h6 class="my-0">{{ cart_item.item.name }}</h6>
+                <h6 class="my-0">{{ cart_item.name }}</h6>
+
                 <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
               </div>
-              <span class="text-muted">${{ cart_item.item.price * cart_item.quantity }}</span>
+              <span class="text-muted">${{ cart_item.price * cart_item.quantity }}</span>
+
+              <form action="{{ url_for('remove_from_cart') }}" method="post" style="display:inline;">
+                <input type="hidden" name="item_id" value="{{ cart_item.item_id }}">
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
             </li>
             {% endfor %}
             <li class="list-group-item d-flex justify-content-between">
@@ -96,7 +105,7 @@
               <strong>${{ total_price }}</strong>
             </li>
           </ul>
-          <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-block">Proceed to Checkout</a>
+          <a href="#" class="btn btn-primary btn-block">Proceed to Checkout</a>
           {% else %}
           <p>Your cart is empty.</p>
           {% endif %}
@@ -105,4 +114,20 @@
     </div>
   </div>
 </div>
+
+<script>
+  function validateQuantity(form, itemId) {
+    const quantityInput = document.getElementById(`quantity_${itemId}`);
+    const quantity = parseInt(quantityInput.value, 10);
+
+    if (quantity <= 0 || isNaN(quantity)) {
+      alert('Please select a valid quantity greater than 0.');
+      return false; // 阻止表单提交
+    }
+    
+    return true; // 允许表单提交
+  }
+</script>
+
 {% endblock %}
+

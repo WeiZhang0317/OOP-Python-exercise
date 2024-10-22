@@ -87,6 +87,7 @@ def view_vegetables():
         flash('Please log in as a customer.', 'warning')
         return redirect(url_for('login'))
     
+        
     # Query items and join relevant tables
     items = (
         db.session.query(Item)
@@ -96,42 +97,17 @@ def view_vegetables():
         .all()
     )
 
-     # Get the cart from session, or an empty list if it doesn't exist
-    cart = session.get('cart', [])
+    if 'cart' not in session:
+        session['cart'] = []
+    cart = session['cart']
+    total_price = sum(item['line_total'] for item in cart) if cart else 0
 
-    # Calculate the total price of the cart
-    total_price = sum(item['line_total'] for item in cart)
+     # Get the cart from session, or an empty list if it doesn't exist
+
+
+  
 
     return render_template('view_vegetables.html', items=items, cart=cart, total_price=total_price)
-
-@app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
-def customize_premade_box(box_id):
-    box = PremadeBox.query.get(box_id)
-    max_content = box.max_content
-    
-    # Query items that are not premade boxes and are in stock
-    items = (
-        db.session.query(Item)
-        .filter(Item.type != 'premade_box')
-        .join(Inventory)
-        .filter(Inventory.quantity > 0)
-        .all()
-    )
-    
-    if request.method == 'POST':
-        selected_items = request.form.getlist('selected_items')
-        quantities = request.form.getlist('quantity')
-
-        total_quantity = sum(int(q) for q in quantities)
-
-        if total_quantity > max_content:
-            flash(f"Total items exceed the box limit! Maximum allowed: {max_content}", "danger")
-            return redirect(url_for('customize_premade_box', box_id=box_id))
-
-        flash('Premade Box customized successfully!', 'success')
-        return redirect(url_for('view_vegetables'))
-
-    return render_template('customize_premade_box.html', items=items, box=box)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -197,6 +173,64 @@ def add_to_cart():
     return redirect(url_for('view_vegetables'))
 
 
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    # 检查用户是否已登录
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+
+    # 获取要删除的 item_id
+    item_id = int(request.form.get('item_id'))
+
+    # 初始化购物车（如果没有则创建空列表）
+    if 'cart' not in session:
+        session['cart'] = []
+
+    cart = session['cart']
+
+    # 过滤掉要删除的商品
+    session['cart'] = [item for item in cart if item['item_id'] != item_id]
+
+    # 更新后的购物车
+    print(f"Updated cart after removal: {session['cart']}")
+
+    flash('Item removed from cart', 'success')
+    return redirect(url_for('view_vegetables'))
+
+
+@app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
+def customize_premade_box(box_id):
+    box = PremadeBox.query.get(box_id)
+    max_content = box.max_content
+    
+
+    items = (
+        db.session.query(Item)
+        .filter(Item.type != 'premade_box')
+        .join(Inventory)
+        .filter(Inventory.quantity > 0)
+        .all()
+    )
+    
+    if request.method == 'POST':
+        selected_items = request.form.getlist('selected_items')
+        quantities = request.form.getlist('quantity')
+
+        # 计算用户选择的总蔬菜数量
+        total_quantity = sum(int(q) for q in quantities)
+
+        if total_quantity > max_content:
+            flash(f"Total items exceed the box limit! Maximum allowed: {max_content}", "danger")
+            return redirect(url_for('customize_premade_box', box_id=box_id))
+
+        # 如果数量合法，进行处理（保存数据或进行下一步）
+        # 保存逻辑（依赖于项目的特定处理逻辑）
+
+        flash('Premade Box customized successfully!', 'success')
+        return redirect(url_for('view_vegetables'))
+
+    return render_template('customize_premade_box.html', items=items, box=box)
 
 # @app.route('/checkout', methods=['GET', 'POST'])
 # def checkout():
