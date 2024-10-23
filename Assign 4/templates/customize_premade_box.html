@@ -10,48 +10,57 @@
   </div>
 
   <div class="row">
-    <!-- Left side: Item list -->
+    <!-- 左侧商品列表 -->
     <div class="col-md-8">
       <form method="post" action="{{ url_for('customize_premade_box', box_id=box.id) }}">
         <div class="row">
+          <!-- 商品列表（除 Premade Box 外的其他蔬菜） -->
           {% for item in items %}
           <div class="col-md-6">
             <div class="card mb-4 box-shadow">
               <div class="card-header">
+                <!-- 根据商品类型显示不同的标题 -->
                 <h4 class="my-0 font-weight-normal">{{ item.name }} ({{ item.type }})</h4>
               </div>
               <div class="card-body">
+                <!-- 商品名称作为 card-title -->
                 <h3 class="card-title">{{ item.name }}</h3>
                 <ul class="list-unstyled mt-3 mb-4">
                   <li style="color: #28a745;">Stock: {{ item.inventory.quantity }} available</li>
                 </ul>
-                <input type="hidden" name="selected_items[]" value="{{ item.id }}">
+
+                <!-- 输入数量 -->
                 <div class="form-group">
                   <label for="quantity_{{ item.id }}">Quantity:</label>
-                  <input type="number" class="form-control" id="quantity_{{ item.id }}" name="quantities[]" value="0" min="0" max="{{ item.inventory.quantity }}">
+                  <input type="number" class="form-control" id="quantity_{{ item.id }}" 
+                         name="quantity_{{ item.id }}" value="0" min="0" 
+                         max="{{ item.inventory.quantity }}">
                 </div>
-                <button type="button" class="btn btn-success" onclick="addToBox('{{ item.id }}', '{{ item.name }}', {{ item.inventory.quantity }}, {{ box.id }})">Add to Box</button>
 
-
+                <!-- Add to Premade Box 按钮 -->
+                <button type="submit" class="btn btn-block btn-primary">Add to Box</button>
               </div>
             </div>
           </div>
           {% endfor %}
         </div>
 
-        <!-- Submit button for the whole customization -->
+        <!-- 提交按钮 -->
         <div class="row mt-4">
           <div class="col-md-6">
             <button type="submit" class="btn btn-lg btn-block btn-primary">Submit Customization</button>
           </div>
           <div class="col-md-6">
-            <button type="button" class="btn btn-lg btn-block btn-secondary" onclick="location.href='{{ url_for('view_vegetables') }}';">Cancel</button>
+            <button type="button" class="btn btn-lg btn-block btn-secondary" 
+                    onclick="location.href='{{ url_for('view_vegetables') }}';">
+              Cancel
+            </button>
           </div>
         </div>
       </form>
     </div>
 
-    <!-- Right side: Premade Box Cart -->
+    <!-- 右侧购物车区域 -->
     <div class="col-md-4">
       <div class="card mt-4">
         <div class="card-header bg-info text-white">
@@ -82,7 +91,4 @@
     </div>
   </div>
 </div>
-
-
-
 {% endblock %}

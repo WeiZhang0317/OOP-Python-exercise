@@ -158,33 +158,48 @@ def remove_from_cart():
 
 @app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
 def customize_premade_box(box_id):
-    box = PremadeBoxService.get_box_by_id(box_id)
+    box = PremadeBox.query.get(box_id)
     
     if not box:
         flash('Premade Box not found.', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # Fetch available items for selection
-    items = PremadeBoxService.get_available_items()
+    # 获取可添加到预设箱子的蔬菜
+    items = (
+        db.session.query(Item)
+        .filter(Item.type != 'premade_box')  # 排除其他premade_box，只选择蔬菜
+        .join(Inventory)
+        .filter(Inventory.quantity > 0)  # 过滤掉库存不足的蔬菜
+        .all()
+    )
 
     if request.method == 'POST':
+        # 初始化箱子的内容列表
         if 'premade_box' not in session:
             session['premade_box'] = []
 
-        selected_item_ids = request.form.getlist('selected_items[]')
-        quantities = [int(q) for q in request.form.getlist('quantities[]')]
-
-        try:
-            # Use the service layer to add the items to the box
-            selected_items = PremadeBoxService.get_items_by_ids(selected_item_ids)
-            PremadeBoxService.customize_box(box, selected_items, quantities)
-            flash('Items added to Premade Box successfully!', 'success')
-            return redirect(url_for('view_vegetables'))  # Redirect to the vegetables page after customization
-        except ValueError as e:
-            flash(str(e), 'danger')
-            return redirect(url_for('customize_premade_box', box_id=box_id))
+        # 获取所有表单数据
+        for item in items:
+            quantity = int(request.form.get(f'quantity_{item.id}', 0))
+            if quantity > 0:
+                # 检查箱子的当前数量限制
+                current_total = sum(cart_item['quantity'] for cart_item in session['premade_box'])
+                if current_total + quantity > box.max_content:
+                    flash(f"Total items exceed the box limit! Maximum allowed: {box.max_content}", 'danger')
+                    return redirect(url_for('customize_premade_box', box_id=box_id))
+                
+                # 将商品加入到 session 的 premade_box 中
+                session['premade_box'].append({
+                    'item_id': item.id,
+                    'name': item.name,
+                    'quantity': quantity
+                })
+        
+        flash('Items added to Premade Box successfully!', 'success')
+        return redirect(url_for('customize_premade_box', box_id=box_id))
 
     return render_template('customize_premade_box.html', items=items, box=box)
+
 
 
 @app.route('/remove_from_premade_box', methods=['POST'])
