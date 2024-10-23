@@ -238,12 +238,13 @@ class PremadeBox(Item):
         elif box_size == 'large':
             self.max_content = 9
 
-    def add_content(self, veggie: Veggie) -> None:
-        """Adds a vegetable to the box content if the box is not full."""
-        if len(self.box_content) < self.max_content:
-            self.box_content.append(veggie)
-        else:
-            raise ValueError(f"The {self.box_size} box can only contain {self.max_content} veggies.")
+    def add_items_to_box(self, veggie: Item, quantity: int) -> None:
+        """Adds the vegetable to the box if the box is not full."""
+        if len(self.box_content) + quantity > self.max_content:
+            raise ValueError(f"The {self.box_size} box can only contain {self.max_content} items.")
+        
+        self.box_content.extend([veggie] * quantity)  # Add the vegetable multiple times based on quantity
+
 
     def get_box_details(self) -> str:
         """Returns the details of the premade box, including size and contents."""

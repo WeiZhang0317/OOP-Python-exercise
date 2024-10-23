@@ -73,45 +73,53 @@
       </div>
     </div>
 
-    <!-- 购物车侧栏 - 右侧购物车 -->
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header bg-info text-white">
-          <h4 class="d-flex justify-content-between align-items-center mb-0">
-            <span>Your cart</span>
-            <span class="badge badge-light badge-pill">{{ cart|length }}</span>
-          </h4>
-        </div>
-        <div class="card-body">
-          {% if cart and cart|length > 0 %}
-          <ul class="list-group mb-3">
-            {% for cart_item in cart %}
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">{{ cart_item.name }}</h6>
-
-                <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
-              </div>
-              <span class="text-muted">${{ cart_item.price * cart_item.quantity }}</span>
-
-              <form action="{{ url_for('remove_from_cart') }}" method="post" style="display:inline;">
-                <input type="hidden" name="item_id" value="{{ cart_item.item_id }}">
-                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-            </form>
-            </li>
-            {% endfor %}
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Total (USD)</span>
-              <strong>${{ total_price }}</strong>
-            </li>
-          </ul>
-          <a href="#" class="btn btn-primary btn-block">Proceed to Checkout</a>
-          {% else %}
-          <p>Your cart is empty.</p>
-          {% endif %}
-        </div>
-      </div>
+  <!-- 购物车侧栏 - 右侧购物车 -->
+<div class="col-md-4">
+  <div class="card">
+    <div class="card-header bg-info text-white">
+      <h4 class="d-flex justify-content-between align-items-center mb-0">
+        <span>Your cart</span>
+        <span class="badge badge-light badge-pill">{{ cart|length + (session.premade_box|length if session.premade_box else 0) }}</span>
+      </h4>
     </div>
+    <div class="card-body">
+      {% if cart and cart|length > 0 %}
+      <ul class="list-group mb-3">
+        {% for cart_item in cart %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">{{ cart_item.name }}</h6>
+            <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
+          </div>
+          <span class="text-muted">${{ cart_item.price * cart_item.quantity }}</span>
+        </li>
+        {% endfor %}
+        {% if session.premade_box %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">Premade Box</h6>
+            <ul>
+              {% for box_item in session.premade_box %}
+              <li>{{ box_item.name }} - Quantity: {{ box_item.quantity }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
+        {% endif %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Total (USD)</span>
+          <strong>${{ total_price }}</strong>
+        </li>
+      </ul>
+      <a href="#" class="btn btn-primary btn-block">Proceed to Checkout</a>
+      {% else %}
+      <p>Your cart is empty.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
   </div>
 </div>
 

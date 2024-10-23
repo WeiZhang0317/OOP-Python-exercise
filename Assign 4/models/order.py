@@ -44,23 +44,6 @@ class Cart:
         """返回购物车列表"""
         return self.cart
 
-    def customize_box(self, box, selected_items, quantities):
-        """自定义Premade Box，将商品添加到预设箱子中"""
-        total_quantity = sum(quantities)
-        if total_quantity > box.max_content:
-            raise ValueError(f"Total items exceed the box limit! Maximum allowed: {box.max_content}")
-
-        box_content = []
-        for item, qty in zip(selected_items, quantities):
-            if qty > 0:
-                box_content.append({
-                    'item_id': item.id,
-                    'name': item.name,
-                    'quantity': qty,
-                    'line_total': item.calculate_total(qty)
-                })
-        
-        return box_content
 
 
 class OrderStatus(Enum):

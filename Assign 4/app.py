@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, url_for, redirect, flash, ses
 from werkzeug.security import check_password_hash
 from models import db, Person, Item, Order,Cart, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
 from datetime import datetime
+from service import PremadeBoxService
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -155,49 +156,51 @@ def remove_from_cart():
 
     return redirect(url_for('view_vegetables'))
 
-
 @app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
 def customize_premade_box(box_id):
-    box = PremadeBox.query.get(box_id)
+    box = PremadeBoxService.get_box_by_id(box_id)
     
     if not box:
         flash('Premade Box not found.', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # 获取可添加到预设箱子的蔬菜
-    items = (
-        db.session.query(Item)
-        .filter(Item.type != 'premade_box')  # 只选择蔬菜，不包括其他预设箱子
-        .join(Inventory)
-        .filter(Inventory.quantity > 0)  # 过滤掉库存不足的蔬菜
-        .all()
-    )
+    # Fetch available items for selection
+    items = PremadeBoxService.get_available_items()
 
     if request.method == 'POST':
-        # 获取用户选择的蔬菜和对应数量
-        selected_item_ids = request.form.getlist('selected_items')
-        quantities = [int(q) for q in request.form.getlist('quantity')]
+        if 'premade_box' not in session:
+            session['premade_box'] = []
 
-        # 查询数据库中的所选商品
-        selected_items = Item.query.filter(Item.id.in_(selected_item_ids)).all()
+        selected_item_ids = request.form.getlist('selected_items[]')
+        quantities = [int(q) for q in request.form.getlist('quantities[]')]
 
         try:
-            # 遍历所选商品和数量，并将它们添加到预设箱子中
-            for item, qty in zip(selected_items, quantities):
-                if qty > 0:
-                    # 调用 PremadeBox 类中的 add_content 方法
-                    for _ in range(qty):  # 如果用户选择了多个同样的蔬菜，逐个加入
-                        box.add_content(item)
-
-            flash('Premade Box customized successfully!', 'success')
-            return redirect(url_for('view_vegetables'))
-        
+            # Use the service layer to add the items to the box
+            selected_items = PremadeBoxService.get_items_by_ids(selected_item_ids)
+            PremadeBoxService.customize_box(box, selected_items, quantities)
+            flash('Items added to Premade Box successfully!', 'success')
+            return redirect(url_for('view_vegetables'))  # Redirect to the vegetables page after customization
         except ValueError as e:
-            # 捕捉到的错误（如超出箱子容量）将显示给用户
             flash(str(e), 'danger')
             return redirect(url_for('customize_premade_box', box_id=box_id))
 
     return render_template('customize_premade_box.html', items=items, box=box)
+
+
+@app.route('/remove_from_premade_box', methods=['POST'])
+def remove_from_premade_box():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+
+    # 获取要删除的商品ID
+    item_id = int(request.form.get('item_id'))
+
+    # 使用服务层来处理删除逻辑
+    PremadeBoxService.remove_item_from_box(session, item_id)
+
+    flash('Item removed from Premade Box', 'success')
+    return redirect(url_for('customize_premade_box', box_id=request.form.get('box_id')))
 
 
 # @app.route('/checkout', methods=['GET', 'POST'])
