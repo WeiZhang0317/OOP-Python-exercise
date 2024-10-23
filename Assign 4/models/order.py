@@ -21,14 +21,14 @@ class Cart:
         
         if item_in_cart:
             item_in_cart['quantity'] += quantity
-            item_in_cart['line_total'] = item.calculate_total(item_in_cart['quantity'])
+            item_in_cart['line_total'] = item_in_cart['price'] * item_in_cart['quantity']
         else:
             new_cart_item = {
                 'item_id': item.id,
                 'name': item.name,
                 'price': item.get_price(),
                 'quantity': quantity,
-                'line_total': item.calculate_total(quantity)
+                'line_total': item.get_price() * quantity  
             }
             self.cart.append(new_cart_item)
     
