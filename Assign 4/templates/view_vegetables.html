@@ -92,6 +92,10 @@
             <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
           </div>
           <span class="text-muted">${{ cart_item.price * cart_item.quantity }}</span>
+          <form action="{{ url_for('remove_from_cart') }}" method="POST" style="display:inline;">
+            <input type="hidden" name="item_id" value="{{ cart_item.item_id }}">
+            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+          </form>
         </li>
         {% endfor %}
         {% if session.premade_box %}
