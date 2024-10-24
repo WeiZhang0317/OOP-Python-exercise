@@ -197,23 +197,37 @@ def checkout():
     # 将订单添加到数据库
     db.session.add(order)
     db.session.flush()  # 获取订单ID
-    
-     # 为购物车中的每个商品创建相应的 OrderLine 记录
+
+    # 为购物车中的每个商品创建相应的 OrderLine 记录并减少库存
     for cart_item in cart.get_cart():
-        order_line = OrderLine(
-            order_id=order.id,  # 使用刚创建的订单ID
-            item_id=cart_item['item_id'],
-            quantity=cart_item['quantity'],
-            line_total=cart_item['line_total']
-        )
-        db.session.add(order_line)
-        
-    # 最后提交事务，将订单保存到数据库
+        # 查找对应商品的库存记录
+        inventory = db.session.query(Inventory).filter_by(item_id=cart_item['item_id']).first()
+        if inventory:
+            # 减少库存
+            try:
+                inventory.reduce_stock(cart_item['quantity'])
+            except ValueError as e:
+                flash(f'Error: {str(e)} for item {cart_item["name"]}', 'danger')
+                return redirect(url_for('view_vegetables'))
+
+            # 创建订单项
+            order_line = OrderLine(
+                order_id=order.id,  # 使用刚创建的订单ID
+                item_id=cart_item['item_id'],
+                quantity=cart_item['quantity'],
+                line_total=cart_item['line_total']
+            )
+            db.session.add(order_line)
+        else:
+            flash(f'No inventory found for item {cart_item["name"]}', 'danger')
+            return redirect(url_for('view_vegetables'))
+
+    # 最后提交事务，将订单和订单项保存到数据库，并更新库存
     db.session.commit()
 
     # 清空购物车
     session['cart'] = []
-    flash(f'Order {order.id} created successfully.', 'success')
+    flash(f'Order {order.id} created successfully with {len(cart.get_cart())} items.', 'success')
 
     return redirect(url_for('view_vegetables'))
 
