@@ -169,65 +169,46 @@ def clean_premade_box_items():
 
 @app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
 def customize_premade_box(box_id):
-    clean_premade_box_items()  
-    
     box = db.session.get(PremadeBox, box_id)
-    
-    if 'premade_box' in session:
-       print("Session premade_box data:", session['premade_box'])
 
-    
     if not box:
         flash('Premade Box not found.', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # 获取可添加到预设箱子的蔬菜
+    # Get available veggies to add to the premade box
     items = (
         db.session.query(Item)
-        .filter(Item.type != 'premade_box')  # 排除其他premade_box，只选择蔬菜
+        .filter(Item.type != 'premade_box')  # Exclude premade boxes
         .join(Inventory)
-        .filter(Inventory.quantity > 0)  # 过滤掉库存不足的蔬菜
+        .filter(Inventory.quantity > 0)  # Only show items in stock
         .all()
     )
 
-    # 调试打印 session 内容，检查 items
-    if 'premade_box' in session:
-        print("Current session['premade_box']['items'] before loading the page:", session['premade_box']['items'])
+    # Store selected items
+    selected_items = []
 
     if request.method == 'POST':
-        # 初始化箱子的内容列表
-        if 'premade_box' not in session:
-            session['premade_box'] = {
-                'items': [],  # 用于存储物品的列表
-                'box_id': box.id,
-                'box_size': box.box_size,
-                'price': box.calculate_box_total()  # 固定的盒子价格
-            }
-
-        # 获取所有表单数据
+        # Process form data for veggie selection
+        total_selected_quantity = 0
         for item in items:
             quantity = int(request.form.get(f'quantity_{item.id}', 0))
             if quantity > 0:
-                # 检查箱子的当前数量限制
-                current_total = sum(cart_item['quantity'] for cart_item in session['premade_box']['items'])
-                if current_total + quantity > box.max_content:
-                    flash(f"Total items exceed the box limit! Maximum allowed: {box.max_content}", 'danger')
-                    return redirect(url_for('customize_premade_box', box_id=box_id))
-                
-                # 将商品加入到 session 的 premade_box 中
-                session['premade_box']['items'].append({
-                'item_id': item.id,
-                'name': item.name,
-                'quantity': quantity
+                total_selected_quantity += quantity
+                selected_items.append({
+                    'item_id': item.id,
+                    'name': item.name,
+                    'quantity': quantity
                 })
 
-        # 打印加入后的session内容
-        print("Updated session['premade_box']['items'] after adding:", session['premade_box']['items'])
-        
-        flash('Items added to Premade Box successfully!', 'success')
-        return redirect(url_for('customize_premade_box', box_id=box_id))
+        # Check box capacity
+        if total_selected_quantity > box.max_content:
+            flash(f"Total items exceed the box limit! Maximum allowed: {box.max_content}.", 'danger')
+            return redirect(url_for('customize_premade_box', box_id=box_id))
 
-    return render_template('customize_premade_box.html', items=items, box=box)
+        flash('Items added to your premade box successfully!', 'success')
+
+    return render_template('customize_premade_box.html', items=items, box=box, selected_items=selected_items)
+
 
 
 @app.route('/remove_from_premade_box', methods=['POST'])

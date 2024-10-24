@@ -10,87 +10,75 @@
   </div>
 
   <div class="row">
-    <!-- 左侧商品列表 -->
+    <!-- Left Column: List of Vegetables -->
     <div class="col-md-8">
       <form method="post" action="{{ url_for('customize_premade_box', box_id=box.id) }}">
         <div class="row">
-          <!-- 商品列表（除 Premade Box 外的其他蔬菜） -->
           {% for item in items %}
           <div class="col-md-6">
             <div class="card mb-4 box-shadow">
               <div class="card-header">
-                <!-- 根据商品类型显示不同的标题 -->
-                <h4 class="my-0 font-weight-normal">{{ item.name }} ({{ item.type }})</h4>
+                <h4 class="my-0 font-weight-normal">{{ item.name }}</h4>
               </div>
               <div class="card-body">
-                <!-- 商品名称作为 card-title -->
                 <h3 class="card-title">{{ item.name }}</h3>
                 <ul class="list-unstyled mt-3 mb-4">
-                  <li style="color: #28a745;">Stock: {{ item.inventory.quantity }} available</li>
+                  <li class="text-success">Stock: {{ item.inventory.quantity }} available</li>
                 </ul>
-
-                <!-- 输入数量 -->
                 <div class="form-group">
                   <label for="quantity_{{ item.id }}">Quantity:</label>
                   <input type="number" class="form-control" id="quantity_{{ item.id }}" 
                          name="quantity_{{ item.id }}" value="0" min="0" 
                          max="{{ item.inventory.quantity }}">
                 </div>
-
-                <!-- Add to Premade Box 按钮 -->
-                <button type="submit" class="btn btn-block btn-primary">Add to Box</button>
               </div>
             </div>
           </div>
           {% endfor %}
         </div>
 
-        <!-- 提交按钮 -->
+        <!-- Save Customization Button -->
         <div class="row mt-4">
           <div class="col-md-6">
-            <button type="submit" class="btn btn-lg btn-block btn-primary">Submit Customization</button>
+            <button type="submit" class="btn btn-lg btn-block btn-primary">Save Customization</button>
           </div>
           <div class="col-md-6">
             <button type="button" class="btn btn-lg btn-block btn-secondary" 
                     onclick="location.href='{{ url_for('view_vegetables') }}';">
-              Cancel
+             Back to shopping
             </button>
           </div>
         </div>
       </form>
     </div>
 
-    <!-- 右侧购物车区域 -->
-    <div class="col-md-4">
-      <div class="card mt-4">
-        <div class="card-header bg-info text-white">
-          <h4>Items in your Premade Box (Max: {{ box.max_content }})</h4>
-        </div>
-        <div class="card-body">
-          {% if session.premade_box %}
-          <ul class="list-group">
-            {% for box_item in session.premade_box['items'] %}
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">{{ box_item.name }}</h6>
-                <small class="text-muted">Quantity: {{ box_item.quantity }}</small>
-              </div>
-              <form action="{{ url_for('remove_from_premade_box') }}" method="POST">
-                <input type="hidden" name="item_id" value="{{ box_item.item_id }}">
-                <input type="hidden" name="item_name" value="{{ box_item.name }}">
-                <input type="hidden" name="box_id" value="{{ box.id }}">
-                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-              </form>
-            </li>
-          {% endfor %}
-          
-          </ul>
-          {% else %}
-          <p>Your premade box is currently empty.</p>
-          {% endif %}
-        </div>
-      </div>
+   <!-- Right side: Items in the Premade Box -->
+<div class="col-md-4">
+  <div class="card mt-4">
+    <div class="card-header bg-info text-white">
+      <h4>Items in your Premade Box (Max: {{ box.max_content }})</h4>
+    </div>
+    <div class="card-body">
+      {% if selected_items %}
+      <!-- If items are already selected, display the list -->
+      <ul class="list-group">
+        {% for item in selected_items %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">{{ item.name }}</h6>
+            <small class="text-muted">Quantity: {{ item.quantity }}</small>
+          </div>
+
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <!-- If no items are selected, show this message -->
+      <p>Your Premade Box is currently empty.</p>
+      {% endif %}
     </div>
   </div>
 </div>
 {% endblock %}
+
+    
