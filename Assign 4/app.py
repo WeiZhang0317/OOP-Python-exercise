@@ -92,6 +92,7 @@ def view_vegetables():
         .outerjoin(WeightedVeggie, Item.id == WeightedVeggie.id)
         .outerjoin(PackVeggie, Item.id == PackVeggie.id)
         .outerjoin(UnitPriceVeggie, Item.id == UnitPriceVeggie.id)
+        .outerjoin(PremadeBox, Item.id ==PremadeBox.id)
         .all()
     )
 
