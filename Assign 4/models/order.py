@@ -8,6 +8,43 @@ from .customer import Customer
 from .item import Item
 
 
+# models/order.py
+
+class Cart:
+    def __init__(self, session_cart):
+        """初始化购物车，传入session中的cart数据"""
+        self.cart = session_cart if session_cart else []
+
+    def add_item(self, item, quantity):
+        """将商品添加到购物车"""
+        item_in_cart = next((cart_item for cart_item in self.cart if cart_item['item_id'] == item.id), None)
+        
+        if item_in_cart:
+            item_in_cart['quantity'] += quantity
+            item_in_cart['line_total'] = item_in_cart['price'] * item_in_cart['quantity']
+        else:
+            new_cart_item = {
+                'item_id': item.id,
+                'name': item.name,
+                'price': item.get_price(),
+                'quantity': quantity,
+                'line_total': item.get_price() * quantity  
+            }
+            self.cart.append(new_cart_item)
+    
+    def remove_item(self, item_id):
+        """从购物车中移除商品"""
+        self.cart = [item for item in self.cart if item['item_id'] != item_id]
+
+    def get_total_price(self):
+        """计算购物车中商品的总价"""
+        return sum(item['line_total'] for item in self.cart)
+
+    def get_cart(self):
+        """返回购物车列表"""
+        return self.cart
+
+
 
 class OrderStatus(Enum):
     """!

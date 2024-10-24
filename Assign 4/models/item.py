@@ -213,14 +213,12 @@ class UnitPriceVeggie(Veggie):
 
 
 class PremadeBox(Item):
-    """!
-    Represents a premade box that can be customized with available vegetables.
-    Inherits from Item.
-    """
+    """Represents a premade box that can be customized with available vegetables."""
+    
     __tablename__ = 'premade_boxes'
 
-    id = Column(Integer, ForeignKey('items.id'), primary_key=True) 
-    box_size = Column(String(20), nullable=False)  # Box size: 'small', 'medium', or 'large'
+    id = Column(Integer, ForeignKey('items.id'), primary_key=True)
+    box_size = Column(String(20), nullable=False)
     max_content = Column(Integer, nullable=False)  # Maximum number of veggies allowed in the box
 
     __mapper_args__ = {
@@ -228,16 +226,9 @@ class PremadeBox(Item):
     }
 
     def __init__(self, name: str, price: float, box_size: str):
-        """!
-        Constructor for PremadeBox class.
-        Initializes the premade box with name, price, and box size.
-        @param name: The name of the premade box.
-        @param price: The price of the premade box.
-        @param box_size: The size of the box, either 'small', 'medium', or 'large'.
-        """
         super().__init__(name, price)
         self.box_size = box_size
-        self.box_content: List[Veggie] = []  # A list to store the vegetables added to the box
+        self.box_content: List[Veggie] = []
 
         # Set the maximum content based on the box size
         if box_size == 'small':
@@ -247,38 +238,28 @@ class PremadeBox(Item):
         elif box_size == 'large':
             self.max_content = 9
 
-    def add_content(self, veggie: Veggie) -> None:
-        """!
-        Adds a vegetable to the box content if the box is not full.
-        @param veggie: A Veggie object to include in the box.
-        """
-        if len(self.box_content) < self.max_content:
-            self.box_content.append(veggie)
-        else:
-            raise ValueError(f"The {self.box_size} box can only contain {self.max_content} veggies.")
+    def add_items_to_box(self, veggie: Item, quantity: int) -> None:
+        """Adds the vegetable to the box if the box is not full."""
+        if len(self.box_content) + quantity > self.max_content:
+            raise ValueError(f"The {self.box_size} box can only contain {self.max_content} items.")
+        
+        self.box_content.extend([veggie] * quantity)  # Add the vegetable multiple times based on quantity
+
 
     def get_box_details(self) -> str:
-        """!
-        Returns the details of the premade box, including size and contents.
-        @return: A string describing the premade box's size and contents.
-        """
+        """Returns the details of the premade box, including size and contents."""
         item_names = [item.veg_name for item in self.box_content]
         return f"Premade Box (Size: {self.box_size}) contains: {', '.join(item_names)}."
 
     def calculate_box_total(self) -> float:
-        """!
-        Calculates the total price for the premade box.
-        If you want the price to be fixed based on size, use self.get_price().
-        Otherwise, sum the individual prices of the contents.
-        @return: The total price of the box.
-        """
+        """Calculates the total price for the premade box."""
         if self.box_size == 'small':
-            return 15.0  
+            return 15.0
         elif self.box_size == 'medium':
-            return 20.0 
+            return 20.0
         elif self.box_size == 'large':
-            return 30.0  
-    
+            return 30.0
+
 
 
 
