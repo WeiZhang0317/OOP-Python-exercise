@@ -227,13 +227,17 @@ def checkout():
 
     # 清空购物车
     session['cart'] = []
-    flash(f'Order {order.id} created successfully with {len(cart.get_cart())} items.', 'success')
-
-    return redirect(url_for('view_vegetables'))
-
-
+    # 跳转到支付页面并传递订单ID
+    flash(f'Order {order.id} created successfully. Please proceed to payment.', 'success')
+    return redirect(url_for('process_payment', order_id=order.id))
 
 
+@app.route('/process_payment', methods=['GET', 'POST'])
+def process_payment():
+    order_id = request.args.get('order_id')
+  
+     # 渲染支付页面
+    return render_template('payment.html', order_id=order_id)
 
 
 

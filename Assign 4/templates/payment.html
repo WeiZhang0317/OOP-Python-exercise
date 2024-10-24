@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="py-5 text-center">
+    <h2>Payment Page</h2>
+    <p class="lead">Choose your preferred payment method to complete the purchase.</p>
+  </div>
+
+  <form action="{{ url_for('process_payment') }}" method="post">
+    <div class="form-group">
+      <label for="payment_method">Select Payment Method</label>
+      <select class="form-control" id="payment_method" name="payment_method">
+        <option value="credit_card">Credit Card</option>
+        <option value="debit_card">Debit Card</option>
+        <option value="account_balance">Account Balance</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm Payment</button>
+  </form>
+</div>
+{% endblock %}
