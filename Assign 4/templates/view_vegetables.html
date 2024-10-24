@@ -106,7 +106,8 @@
           <strong>${{ total_price }}</strong>
         </li>
       </ul>
-      <a href="#" class="btn btn-primary btn-block">Proceed to Checkout</a>
+      <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-block">Proceed to Checkout</a>
+
       {% else %}
       <p>Your cart is empty.</p>
       {% endif %}

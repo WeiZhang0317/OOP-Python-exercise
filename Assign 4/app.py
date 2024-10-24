@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash
 from models import db, Person, Item, Order,Cart, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
 from datetime import datetime
 from service import PremadeBoxService
+from sqlalchemy.orm import aliased
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -86,16 +87,19 @@ def view_vegetables():
         flash('Please log in as a customer.', 'warning')
         return redirect(url_for('login'))
 
-    # 获取商品列表
+    weighted_veggie_alias = aliased(WeightedVeggie)
+    pack_veggie_alias = aliased(PackVeggie)
+    unit_price_veggie_alias = aliased(UnitPriceVeggie)
+    premade_box_alias = aliased(PremadeBox)
+
     items = (
         db.session.query(Item)
-        .outerjoin(WeightedVeggie, Item.id == WeightedVeggie.id)
-        .outerjoin(PackVeggie, Item.id == PackVeggie.id)
-        .outerjoin(UnitPriceVeggie, Item.id == UnitPriceVeggie.id)
-        .outerjoin(PremadeBox, Item.id ==PremadeBox.id)
+        .outerjoin(weighted_veggie_alias, Item.id == weighted_veggie_alias.id)
+        .outerjoin(pack_veggie_alias, Item.id == pack_veggie_alias.id)
+        .outerjoin(unit_price_veggie_alias, Item.id == unit_price_veggie_alias.id)
+        .outerjoin(premade_box_alias, Item.id == premade_box_alias.id)
         .all()
-    )
-
+)
     # 获取购物车对象并计算总价
     cart = Cart(session.get('cart'))
     total_price = cart.get_total_price()
@@ -113,7 +117,7 @@ def add_to_cart():
     quantity = int(request.form.get('quantity', 0))
 
     # 从数据库中获取商品
-    item = Item.query.get(item_id)
+    item = db.session.get(Item, item_id)
     if not item:
         flash('Item not found!', 'danger')
         return redirect(url_for('view_vegetables'))
@@ -160,12 +164,81 @@ def remove_from_cart():
 
     return redirect(url_for('view_vegetables'))
 
-def clean_premade_box_items():
-    if 'premade_box' in session:
-        session['premade_box']['items'] = [
-            item for item in session['premade_box']['items']
-            if item.get('item_id') and item.get('name')
-        ]
+
+
+
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    if 'user_id' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+
+    # 获取当前购物车
+    cart = Cart(session.get('cart'))
+    if not cart or len(cart.get_cart()) == 0:
+        flash('Your cart is empty!', 'warning')
+        return redirect(url_for('view_vegetables'))
+
+    # 获取当前用户ID
+    customer_id = session.get('user_id')
+
+    # 获取staff_id，可以通过session 或者默认分配
+    staff_id = session.get('staff_id', 1)  # 默认分配给staff_id 1
+
+    # 创建一个新的订单，默认状态为 Pending
+    order = Order(order_number=generate_order_number(), customer_id=customer_id, staff_id=staff_id, order_status=OrderStatus.PENDING.value, total_cost=cart.get_total_price())
+
+    db.session.add(order)
+    db.session.flush()  # 立即获取订单ID
+
+    # 创建订单项
+    for cart_item in cart.get_cart():
+        order_line = OrderLine(
+            order_id=order.id,
+            item_id=cart_item['item_id'],
+            quantity=cart_item['quantity'],
+            line_total=cart_item['line_total']
+        )
+        db.session.add(order_line)
+
+        # 减少库存
+        item = Item.query.get(cart_item['item_id'])
+        item.inventory.quantity -= cart_item['quantity']
+        if item.inventory.quantity < 0:
+            item.inventory.quantity = 0  # 避免负库存
+
+    # 提交订单和订单项到数据库
+    db.session.commit()
+
+    # 清空购物车
+    session['cart'] = []
+    flash('Your order has been placed successfully!', 'success')
+
+    return redirect(url_for('view_vegetables'))
+
+def generate_order_number():
+    """生成唯一的订单号，可以基于当前时间戳或其他逻辑"""
+    return int(datetime.now().timestamp())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def clean_premade_box_items():
+#     if 'premade_box' in session:
+#         session['premade_box']['items'] = [
+#             item for item in session['premade_box']['items']
+#             if item.get('item_id') and item.get('name')
+#         ]
 
 @app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
 def customize_premade_box(box_id):
@@ -211,47 +284,47 @@ def customize_premade_box(box_id):
 
 
 
-@app.route('/remove_from_premade_box', methods=['POST'])
-def remove_from_premade_box():
-    if 'user_id' not in session:
-        flash('Please log in first!', 'warning')
-        return redirect(url_for('login'))
+# @app.route('/remove_from_premade_box', methods=['POST'])
+# def remove_from_premade_box():
+#     if 'user_id' not in session:
+#         flash('Please log in first!', 'warning')
+#         return redirect(url_for('login'))
 
-    # 打印删除前的session内容
-    print("Before removing, session['premade_box']['items']:", session.get('premade_box', {}).get('items', []))
+#     # 打印删除前的session内容
+#     print("Before removing, session['premade_box']['items']:", session.get('premade_box', {}).get('items', []))
     
-    # 清理空的 item（没有 item_id 或 name）
-    if 'premade_box' in session:
-        session['premade_box']['items'] = [
-            item for item in session['premade_box']['items']
-            if item.get('item_id') and item.get('name')
-        ]
-        print("After cleaning empty items, session['premade_box']['items']:", session['premade_box']['items'])
+#     # 清理空的 item（没有 item_id 或 name）
+#     if 'premade_box' in session:
+#         session['premade_box']['items'] = [
+#             item for item in session['premade_box']['items']
+#             if item.get('item_id') and item.get('name')
+#         ]
+#         print("After cleaning empty items, session['premade_box']['items']:", session['premade_box']['items'])
 
-    # 获取要删除的商品ID
-    item_id_str = request.form.get('item_id')
-    item_id = int(item_id_str) if item_id_str and item_id_str.isdigit() else None
-    item_name = request.form.get('item_name')
+#     # 获取要删除的商品ID
+#     item_id_str = request.form.get('item_id')
+#     item_id = int(item_id_str) if item_id_str and item_id_str.isdigit() else None
+#     item_name = request.form.get('item_name')
 
-    # 打印删除前的item_id和item_name
-    print(f"Item ID to remove: {item_id}, Item Name to remove: {item_name}")
+#     # 打印删除前的item_id和item_name
+#     print(f"Item ID to remove: {item_id}, Item Name to remove: {item_name}")
 
-    # 使用服务层来处理删除逻辑
-    if item_id:
-        PremadeBoxService.remove_item_from_box(session, item_id)
-        print(f"Item with ID {item_id} removed.")
-    elif item_name:
-        PremadeBoxService.remove_item_by_name(session, item_name)
-        print(f"Item with name {item_name} removed.")
-    else:
-        flash('Invalid item data. Cannot remove item.', 'danger')
-        return redirect(url_for('customize_premade_box', box_id=request.form.get('box_id')))
+#     # 使用服务层来处理删除逻辑
+#     if item_id:
+#         PremadeBoxService.remove_item_from_box(session, item_id)
+#         print(f"Item with ID {item_id} removed.")
+#     elif item_name:
+#         PremadeBoxService.remove_item_by_name(session, item_name)
+#         print(f"Item with name {item_name} removed.")
+#     else:
+#         flash('Invalid item data. Cannot remove item.', 'danger')
+#         return redirect(url_for('customize_premade_box', box_id=request.form.get('box_id')))
 
-    # 打印删除后的session内容
-    print("After removing, session['premade_box']['items']:", session['premade_box']['items'])
+#     # 打印删除后的session内容
+#     print("After removing, session['premade_box']['items']:", session['premade_box']['items'])
 
-    flash('Item removed from Premade Box', 'success')
-    return redirect(url_for('customize_premade_box', box_id=request.form.get('box_id')))
+#     flash('Item removed from Premade Box', 'success')
+#     return redirect(url_for('customize_premade_box', box_id=request.form.get('box_id')))
 
 # @app.route('/checkout', methods=['GET', 'POST'])
 # def checkout():
