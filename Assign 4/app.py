@@ -183,44 +183,39 @@ def checkout():
     customer_id = session.get('user_id')
 
     # 获取staff_id，可以通过session 或者默认分配
-    staff_id = session.get('staff_id', 1)  # 默认分配给staff_id 1
+    staff_id = session.get('staff_id', 4)  # 默认分配给staff_id 4
 
-    # 创建一个新的订单，默认状态为 Pending
-    order = Order(order_number=generate_order_number(), customer_id=customer_id, staff_id=1, order_status=OrderStatus.PENDING.value, total_cost=cart.get_total_price())
+    # 创建一个新的订单，使用 generate_unique_order_number() 生成唯一订单号
+    order = Order(
+        order_number=Order.generate_unique_order_number(),
+        customer_id=customer_id,
+        staff_id=staff_id,
+        order_status=OrderStatus.PENDING.value,
+        total_cost=cart.get_total_price()
+    )
 
+    # 将订单添加到数据库
     db.session.add(order)
-    db.session.flush()  # 立即获取订单ID
-
-    # 创建订单项
+    db.session.flush()  # 获取订单ID
+    
+     # 为购物车中的每个商品创建相应的 OrderLine 记录
     for cart_item in cart.get_cart():
         order_line = OrderLine(
-            order_id=order.id,
+            order_id=order.id,  # 使用刚创建的订单ID
             item_id=cart_item['item_id'],
             quantity=cart_item['quantity'],
             line_total=cart_item['line_total']
         )
         db.session.add(order_line)
-
-        # 减少库存
-        item = Item.query.get(cart_item['item_id'])
-        item.inventory.quantity -= cart_item['quantity']
-        if item.inventory.quantity < 0:
-            item.inventory.quantity = 0  # 避免负库存
-
-    # 提交订单和订单项到数据库
+        
+    # 最后提交事务，将订单保存到数据库
     db.session.commit()
 
     # 清空购物车
     session['cart'] = []
-    flash('Your order has been placed successfully!', 'success')
+    flash(f'Order {order.id} created successfully.', 'success')
 
     return redirect(url_for('view_vegetables'))
-
-def generate_order_number():
-    """生成唯一的订单号，可以基于当前时间戳或其他逻辑"""
-    return int(datetime.now().timestamp())
-
-
 
 
 
