@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
-from models import db, Person, Item, Order,Cart, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
+from models import db, Person, Item, Order,Cart,OrderStatus, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
 from datetime import datetime
 from service import PremadeBoxService
 from sqlalchemy.orm import aliased
@@ -186,7 +186,7 @@ def checkout():
     staff_id = session.get('staff_id', 1)  # 默认分配给staff_id 1
 
     # 创建一个新的订单，默认状态为 Pending
-    order = Order(order_number=generate_order_number(), customer_id=customer_id, staff_id=staff_id, order_status=OrderStatus.PENDING.value, total_cost=cart.get_total_price())
+    order = Order(order_number=generate_order_number(), customer_id=customer_id, staff_id=1, order_status=OrderStatus.PENDING.value, total_cost=cart.get_total_price())
 
     db.session.add(order)
     db.session.flush()  # 立即获取订单ID
