@@ -6,6 +6,7 @@ from datetime import datetime
 from enum import Enum
 from .customer import Customer
 from .item import Item
+import random
 
 
 # models/order.py
@@ -152,6 +153,19 @@ class Order(db.Model):  # 使用 db.Model 代替 Base
         @return: The order status as a string.
         """
         return self.order_status
+    
+    @staticmethod
+    def generate_unique_order_number():
+        """!
+        Generates a random 4-digit order number and ensures it's unique.
+        @return: A unique 4-digit integer as the order number.
+        """
+        while True:
+            order_number = random.randint(1000, 9999)
+            existing_order = db.session.query(Order).filter_by(order_number=order_number).first()
+            if not existing_order:
+                return order_number
+
 
     def __str__(self) -> str:
         """!
