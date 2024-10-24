@@ -125,6 +125,9 @@ def add_to_cart():
 
     # 获取购物车对象
     cart = Cart(session.get('cart'))
+    
+     # 打印购物车内容进行调试
+    print("Cart content: ", cart.get_cart())
 
     # 添加商品到购物车
     cart.add_item(item, quantity)
