@@ -69,19 +69,21 @@
         <div class="card-body">
           {% if session.premade_box %}
           <ul class="list-group">
-            {% for cart_item in session.premade_box %}
+            {% for box_item in session.premade_box['items'] %}
             <li class="list-group-item d-flex justify-content-between lh-condensed">
               <div>
-                <h6 class="my-0">{{ cart_item.name }}</h6>
-                <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
+                <h6 class="my-0">{{ box_item.name }}</h6>
+                <small class="text-muted">Quantity: {{ box_item.quantity }}</small>
               </div>
-              <form action="{{ url_for('remove_from_premade_box') }}" method="post" style="display:inline;">
-                <input type="hidden" name="item_id" value="{{ cart_item.item_id }}">
+              <form action="{{ url_for('remove_from_premade_box') }}" method="POST">
+                <input type="hidden" name="item_id" value="{{ box_item.item_id }}">
+                <input type="hidden" name="item_name" value="{{ box_item.name }}">
                 <input type="hidden" name="box_id" value="{{ box.id }}">
                 <button type="submit" class="btn btn-danger btn-sm">Remove</button>
               </form>
             </li>
-            {% endfor %}
+          {% endfor %}
+          
           </ul>
           {% else %}
           <p>Your premade box is currently empty.</p>

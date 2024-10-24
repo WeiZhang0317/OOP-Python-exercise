@@ -7,7 +7,7 @@ class PremadeBoxService:
     @staticmethod
     def get_box_by_id(box_id):
         """通过 ID 获取 Premade Box"""
-        return PremadeBox.query.get(box_id)
+        return db.session.get(PremadeBox, box_id)
 
     @staticmethod
     def get_available_items():
@@ -37,7 +37,16 @@ class PremadeBoxService:
         
     @staticmethod
     def remove_item_from_box(session, item_id):
-        """从 Premade Box 中移除商品"""
-        premade_box = session.get('premade_box', [])
-        updated_box = [item for item in premade_box if item['item_id'] != item_id]
-        session['premade_box'] = updated_box    
+            """根据 item_id 从 Premade Box 中移除商品"""
+            premade_box = session.get('premade_box', {}).get('items', [])
+            session['premade_box']['items'] = [
+                item for item in premade_box if item['item_id'] != item_id
+            ]
+            
+    @staticmethod
+    def remove_item_by_name(session, item_name):
+            """根据 item_name 从 Premade Box 中移除商品"""
+            premade_box = session.get('premade_box', {}).get('items', [])
+            session['premade_box']['items'] = [
+                item for item in premade_box if item['name'] != item_name
+            ]        
