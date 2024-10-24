@@ -16,6 +16,7 @@ if not session.query(Person).filter_by(username="alice_wonder").first():
         last_name="Wonder",
         username="alice_wonder",
         password="CustomerPass123",  # 明文密码，不进行加密
+        cust_balance=100,
         cust_address="123 Fantasy Road, Wonderland"
     )
     session.add(customer1)
@@ -27,6 +28,7 @@ if not session.query(Person).filter_by(username="bob_builder").first():
         last_name="Builder",
         username="bob_builder",
         password="CustomerPass123",  # 明文密码，不进行加密
+        cust_balance=200,
         cust_address="456 Construction Ave, Buildtown"
     )
     session.add(customer2)
@@ -39,6 +41,7 @@ if not session.query(Person).filter_by(username="corporate_karen").first():
         username="corporate_karen",
         password="CorporatePass456",  # 明文密码，不进行加密
         cust_address="789 Business Blvd, Corporatia",
+        cust_balance=200,
         discount_rate=0.15,  # 自定义折扣率
         max_credit=2000.0,   # 自定义信用额度
         min_balance=1000.0   # 自定义最低余额
