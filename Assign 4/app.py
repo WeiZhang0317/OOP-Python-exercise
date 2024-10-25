@@ -5,6 +5,7 @@ from models import db, Person, Customer, CorporateCustomer, Item, Order,Cart,Ord
 from datetime import datetime
 from service import PremadeBoxService
 from sqlalchemy.orm import aliased
+import re
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -261,7 +262,14 @@ def process_payment():
             card_type = request.form.get('card_type')
             card_number = request.form.get('card_number')
             card_expiry_date = request.form.get('card_expiry_date')
-            cvv = request.form.get('cvv')  # 仅供展示，但不存储在数据库中
+            cvv = request.form.get('cvv')
+
+            # 模型中的验证
+            try:
+                CreditCardPayment.validate_credit_card(None, card_number, card_expiry_date, cvv)
+            except ValueError as e:
+                flash(str(e), 'danger')
+                return redirect(url_for('process_payment', order_id=order_id))
 
             # 模拟创建信用卡支付记录并保存到数据库
             payment = CreditCardPayment(
@@ -279,6 +287,7 @@ def process_payment():
             return redirect(url_for('view_vegetables'))
 
     return render_template('payment.html', customer=customer, order_id=order_id)
+
 
 
 

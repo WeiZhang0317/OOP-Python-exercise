@@ -21,52 +21,111 @@
   </div>
 
   <!-- 第二部分：支付信息 -->
-  <form action="{{ url_for('process_payment', order_id=order_id) }}" method="post">
+  <form action="{{ url_for('process_payment', order_id=order_id) }}" method="post" novalidate>
     <div class="form-group">
       <label for="payment_method">Select Payment Method</label>
-      <select class="form-control" id="payment_method" name="payment_method" onchange="toggleCreditCardForm(this.value)">
+      <select class="form-control" id="payment_method" name="payment_method" onchange="toggleCreditCardForm(this.value)" required>
           <option value="" disabled selected>---Select your payment method---</option>
           <option value="credit_card">Credit Card</option>
           <option value="debit_card">Debit Card</option>
           <option value="account_balance">Account Balance</option>
       </select>
+      <div class="invalid-feedback">Please select a payment method.</div>
     </div>
 
+    <!-- 显示信用卡信息输入框 -->
     <div id="credit_card_info" style="display: none;">
-          <div class="form-group">
-            <label for="card_type">Card Type</label>
-            <select class="form-control" id="card_type" name="card_type" required>
-              <option value="Visa">Visa</option>
-              <option value="MasterCard">MasterCard</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="card_number">Card Number</label>
-            <input type="text" class="form-control" id="card_number" name="card_number" maxlength="16" pattern="\d{16}" placeholder="Enter your 16-digit card number" required>
-          </div>
-          <div class="form-group">
-            <label for="card_expiry_date">Expiry Date (MM/YYYY)</label>
-            <input type="text" class="form-control" id="card_expiry_date" name="card_expiry_date" pattern="(0[1-9]|1[0-2])\/\d{4}" placeholder="MM/YYYY" required>
-          </div>
-          <div class="form-group">
-            <label for="cvv">CVV</label>
-            <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" placeholder="Enter 3-digit CVV" required>
-          </div>
-        </div>
-        
+      <div class="form-group">
+        <label for="card_type">Card Type</label>
+        <select class="form-control" id="card_type" name="card_type" required>
+          <option value="Visa">Visa</option>
+          <option value="MasterCard">MasterCard</option>
+        </select>
+        <div class="invalid-feedback">Please select a card type.</div>
+      </div>
+      <div class="form-group">
+        <label for="card_number">Card Number</label>
+        <input type="text" class="form-control" id="card_number" name="card_number" maxlength="16" pattern="\d{16}" placeholder="Enter your 16-digit card number" required>
+        <div class="invalid-feedback">Please enter a valid 16-digit card number.</div>
+      </div>
+      <div class="form-group">
+        <label for="card_expiry_date">Expiry Date (MM/YYYY)</label>
+        <input type="text" class="form-control" id="card_expiry_date" name="card_expiry_date" pattern="(0[1-9]|1[0-2])/\d{4}" placeholder="MM/YYYY" required>
+        <div class="invalid-feedback">Please enter a valid expiry date in MM/YYYY format, The expiry date must be after Dec 2024, and month need to be valid (1-12).</div>
+      </div>
+      <div class="form-group">
+        <label for="cvv">CVV</label>
+        <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" placeholder="Enter 3-digit CVV" required>
+        <div class="invalid-feedback">Please enter a valid 3-digit CVV.</div>
+      </div>
+    </div>
 
     <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm Payment</button>
   </form>
 </div>
 
 <script>
-  function toggleCreditCardForm(paymentMethod) {
-    const creditCardInfo = document.getElementById('credit_card_info');
-    if (paymentMethod === 'credit_card') {
-      creditCardInfo.style.display = 'block';
-    } else {
-      creditCardInfo.style.display = 'none';
-    }
-  }
-</script>
+          function toggleCreditCardForm(paymentMethod) {
+            const creditCardInfo = document.getElementById('credit_card_info');
+            if (paymentMethod === 'credit_card') {
+              creditCardInfo.style.display = 'block';
+            } else {
+              creditCardInfo.style.display = 'none';
+            }
+          }
+        
+          // 前端验证函数，提交时检查是否有空字段
+          (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+              // 获取所有需要验证的表单
+              var forms = document.getElementsByTagName('form');
+              var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                  // 在表单提交前进行额外的到期日期验证
+                  if (!validateExpiryDate()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }
+        
+                  if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }
+                  form.classList.add('was-validated');  // 表单通过验证后添加样式
+                }, false);
+              });
+            }, false);
+          })();
+        
+          // 验证信用卡到期日期格式和年份、月份是否正确
+          function validateExpiryDate() {
+            const expiryInput = document.getElementById('card_expiry_date');
+            const expiryValue = expiryInput.value;
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1; // JavaScript月份从0开始
+            
+            // 使用正则匹配 MM/YYYY 的格式
+            const regex = /^(0[1-9]|1[0-2])\/\d{4}$/;
+            if (!regex.test(expiryValue)) {
+              expiryInput.setCustomValidity("Invalid format. Please use MM/YYYY.");
+              return false;
+            }
+        
+            // 分离月份和年份
+            const [month, year] = expiryValue.split('/').map(Number);
+        
+            // 检查年份是否大于2024，或年份为当前年份时，月份不能小于当前月份
+            if (year < 2025 || (year === currentYear && month < currentMonth)) {
+              expiryInput.setCustomValidity("The expiry date must be a future date.");
+              return false;
+            }
+        
+            // 如果一切正常，清除自定义验证消息
+            expiryInput.setCustomValidity("");
+            return true;
+          }
+        </script>
+        
+        
 {% endblock %}

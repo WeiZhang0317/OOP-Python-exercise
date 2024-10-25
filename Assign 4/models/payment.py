@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy.orm import relationship
 from models import db  # 从 models/__init__.py 导入 db 实例
 from .customer import Customer  # 确保正确导入 Customer 模型
+import re
 
 class Payment(db.Model):  # 使用 db.Model 代替 Base
     """!
@@ -50,6 +51,19 @@ class CreditCardPayment(Payment):
         self.card_number = card_number
         self.card_type = card_type
         self.card_expiry_date = card_expiry_date
+
+    def validate_credit_card(self, card_number: str, card_expiry_date: str, cvv: str) -> bool:
+            """Validates credit card details including card number, expiry date, and CVV."""
+            if not re.fullmatch(r'\d{16}', card_number):
+                raise ValueError('Invalid card number. It must be 16 digits.')
+            
+            if not re.fullmatch(r'(0[1-9]|1[0-2])/\d{4}', card_expiry_date):
+                raise ValueError('Invalid expiry date format. Please use MM/YYYY.')
+            
+            if not re.fullmatch(r'\d{3}', cvv):
+                raise ValueError('Invalid CVV. It must be 3 digits.')
+            
+            return True
 
     def get_payment_details(self) -> str:
         """!
