@@ -9,16 +9,64 @@
     <p class="lead">Choose your preferred payment method to complete the purchase.</p>
   </div>
 
-  <form action="{{ url_for('process_payment') }}" method="post">
+  <!-- 第一部分：客户信息确认 -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4>Customer Information</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Name:</strong> {{ customer.get_full_name() }}</p>
+      <p><strong>Address:</strong> {{ customer.cust_address }}</p>
+    </div>
+  </div>
+
+  <!-- 第二部分：支付信息 -->
+  <form action="{{ url_for('process_payment', order_id=order_id) }}" method="post">
     <div class="form-group">
       <label for="payment_method">Select Payment Method</label>
-      <select class="form-control" id="payment_method" name="payment_method">
-        <option value="credit_card">Credit Card</option>
-        <option value="debit_card">Debit Card</option>
-        <option value="account_balance">Account Balance</option>
+      <select class="form-control" id="payment_method" name="payment_method" onchange="toggleCreditCardForm(this.value)">
+          <option value="" disabled selected>---Select your payment method---</option>
+          <option value="credit_card">Credit Card</option>
+          <option value="debit_card">Debit Card</option>
+          <option value="account_balance">Account Balance</option>
       </select>
     </div>
+
+    <div id="credit_card_info" style="display: none;">
+          <div class="form-group">
+            <label for="card_type">Card Type</label>
+            <select class="form-control" id="card_type" name="card_type" required>
+              <option value="Visa">Visa</option>
+              <option value="MasterCard">MasterCard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="card_number">Card Number</label>
+            <input type="text" class="form-control" id="card_number" name="card_number" maxlength="16" pattern="\d{16}" placeholder="Enter your 16-digit card number" required>
+          </div>
+          <div class="form-group">
+            <label for="card_expiry_date">Expiry Date (MM/YYYY)</label>
+            <input type="text" class="form-control" id="card_expiry_date" name="card_expiry_date" pattern="(0[1-9]|1[0-2])\/\d{4}" placeholder="MM/YYYY" required>
+          </div>
+          <div class="form-group">
+            <label for="cvv">CVV</label>
+            <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" placeholder="Enter 3-digit CVV" required>
+          </div>
+        </div>
+        
+
     <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm Payment</button>
   </form>
 </div>
+
+<script>
+  function toggleCreditCardForm(paymentMethod) {
+    const creditCardInfo = document.getElementById('credit_card_info');
+    if (paymentMethod === 'credit_card') {
+      creditCardInfo.style.display = 'block';
+    } else {
+      creditCardInfo.style.display = 'none';
+    }
+  }
+</script>
 {% endblock %}

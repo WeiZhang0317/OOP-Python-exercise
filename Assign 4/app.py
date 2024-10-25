@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
-from models import db, Person, Item, Order,Cart,OrderStatus, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox # 从 models 中导入 db 和其他模型
+from models import db, Person, Customer, CorporateCustomer, Item, Order,Cart,OrderStatus, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox,CreditCardPayment # 从 models 中导入 db 和其他模型
 from datetime import datetime
 from service import PremadeBoxService
 from sqlalchemy.orm import aliased
@@ -173,6 +173,22 @@ def checkout():
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
 
+     # 获取当前用户，可能是私人客户或公司客户
+    customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
+
+    # 检查客户是否可以下订单（基于客户类型）
+    if isinstance(customer, CorporateCustomer):
+        if not customer.can_place_order():
+            flash('Your corporate balance is below the required minimum, you cannot place an order.', 'danger')
+            return redirect(url_for('view_vegetables'))
+    else:
+        if not customer.can_place_order():
+            flash('Your personal balance exceeds the allowed limit, you cannot place an order.', 'danger')
+            return redirect(url_for('view_vegetables'))
+
+    # 打印确认可以下单
+    print("Check done: customer can place order")
+    
     # 获取当前购物车
     cart = Cart(session.get('cart'))
     if not cart or len(cart.get_cart()) == 0:
@@ -235,13 +251,34 @@ def checkout():
 @app.route('/process_payment', methods=['GET', 'POST'])
 def process_payment():
     order_id = request.args.get('order_id')
-  
-     # 渲染支付页面
-    return render_template('payment.html', order_id=order_id)
+    customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
 
+    if request.method == 'POST':
+        payment_method = request.form.get('payment_method')
 
+        if payment_method == 'credit_card':
+            # 获取信用卡信息
+            card_type = request.form.get('card_type')
+            card_number = request.form.get('card_number')
+            card_expiry_date = request.form.get('card_expiry_date')
+            cvv = request.form.get('cvv')  # 仅供展示，但不存储在数据库中
 
+            # 模拟创建信用卡支付记录并保存到数据库
+            payment = CreditCardPayment(
+                payment_amount=customer.cust_balance,  # 模拟支付整个余额
+                customer=customer,
+                card_number=card_number,
+                card_type=card_type,
+                card_expiry_date=card_expiry_date
+            )
 
+            db.session.add(payment)
+            db.session.commit()
+
+            flash('Payment processed successfully!', 'success')
+            return redirect(url_for('view_vegetables'))
+
+    return render_template('payment.html', customer=customer, order_id=order_id)
 
 
 

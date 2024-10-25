@@ -24,9 +24,14 @@ class Customer(Person):
         self.max_owing = 100.0
         self.list_of_orders = []  
         self.list_of_payments = []  
+        
+    def can_place_order(self) -> bool:
+        """检查私人客户的余额是否超过了允许的最大欠款额度"""
+        return self.cust_balance <= self.max_owing
+
 
     def place_order(self, order):
-        if self.cust_balance <= self.max_owing:
+        if self.can_place_order():
             self.list_of_orders.append(order)
             print(f"Order {order.order_number} placed successfully.")
         else:
@@ -80,6 +85,10 @@ class CorporateCustomer(Customer):
         self.discount_rate = discount_rate
         self.max_credit = max_credit
         self.min_balance = min_balance
+        
+    def can_place_order(self) -> bool:
+        """检查公司客户的余额是否足够下单"""
+        return self.cust_balance >= self.min_balance    
 
     def place_order(self, order):
         if self.cust_balance >= self.min_balance:
