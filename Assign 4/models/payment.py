@@ -53,6 +53,19 @@ class CreditCardPayment(Payment):
         self.card_expiry_date = card_expiry_date
     
     @staticmethod
+    def create_payment(customer, card_number, card_type, expiry_date, amount):
+        payment = CreditCardPayment(
+            payment_amount=amount,
+            customer=customer,
+            card_number=card_number,
+            card_type=card_type,
+            card_expiry_date=expiry_date
+        )
+        db.session.add(payment)
+        db.session.commit()
+        return payment
+
+    @staticmethod
     def validate_credit_card(card_number: str, card_expiry_date: str, cvv: str) -> bool:
             """Validates credit card details including card number, expiry date, and CVV."""
             if not re.fullmatch(r'\d{16}', card_number):
@@ -105,7 +118,17 @@ class DebitCardPayment(Payment):
         return (f"Debit Card Payment - {super().get_payment_details()}, Bank Name: {self.bank_name}, "
                 f"Card Number: {masked_card}")
 
-
+    @staticmethod
+    def create_payment(customer, bank_name, card_number, amount):
+        payment = DebitCardPayment(
+            payment_amount=amount,
+            customer=customer,
+            bank_name=bank_name,
+            debit_card_number=card_number
+        )
+        db.session.add(payment)
+        db.session.commit()
+        return payment
     
     @staticmethod
     def validate_debit_card(debit_card_number: str) -> bool:

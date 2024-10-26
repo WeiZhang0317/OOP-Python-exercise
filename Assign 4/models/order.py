@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import joinedload
 from models import db  # 从 models/__init__.py 导入 db 实例
 from typing import List
 from datetime import datetime
@@ -86,6 +87,7 @@ class OrderLine(db.Model):  # 使用 db.Model 代替 Base
         @return: The total cost of this line item as a float.
         """
         return self.item.get_price() * self.quantity
+    
 
     def __str__(self) -> str:
         return f"Item: {self.item.name}, Quantity: {self.quantity}, Line Total: ${self.get_line_total():.2f}"
@@ -166,7 +168,24 @@ class Order(db.Model):  # 使用 db.Model 代替 Base
             if not existing_order:
                 return order_number
 
+    def get_order_lines(self):
+        """
+        Returns all order lines associated with this order, including item details.
+        """
+        order_lines = db.session.query(OrderLine).options(joinedload(OrderLine.item)).filter_by(order_id=self.id).all()
+        
+        # 调试打印输出，方便查看结果
+        print("Order Lines:")  
+        for line in order_lines:
+            print(f"Item: {line.item.name}, Quantity: {line.quantity}, Line Total: ${line.line_total}")
 
+        return order_lines
+    
+    def update_status(self, new_status: str):
+        """Update the status of the order."""
+        self.order_status = new_status
+        db.session.commit()
+    
     def __str__(self) -> str:
         """!
         Returns a string representation of the order with its details.
