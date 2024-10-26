@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
-from models import db, Person, Customer, CorporateCustomer, Item, Order,Cart,OrderStatus, OrderLine,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox,CreditCardPayment # 从 models 中导入 db 和其他模型
+from models import db, Person, Customer, CorporateCustomer, Item, Order,Cart,OrderStatus, OrderLine,DebitCardPayment,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox,CreditCardPayment # 从 models 中导入 db 和其他模型
 from datetime import datetime
 from service import PremadeBoxService
 from sqlalchemy.orm import aliased
@@ -253,40 +253,73 @@ def checkout():
 def process_payment():
     order_id = request.args.get('order_id')
     customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
+    order = db.session.query(Order).filter_by(id=order_id, customer_id=customer.cust_id).first()
+
+    if not order:
+        flash('Order not found.', 'danger')
+        return redirect(url_for('view_vegetables'))
 
     if request.method == 'POST':
         payment_method = request.form.get('payment_method')
 
-        if payment_method == 'credit_card':
-            # 获取信用卡信息
-            card_type = request.form.get('card_type')
-            card_number = request.form.get('card_number')
-            card_expiry_date = request.form.get('card_expiry_date')
-            cvv = request.form.get('cvv')
+        # 共用字段
+        card_number = request.form.get('card_number')
+        card_expiry_date = request.form.get('card_expiry_date')
+        cvv = request.form.get('cvv')
 
-            # 模型中的验证
+        # 如果是信用卡支付
+        if payment_method == 'credit_card':
+            card_type = request.form.get('card_type')  # 仅信用卡特有字段
+
+            # 验证信用卡信息
             try:
-                CreditCardPayment.validate_credit_card(None, card_number, card_expiry_date, cvv)
+                CreditCardPayment.validate_credit_card(card_number, card_expiry_date, cvv)
             except ValueError as e:
                 flash(str(e), 'danger')
                 return redirect(url_for('process_payment', order_id=order_id))
 
-            # 模拟创建信用卡支付记录并保存到数据库
+            payment_amount = order.total_cost
+
+            # 创建信用卡支付记录
             payment = CreditCardPayment(
-                payment_amount=customer.cust_balance,  # 模拟支付整个余额
+                payment_amount=payment_amount,
                 customer=customer,
                 card_number=card_number,
                 card_type=card_type,
                 card_expiry_date=card_expiry_date
             )
-
             db.session.add(payment)
-            db.session.commit()
 
-            flash('Payment processed successfully!', 'success')
-            return redirect(url_for('view_vegetables'))
+        # 如果是借记卡支付
+        elif payment_method == 'debit_card':
+            bank_name = request.form.get('bank_name')  # 仅借记卡特有字段
+
+            # 使用借记卡卡号验证
+            if not re.fullmatch(r'\d{16}', card_number):
+                flash("Invalid debit card number. It must be 16 digits.", 'danger')
+                return redirect(url_for('process_payment', order_id=order_id))
+
+            payment_amount = order.total_cost
+
+            # 创建借记卡支付记录
+            payment = DebitCardPayment(
+                payment_amount=payment_amount,
+                customer=customer,
+                bank_name=bank_name,
+                debit_card_number=card_number
+            )
+            db.session.add(payment)
+
+        # 更新订单状态
+        order.order_status = 'Paid'
+        db.session.commit()
+
+        flash('Payment processed successfully!', 'success')
+        return redirect(url_for('view_vegetables'))
 
     return render_template('payment.html', customer=customer, order_id=order_id)
+
+
 
 
 

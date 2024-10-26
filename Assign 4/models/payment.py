@@ -51,8 +51,9 @@ class CreditCardPayment(Payment):
         self.card_number = card_number
         self.card_type = card_type
         self.card_expiry_date = card_expiry_date
-
-    def validate_credit_card(self, card_number: str, card_expiry_date: str, cvv: str) -> bool:
+    
+    @staticmethod
+    def validate_credit_card(card_number: str, card_expiry_date: str, cvv: str) -> bool:
             """Validates credit card details including card number, expiry date, and CVV."""
             if not re.fullmatch(r'\d{16}', card_number):
                 raise ValueError('Invalid card number. It must be 16 digits.')
@@ -65,6 +66,7 @@ class CreditCardPayment(Payment):
             
             return True
 
+    
     def get_payment_details(self) -> str:
         """!
         Returns a string describing the credit card payment details, including card type and masked card number.
@@ -102,3 +104,12 @@ class DebitCardPayment(Payment):
         masked_card = "**** **** **** " + self.debit_card_number[-4:]  # Masking card number for security
         return (f"Debit Card Payment - {super().get_payment_details()}, Bank Name: {self.bank_name}, "
                 f"Card Number: {masked_card}")
+
+
+    
+    @staticmethod
+    def validate_debit_card(debit_card_number: str) -> bool:
+        """Validates debit card details including card number."""
+        if not re.fullmatch(r'\d{16}', debit_card_number):
+            raise ValueError('Invalid debit card number. It must be 16 digits.')
+        return True
