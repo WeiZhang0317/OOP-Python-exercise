@@ -181,6 +181,11 @@ class Order(db.Model):  # 使用 db.Model 代替 Base
 
         return order_lines
     
+    def calculate_total_with_delivery(self, delivery_option: str) -> float:
+        """Calculate total cost with delivery fee if applicable."""
+        delivery_fee = 10.00 if delivery_option == 'delivery' else 0.00
+        return self.total_cost + delivery_fee
+
     def update_status(self, new_status: str):
         """Update the status of the order."""
         self.order_status = new_status

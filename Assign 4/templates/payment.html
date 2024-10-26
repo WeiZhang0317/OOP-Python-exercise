@@ -22,7 +22,23 @@
   {% include '_order_details.html' %}
 
   <form action="{{ url_for('process_payment', order_id=order_id) }}" method="post" novalidate>
-  
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>Delivery or Pickup</h4>
+      </div>
+      <div class="card-body">
+        <p>Select your preferred option for receiving your order.</p>
+        <div class="form-group">
+          <label for="delivery_option">Choose Option:</label>
+          <select class="form-control" id="delivery_option" name="delivery_option" onchange="updateDeliveryFee()">
+            <option value="pickup" selected>Pickup (Free)</option>
+            <option value="delivery">Delivery (within 20 km - $10.00 fee)</option>
+          </select>
+        </div>
+        <p id="deliveryFeeMessage" class="text-muted">Note: A $10.00 delivery fee applies for orders within 20 km radius.</p>
+      </div>
+    </div>
+    
     <!-- Payment Method Selection Card -->
     <div class="card shadow-sm mb-4">
       <div class="card-header">
@@ -161,6 +177,17 @@
 
     expiryInput.setCustomValidity("");
     return true;
+  }
+
+  function updateDeliveryFee() {
+    const deliveryOption = document.getElementById('delivery_option').value;
+    const deliveryFeeMessage = document.getElementById('deliveryFeeMessage');
+
+    if (deliveryOption === 'delivery') {
+      deliveryFeeMessage.textContent = "A $10.00 delivery fee has been applied.";
+    } else {
+      deliveryFeeMessage.textContent = "No delivery fee applied for pickup.";
+    }
   }
 </script>
 {% endblock %}

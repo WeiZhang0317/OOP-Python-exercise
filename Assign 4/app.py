@@ -267,11 +267,14 @@ def process_payment():
         order_lines = order.get_order_lines()
 
     if request.method == 'POST':
+        delivery_option = request.form.get('delivery_option')
         payment_method = request.form.get('payment_method')
         card_number = request.form.get('card_number')
         card_expiry_date = request.form.get('card_expiry_date')
         cvv = request.form.get('cvv')
-        payment_amount = order.total_cost
+        payment_amount = order.calculate_total_with_delivery(delivery_option)
+
+
 
         if payment_method == 'credit_card':
             try:
@@ -299,12 +302,6 @@ def process_payment():
 
 
 
-# def clean_premade_box_items():
-#     if 'premade_box' in session:
-#         session['premade_box']['items'] = [
-#             item for item in session['premade_box']['items']
-#             if item.get('item_id') and item.get('name')
-#         ]
 
 @app.route('/customize_premade_box/<int:box_id>', methods=['GET', 'POST'])
 def customize_premade_box(box_id):
