@@ -19,20 +19,33 @@
     </div>
   </div>
 
-  <form action="{{ url_for('process_payment', order_id=order_id) }}" method="post" novalidate>
-    <div class="form-group">
-      <label for="payment_method">Select Payment Method</label>
-      <select class="form-control" id="payment_method" name="payment_method" onchange="togglePaymentFields(this.value)" required>
-          <option value="" disabled selected>---Select your payment method---</option>
-          <option value="credit_card">Credit Card</option>
-          <option value="debit_card">Debit Card</option>
-          <option value="account_balance">Account Balance</option>
-      </select>
-      <div class="invalid-feedback">Please select a payment method.</div>
-    </div>
+  {% include '_order_details.html' %}
 
-    <!-- 信用卡和借记卡共用的信息 -->
+  <form action="{{ url_for('process_payment', order_id=order_id) }}" method="post" novalidate>
+  
+    <!-- Payment Method Selection Card -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h4 >Select Payment Method</h4>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="payment_method" class="form-label">Payment Method</label>
+          <select class="form-control" id="payment_method" name="payment_method" onchange="togglePaymentFields(this.value)" required>
+            <option value="" disabled selected>--- Select your payment method ---</option>
+            <option value="credit_card">Credit Card</option>
+            <option value="debit_card">Debit Card</option>
+            <option value="account_balance">Account Balance</option>
+          </select>
+          <div class="invalid-feedback">Please select a payment method.</div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Shared Card Information -->
     <div id="shared_card_info" style="display: none;">
+      
+      <!-- Credit Card Type -->
       <div id="credit_card_type" class="form-group" style="display: none;">
         <label for="card_type">Card Type</label>
         <select class="form-control" id="card_type" name="card_type">
@@ -42,31 +55,40 @@
         <div class="invalid-feedback">Please select a card type.</div>
       </div>
       
+      <!-- Debit Bank Name -->
       <div id="debit_bank_name" class="form-group" style="display: none;">
         <label for="bank_name">Bank Name</label>
         <input type="text" class="form-control" id="bank_name" name="bank_name">
         <div class="invalid-feedback">Please enter your bank name.</div>
       </div>
-
+  
+      <!-- Card Number -->
       <div class="form-group">
         <label for="card_number">Card Number</label>
         <input type="text" class="form-control" id="card_number" name="card_number" maxlength="16" pattern="\d{16}" placeholder="Enter your 16-digit card number" required>
         <div class="invalid-feedback">Please enter a valid 16-digit card number.</div>
       </div>
+  
+      <!-- Expiry Date -->
       <div class="form-group">
         <label for="card_expiry_date">Expiry Date (MM/YYYY)</label>
         <input type="text" class="form-control" id="card_expiry_date" name="card_expiry_date" pattern="(0[1-9]|1[0-2])/\d{4}" placeholder="MM/YYYY" required>
         <div class="invalid-feedback">Please enter a valid expiry date in MM/YYYY format.</div>
       </div>
+  
+      <!-- CVV -->
       <div class="form-group">
         <label for="cvv">CVV</label>
         <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" placeholder="Enter 3-digit CVV" required>
         <div class="invalid-feedback">Please enter a valid 3-digit CVV.</div>
       </div>
+  
     </div>
-
+  
+    <!-- Confirm Payment Button -->
     <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm Payment</button>
   </form>
+  
 </div>
 
 <script>

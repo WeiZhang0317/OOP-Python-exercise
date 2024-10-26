@@ -6,6 +6,7 @@ from datetime import datetime
 from service import PremadeBoxService
 from sqlalchemy.orm import aliased
 import re
+from sqlalchemy.orm import joinedload
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -214,6 +215,7 @@ def checkout():
     # 将订单添加到数据库
     db.session.add(order)
     db.session.flush()  # 获取订单ID
+    session['current_order_id'] = order.id
 
     # 为购物车中的每个商品创建相应的 OrderLine 记录并减少库存
     for cart_item in cart.get_cart():
@@ -246,6 +248,7 @@ def checkout():
     session['cart'] = []
     # 跳转到支付页面并传递订单ID
     flash(f'Order {order.id} created successfully. Please proceed to payment.', 'success')
+
     return redirect(url_for('process_payment', order_id=order.id))
 
 
@@ -258,68 +261,39 @@ def process_payment():
     if not order:
         flash('Order not found.', 'danger')
         return redirect(url_for('view_vegetables'))
+    
+    # 在GET请求中获取订单的所有order_lines及其关联的item信息
+    if request.method == 'GET':
+        order_lines = order.get_order_lines()
 
     if request.method == 'POST':
         payment_method = request.form.get('payment_method')
-
-        # 共用字段
         card_number = request.form.get('card_number')
         card_expiry_date = request.form.get('card_expiry_date')
         cvv = request.form.get('cvv')
+        payment_amount = order.total_cost
 
-        # 如果是信用卡支付
         if payment_method == 'credit_card':
-            card_type = request.form.get('card_type')  # 仅信用卡特有字段
-
-            # 验证信用卡信息
             try:
                 CreditCardPayment.validate_credit_card(card_number, card_expiry_date, cvv)
+                CreditCardPayment.create_payment(customer, card_number, request.form.get('card_type'), card_expiry_date, payment_amount)
             except ValueError as e:
                 flash(str(e), 'danger')
                 return redirect(url_for('process_payment', order_id=order_id))
-
-            payment_amount = order.total_cost
-
-            # 创建信用卡支付记录
-            payment = CreditCardPayment(
-                payment_amount=payment_amount,
-                customer=customer,
-                card_number=card_number,
-                card_type=card_type,
-                card_expiry_date=card_expiry_date
-            )
-            db.session.add(payment)
-
-        # 如果是借记卡支付
+        
         elif payment_method == 'debit_card':
-            bank_name = request.form.get('bank_name')  # 仅借记卡特有字段
-
-            # 使用借记卡卡号验证
+            bank_name = request.form.get('bank_name')
             if not re.fullmatch(r'\d{16}', card_number):
                 flash("Invalid debit card number. It must be 16 digits.", 'danger')
                 return redirect(url_for('process_payment', order_id=order_id))
-
-            payment_amount = order.total_cost
-
-            # 创建借记卡支付记录
-            payment = DebitCardPayment(
-                payment_amount=payment_amount,
-                customer=customer,
-                bank_name=bank_name,
-                debit_card_number=card_number
-            )
-            db.session.add(payment)
+            DebitCardPayment.create_payment(customer, bank_name, card_number, payment_amount)
 
         # 更新订单状态
-        order.order_status = 'Paid'
-        db.session.commit()
-
+        order.update_status('Paid')
         flash('Payment processed successfully!', 'success')
         return redirect(url_for('view_vegetables'))
 
-    return render_template('payment.html', customer=customer, order_id=order_id)
-
-
+    return render_template('payment.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
 
 
 
@@ -375,200 +349,6 @@ def customize_premade_box(box_id):
     return render_template('customize_premade_box.html', items=items, box=box, selected_items=selected_items)
 
 
-
-# @app.route('/remove_from_premade_box', methods=['POST'])
-# def remove_from_premade_box():
-#     if 'user_id' not in session:
-#         flash('Please log in first!', 'warning')
-#         return redirect(url_for('login'))
-
-#     # 打印删除前的session内容
-#     print("Before removing, session['premade_box']['items']:", session.get('premade_box', {}).get('items', []))
-    
-#     # 清理空的 item（没有 item_id 或 name）
-#     if 'premade_box' in session:
-#         session['premade_box']['items'] = [
-#             item for item in session['premade_box']['items']
-#             if item.get('item_id') and item.get('name')
-#         ]
-#         print("After cleaning empty items, session['premade_box']['items']:", session['premade_box']['items'])
-
-#     # 获取要删除的商品ID
-#     item_id_str = request.form.get('item_id')
-#     item_id = int(item_id_str) if item_id_str and item_id_str.isdigit() else None
-#     item_name = request.form.get('item_name')
-
-#     # 打印删除前的item_id和item_name
-#     print(f"Item ID to remove: {item_id}, Item Name to remove: {item_name}")
-
-#     # 使用服务层来处理删除逻辑
-#     if item_id:
-#         PremadeBoxService.remove_item_from_box(session, item_id)
-#         print(f"Item with ID {item_id} removed.")
-#     elif item_name:
-#         PremadeBoxService.remove_item_by_name(session, item_name)
-#         print(f"Item with name {item_name} removed.")
-#     else:
-#         flash('Invalid item data. Cannot remove item.', 'danger')
-#         return redirect(url_for('customize_premade_box', box_id=request.form.get('box_id')))
-
-#     # 打印删除后的session内容
-#     print("After removing, session['premade_box']['items']:", session['premade_box']['items'])
-
-#     flash('Item removed from Premade Box', 'success')
-#     return redirect(url_for('customize_premade_box', box_id=request.form.get('box_id')))
-
-# @app.route('/checkout', methods=['GET', 'POST'])
-# def checkout():
-#     if 'user_id' not in session:
-#         flash('Please log in to continue!', 'warning')
-#         return redirect(url_for('login'))
-
-#     if 'cart' not in session or len(session['cart']) == 0:
-#         flash('Your cart is empty, please add some items first.', 'warning')
-#         return redirect(url_for('view_vegetables'))
-
-#     # Create a new order for the customer
-#     order = Order(
-#         order_number=generate_order_number(),
-#         customer_id=session['user_id'],
-#         staff_id=1,  # Assuming 1 is the default staff handling the order
-#         order_status=OrderStatus.PENDING.value,
-#         total_cost=0
-#     )
-#     db.session.add(order)
-#     db.session.commit()
-
-#     total_cost = 0
-#     for cart_item in session['cart']:
-#         item = Item.query.get(cart_item['item_id'])
-#         if item and item.inventory.quantity >= cart_item['quantity']:
-#             # Create an order line and add it to the order
-#             line_total = item.calculate_total(cart_item['quantity'])
-#             order_line = OrderLine(order_id=order.id, item_id=item.id, quantity=cart_item['quantity'], line_total=line_total)
-#             db.session.add(order_line)
-
-#             # Reduce inventory
-#             item.inventory.reduce_stock(cart_item['quantity'])
-#             total_cost += line_total
-#         else:
-#             flash(f'Insufficient stock for {cart_item["name"]}.', 'danger')
-#             return redirect(url_for('view_vegetables'))
-
-#     # Update the order with the total cost
-#     order.total_cost = total_cost
-#     db.session.commit()
-
-#     # Clear the cart after successful checkout
-#     session.pop('cart', None)
-
-#     flash('Your order was successfully placed!', 'success')
-#     return redirect(url_for('dashboard'))
-
-# # Add items to cart
-# @app.route('/customer/add_to_cart/<int:item_id>', methods=['POST'])
-# def add_to_cart(item_id):
-#     quantity = int(request.form.get('quantity'))
-    
-#     cart = session.get('cart', [])
-#     cart.append({'item_id': item_id, 'quantity': quantity})
-#     session['cart'] = cart
-#     flash('Item added to cart!', 'success')
-    
-#     return redirect(url_for('view_vegetables'))
-
-
-# # View cart and checkout
-# @app.route('/customer/cart')
-# def cart():
-#     if 'cart' not in session or not session['cart']:
-#         flash('Your cart is empty.', 'warning')
-#         return redirect(url_for('view_vegetables'))
-    
-#     cart_items = []
-#     total_price = 0
-#     for cart_item in session['cart']:
-#         item = Item.query.get(cart_item['item_id'])
-#         total_price += item.price * cart_item['quantity']
-#         cart_items.append({'item': item, 'quantity': cart_item['quantity']})
-    
-#     return render_template('customer/cart.html', cart_items=cart_items, total_price=total_price)
-
-
-# # Checkout
-# @app.route('/customer/checkout', methods=['POST'])
-# def checkout():
-#     customer_id = session['user_id']
-#     cart = session.get('cart', [])
-    
-#     if not cart:
-#         flash('Your cart is empty.', 'warning')
-#         return redirect(url_for('view_vegetables'))
-
-#     # Create an order
-#     order = Order(customer_id=customer_id, total_cost=0, order_date=datetime.now(), order_status='pending')
-#     db.session.add(order)
-#     db.session.commit()
-
-#     total_price = 0
-#     for cart_item in cart:
-#         item = Item.query.get(cart_item['item_id'])
-#         line_total = item.price * cart_item['quantity']
-#         total_price += line_total
-
-#         order_line = OrderLine(order_id=order.id, item_id=item.id, quantity=cart_item['quantity'], line_total=line_total)
-#         db.session.add(order_line)
-    
-#     # Update the order total cost
-#     order.total_cost = total_price
-#     db.session.commit()
-    
-#     session.pop('cart', None)
-#     flash('Order placed successfully!', 'success')
-    
-#     return redirect(url_for('customer_dashboard'))
-
-
-# #######################
-# # Staff-related routes
-# #######################
-
-# Staff Dashboard
-
-
-
-# # View all vegetables and premade boxes
-# @app.route('/staff/view_all_vegetables')
-# def view_all_vegetables():
-#     if 'user_id' not in session or session.get('role') != 'staff':
-#         flash('Please log in as staff to view this page.', 'warning')
-#         return redirect(url_for('login'))
-    
-#     items = Item.query.all()
-#     return render_template('staff/view_all_vegetables.html', items=items)
-
-
-# # View current orders
-# @app.route('/staff/current_orders')
-# def current_orders():
-#     if 'user_id' not in session or session.get('role') != 'staff':
-#         flash('Please log in as staff to view this page.', 'warning')
-#         return redirect(url_for('login'))
-    
-#     orders = Order.query.filter_by(order_status='pending').all()
-#     return render_template('staff/current_orders.html', orders=orders)
-
-
-# # Update order status
-# @app.route('/staff/update_order/<int:order_id>', methods=['POST'])
-# def update_order(order_id):
-#     new_status = request.form.get('order_status')
-#     order = Order.query.get(order_id)
-#     order.order_status = new_status
-#     db.session.commit()
-
-#     flash('Order status updated successfully!', 'success')
-#     return redirect(url_for('current_orders'))
 
 
 

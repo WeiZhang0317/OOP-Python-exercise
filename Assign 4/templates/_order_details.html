@@ -1,0 +1,23 @@
+<!-- templates/_order_details.html -->
+<div class="card mb-4">
+      <div class="card-header">
+        <h4>Current Order</h4>
+      </div>
+      <div class="card-body">
+        <p><strong>Order Date:</strong> {{ order.order_date.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Order Status:</strong> {{ order.order_status }}</p>
+        <p><strong>Total Cost:</strong> ${{ order.total_cost }}</p>
+        <hr>
+        <h5>Order Items</h5>
+        <ul>
+          {% for line in order_lines %}
+            <li>
+              <strong>Item:</strong> {{ line.item.name }},
+              <strong>Quantity:</strong> {{ line.quantity }},
+              <strong>Line Total:</strong> ${{ line.line_total }}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    
