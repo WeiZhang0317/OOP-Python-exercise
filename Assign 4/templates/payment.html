@@ -20,12 +20,18 @@
   </div>
 
   {% include '_order_details.html' %}
-
+  <form action="{{ url_for('cancel_order', order_id=order_id) }}" method="post" style="display: inline;">
+    <button type="submit" class="btn btn-danger btn-lg btn-block mt-3">Cancel Order</button>
+  </form>
+  <br>
   <form action="{{ url_for('process_payment', order_id=order_id) }}" method="post" novalidate>
     <div class="card mb-4">
       <div class="card-header">
         <h4>Delivery or Pickup</h4>
       </div>
+
+
+  
       <div class="card-body">
         <p>Select your preferred option for receiving your order.</p>
         <div class="form-group">
@@ -47,7 +53,7 @@
       <div class="card-body">
         <div class="form-group">
           <label for="payment_method" class="form-label">Payment Method</label>
-          <select class="form-control" id="payment_method" name="payment_method" onchange="togglePaymentFields(this.value)" required>
+          <select class="form-control" id="payment_method" name="payment_method" onchange="togglePaymentFields(this.value)" >
             <option value="" disabled selected>--- Select your payment method ---</option>
             <option value="credit_card">Credit Card</option>
             <option value="debit_card">Debit Card</option>
@@ -103,6 +109,9 @@
   
     <!-- Confirm Payment Button -->
     <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm Payment</button>
+
+     <!-- Cancel Order Button -->
+
   </form>
   
 </div>

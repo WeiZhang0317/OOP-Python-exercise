@@ -299,7 +299,18 @@ def process_payment():
     return render_template('payment.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
 
 
+@app.route('/cancel_order/<int:order_id>', methods=['POST'])
+def cancel_order(order_id):
+    customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
+    order = db.session.query(Order).filter_by(id=order_id, customer_id=customer.cust_id).first()
 
+    if order:
+        order.update_status('Canceled')
+        flash('Order has been canceled.', 'info')
+    else:
+        flash('Order not found.', 'danger')
+
+    return redirect(url_for('view_vegetables'))
 
 
 
