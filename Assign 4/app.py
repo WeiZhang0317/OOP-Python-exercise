@@ -249,56 +249,81 @@ def checkout():
     # 跳转到支付页面并传递订单ID
     flash(f'Order {order.id} created successfully. Please proceed to payment.', 'success')
 
-    return redirect(url_for('process_payment', order_id=order.id))
+    return redirect(url_for('current_order', order_id=order.id))
 
 
-@app.route('/process_payment', methods=['GET', 'POST'])
-def process_payment():
-    order_id = request.args.get('order_id')
+
+# Route to view current order details
+@app.route('/current_order/<int:order_id>', methods=['GET'])
+def current_order(order_id):
     customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
     order = db.session.query(Order).filter_by(id=order_id, customer_id=customer.cust_id).first()
 
     if not order:
         flash('Order not found.', 'danger')
         return redirect(url_for('view_vegetables'))
+
+    # Get order lines
+    order_lines = order.get_order_lines()
+    return render_template('current_order.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
+
+
+# Route to handle the delivery option and payment method form
+@app.route('/payment/<int:order_id>', methods=['GET'])
+def payment_page(order_id):
+    customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
+    order = db.session.query(Order).filter_by(id=order_id, customer_id=customer.cust_id).first()
+
+    if not order:
+        flash('Order not found.', 'danger')
+        return redirect(url_for('view_vegetables'))
+
+    return render_template('payment.html', customer=customer, order_id=order_id, order=order)
+
+
+# Route to process the payment
+@app.route('/process_payment/<int:order_id>', methods=['POST'])
+def process_payment(order_id):
+    customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
+    order = db.session.query(Order).filter_by(id=order_id, customer_id=customer.cust_id).first()
+
+    if not order:
+        flash('Order not found.', 'danger')
+        return redirect(url_for('view_vegetables'))
+
+    delivery_option = request.form.get('delivery_option')
+    payment_method = request.form.get('payment_method')
+    card_number = request.form.get('card_number')
+    card_expiry_date = request.form.get('card_expiry_date')
+    cvv = request.form.get('cvv')
     
-    # 在GET请求中获取订单的所有order_lines及其关联的item信息
-    if request.method == 'GET':
-        order_lines = order.get_order_lines()
+    # Calculate total cost including delivery if applicable
+    payment_amount = order.calculate_total_with_delivery(delivery_option)
 
-    if request.method == 'POST':
-        delivery_option = request.form.get('delivery_option')
-        payment_method = request.form.get('payment_method')
-        card_number = request.form.get('card_number')
-        card_expiry_date = request.form.get('card_expiry_date')
-        cvv = request.form.get('cvv')
-        payment_amount = order.calculate_total_with_delivery(delivery_option)
-
-
-
+    try:
         if payment_method == 'credit_card':
-            try:
-                CreditCardPayment.validate_credit_card(card_number, card_expiry_date, cvv)
-                CreditCardPayment.create_payment(customer, card_number, request.form.get('card_type'), card_expiry_date, payment_amount)
-            except ValueError as e:
-                flash(str(e), 'danger')
-                return redirect(url_for('process_payment', order_id=order_id))
-        
+            card_type = request.form.get('card_type')
+            CreditCardPayment.validate_credit_card(card_number, card_expiry_date, cvv)
+            CreditCardPayment.create_payment(customer, card_number, card_type, card_expiry_date, payment_amount)
+
         elif payment_method == 'debit_card':
             bank_name = request.form.get('bank_name')
             if not re.fullmatch(r'\d{16}', card_number):
                 flash("Invalid debit card number. It must be 16 digits.", 'danger')
-                return redirect(url_for('process_payment', order_id=order_id))
+                return redirect(url_for('payment_page', order_id=order_id))
             DebitCardPayment.create_payment(customer, bank_name, card_number, payment_amount)
 
-        # 更新订单状态
+        # Update order status to "Paid"
         order.update_status('Paid')
         flash('Payment processed successfully!', 'success')
         return redirect(url_for('view_vegetables'))
 
-    return render_template('payment.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
+    except ValueError as e:
+        flash(str(e), 'danger')
+        return redirect(url_for('payment_page', order_id=order_id))
 
 
+# Route to handle order cancellation
 @app.route('/cancel_order/<int:order_id>', methods=['POST'])
 def cancel_order(order_id):
     customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
@@ -311,6 +336,7 @@ def cancel_order(order_id):
         flash('Order not found.', 'danger')
 
     return redirect(url_for('view_vegetables'))
+
 
 
 

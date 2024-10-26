@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Current Order{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="py-5 text-center">
+    <h2>Current Order</h2>
+    <p class="lead">Review your order details.</p>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4>Customer Information</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Name:</strong> {{ customer.get_full_name() }}</p>
+      <p><strong>Address:</strong> {{ customer.cust_address }}</p>
+    </div>
+  </div>
+
+  {% include '_order_details.html' %}
+
+  <!-- Cancel Order Button -->
+  <form action="{{ url_for('cancel_order', order_id=order_id) }}" method="post" style="display: inline;">
+    <button type="submit" class="btn btn-danger btn-lg btn-block mt-3">Cancel Order</button>
+  </form>
+
+  <!-- Keep Payment Button -->
+  <form action="{{ url_for('payment_page', order_id=order_id) }}" method="get" style="display: inline;">
+    <button type="submit" class="btn btn-success btn-lg btn-block mt-3">Keep Payment</button>
+  </form>
+
+</div>
+{% endblock %}
