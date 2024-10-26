@@ -22,26 +22,21 @@
     <header>
       <!-- Fixed navbar -->
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="#">Store Dashboard</a>
+        <a class="navbar-brand">Store Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{{ url_for('view_vegetables') }}">View Vegetables <span class="sr-only">(current)</span></a>
             </li>
 
             <!-- 菜单根据用户角色显示 -->
             {% if session['user_id'] %}
               {% if session['role'] == 'customer' %}
                 <!-- Customer-specific options -->
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('view_vegetables') }}">View Vegetables</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Place Order</a> <!-- 添加占位符 -->
-                </li>
+           
                 <li class="nav-item">
                   <a class="nav-link" href="#">Current Order</a> <!-- 添加占位符 -->
                 </li>
@@ -54,7 +49,7 @@
               {% elif session['role'] == 'staff' %}
                 <!-- Staff-specific options -->
                 <li class="nav-item">
-                  <a class="nav-link" href="#">View All Vegetables</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('view_vegetables') }}">View All Vegetables</a> <!-- 添加占位符 -->
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Current Orders</a> <!-- 添加占位符 -->
