@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Sales Report
+{% endblock %}
+
+{% block content %}
+  <h2>Sales Report</h2>
+  <div class="row">
+    <div class="col-md-12 m-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            Sales volume
+          </h5>
+          <dl class="row">
+            <dt class="col-sm-3">weekly</dt>
+            <dd class="col-sm-9">{{ weekly }}</dd>
+
+            <dt class="col-sm-3">monthly</dt>
+            <dd class="col-sm-9">
+              {{ monthly }}
+            </dd>
+            <dt class="col-sm-3">yearly</dt>
+            <dd class="col-sm-9">{{ yearly }}</dd>
+          </dl>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-12 m-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            The Popular Item
+          </h5>
+          <dl class="row">
+            <dt class="col-sm-3">most_sold_item: </dt>
+            <dd class="col-sm-9">{{ popularInfo['most_sold_item']['item_name'] }}({{ popularInfo['most_sold_item']['total'] }})</dd>
+
+            <dt class="col-sm-3">highest_revenue_item: </dt>
+            <dd class="col-sm-9">
+              {{ popularInfo['highest_revenue_item']['item_name'] }}({{ popularInfo['highest_revenue_item']['total'] }})
+            </dd>
+            <dt class="col-sm-3">most_frequent_item: </dt>
+            <dd class="col-sm-9">{{ popularInfo['most_frequent_item']['item_name'] }}({{ popularInfo['most_frequent_item']['total'] }})</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 m-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            The least popular
+          </h5>
+          <dl class="row">
+            <dt class="col-sm-3">least_sold_item: </dt>
+            <dd class="col-sm-9">{{ leastPopularInfo['least_sold_item']['item_name'] }}({{ leastPopularInfo['least_sold_item']['total'] }})</dd>
+
+            <dt class="col-sm-3">lower_revenue_item: </dt>
+            <dd class="col-sm-9">
+              {{ leastPopularInfo['lower_revenue_item']['item_name'] }}({{ leastPopularInfo['lower_revenue_item']['total'] }})
+            </dd>
+            <dt class="col-sm-3">least_frequent_item: </dt>
+            <dd class="col-sm-9">{{ leastPopularInfo['least_frequent_item']['item_name'] }}({{ leastPopularInfo['least_frequent_item']['total'] }})</dd>
+          </dl>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

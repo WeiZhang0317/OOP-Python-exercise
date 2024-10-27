@@ -56,7 +56,7 @@ class Item(db.Model):
         @param quantity: The number of items being ordered.
         @return: A float representing the total cost for this item.
         """
-        return self.get_price()* quantity  # Access private price attribute
+        return self.get_price() * quantity  # Access private price attribute
 
 
 class Veggie(Item):

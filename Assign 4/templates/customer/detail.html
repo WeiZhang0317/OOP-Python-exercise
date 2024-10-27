@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ item.get_full_name() }} - Home
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">Customer Info
+    </div>
+    <div class=card-body>
+      <pre>{{ item.get_customer_details() }}</pre>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+
+    <div class="col-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Weekly sales revenue</h5>
+          <p class="card-text">$ {{ weekly_sales }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Monthly sales revenue</h5>
+          <p class="card-text">$ {{ monthly_sales }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Yearly sales revenue</h5>
+          <p class="card-text">$ {{ yearly_sales }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

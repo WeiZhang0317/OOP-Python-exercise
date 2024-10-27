@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
 from models import db, Person, Customer, CorporateCustomer, Item, Order,Cart,OrderStatus, OrderLine,DebitCardPayment,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox,CreditCardPayment # 从 models 中导入 db 和其他模型
+from controllers import init_controller
 from datetime import datetime
 from service import PremadeBoxService
 from sqlalchemy.orm import aliased
@@ -43,7 +44,7 @@ def login():
             session['role'] = person.role  # 假设有 role 属性
             flash('登录成功！', 'success')
             return redirect(url_for('dashboard'))
-       
+
         else:
             flash('用户名或密码错误，请重试。', 'danger')
 
@@ -131,7 +132,7 @@ def add_to_cart():
 
     # 获取购物车对象
     cart = Cart(session.get('cart'))
-    
+
      # 打印购物车内容进行调试
     print("Cart content: ", cart.get_cart())
 
@@ -190,7 +191,7 @@ def checkout():
 
     # 打印确认可以下单
     print("Check done: customer can place order")
-    
+
     # 获取当前购物车
     cart = Cart(session.get('cart'))
     if not cart or len(cart.get_cart()) == 0:
@@ -384,7 +385,7 @@ def customize_premade_box(box_id):
 
 
 
-
+init_controller(app)
 
 # 启动应用
 if __name__ == '__main__':

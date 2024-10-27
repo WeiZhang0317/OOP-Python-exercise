@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Customer List
+{% endblock %}
+
+{% block content %}
+  <h3>Corporate Customer List</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Cust Address</th>
+      <th>Cust Balance</th>
+      <th>Max Owing</th>
+      <th>Discount Rate</th>
+      <th>Max Credit</th>
+      <th>Min Balance</th>
+      <th>Operation</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ item.get_full_name() }}</td>
+        <td>{{ item.cust_address }}</td>
+        <td>{{ item.cust_balance }}</td>
+        <td>{{ item.max_owing }}</td>
+        <td>{{ item.discount_rate }}</td>
+        <td>{{ item.max_credit }}</td>
+        <td>{{ item.min_balance }}</td>
+        <td>
+          <a href="{{ url_for('customer.corporate_customer_detail', customer_id=item.id) }}" class="btn btn-primary btn-sm">Detail</a>
+        </td>
+      </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+{% endblock %}

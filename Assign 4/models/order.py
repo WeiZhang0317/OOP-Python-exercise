@@ -20,7 +20,7 @@ class Cart:
     def add_item(self, item, quantity):
         """将商品添加到购物车"""
         item_in_cart = next((cart_item for cart_item in self.cart if cart_item['item_id'] == item.id), None)
-        
+
         if item_in_cart:
             item_in_cart['quantity'] += quantity
             item_in_cart['line_total'] = item_in_cart['price'] * item_in_cart['quantity']
@@ -30,10 +30,10 @@ class Cart:
                 'name': item.name,
                 'price': item.get_price(),
                 'quantity': quantity,
-                'line_total': item.get_price() * quantity  
+                'line_total': item.get_price() * quantity
             }
             self.cart.append(new_cart_item)
-    
+
     def remove_item(self, item_id):
         """从购物车中移除商品"""
         self.cart = [item for item in self.cart if item['item_id'] != item_id]
@@ -47,16 +47,30 @@ class Cart:
         return self.cart
 
 
-
 class OrderStatus(Enum):
     """!
     Enum representing different statuses of an order.
     """
     PENDING = "Pending"
     SHIPPED = "Shipped"
-    DELIVERED = "Delivered"
     PAID = "Paid"
     CANCELED = "Canceled"
+
+    @classmethod
+    def has_value(cls, val: str):
+        return val in cls._value2member_map_
+
+    @classmethod
+    def get_next_status(cls, val: str):
+        if val == cls.PENDING.value:
+            return cls.PAID.value
+        elif val == cls.PAID.value:
+            #     return cls.DELIVERED.value
+            # elif val == cls.DELIVERED.value:
+            return cls.SHIPPED.value
+        elif val == cls.SHIPPED.value:
+            return cls.CANCELED.value
+        return None
 
 
 class OrderLine(db.Model):  # 使用 db.Model 代替 Base
@@ -65,16 +79,16 @@ class OrderLine(db.Model):  # 使用 db.Model 代替 Base
     """
     __tablename__ = 'order_lines'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)  
+    id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey('orders.id'))
-    item_id = Column(Integer, ForeignKey('items.id'))  
-    quantity = Column(Integer, nullable=False) 
-    line_total = Column(Float, nullable=False)  
-    
+    item_id = Column(Integer, ForeignKey('items.id'))
+    quantity = Column(Integer, nullable=False)
+    line_total = Column(Float, nullable=False)
+
     # Relationship with Order and Item
-    order = relationship("Order", back_populates="list_of_order_lines")  
-    item = relationship("Item", back_populates="order_lines") 
-    
+    order = relationship("Order", back_populates="list_of_order_lines")
+    item = relationship("Item", back_populates="order_lines")
+
     def __init__(self, order_id: int, item_id: int, quantity: int, line_total: float):
         self.order_id = order_id
         self.item_id = item_id
@@ -86,8 +100,7 @@ class OrderLine(db.Model):  # 使用 db.Model 代替 Base
         Calculates and returns the total cost for this line item.
         @return: The total cost of this line item as a float.
         """
-        return self.item.get_price() * self.quantity
-    
+        return self.item.calculate_total(self.quantity)
 
     def __str__(self) -> str:
         return f"Item: {self.item.name}, Quantity: {self.quantity}, Line Total: ${self.get_line_total():.2f}"
@@ -146,7 +159,7 @@ class Order(db.Model):  # 使用 db.Model 代替 Base
         Sets the order status.
         @param status: The status to set for the order (e.g., 'Pending', 'Shipped', 'Delivered', 'Paid').
         """
-        if status in OrderStatus._value2member_map_:
+        if OrderStatus.has_value(status):
             self.order_status = status
 
     def get_order_status(self) -> str:
@@ -155,7 +168,7 @@ class Order(db.Model):  # 使用 db.Model 代替 Base
         @return: The order status as a string.
         """
         return self.order_status
-    
+
     @staticmethod
     def generate_unique_order_number():
         """!
@@ -190,7 +203,7 @@ class Order(db.Model):  # 使用 db.Model 代替 Base
         """Update the status of the order."""
         self.order_status = new_status
         db.session.commit()
-    
+
     def __str__(self) -> str:
         """!
         Returns a string representation of the order with its details.

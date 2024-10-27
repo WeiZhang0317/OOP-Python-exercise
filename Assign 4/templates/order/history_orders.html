@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Current Orders
+{% endblock %}
+
+{% block content %}
+  <h3>History Orders</h3>
+<table class="table table-bordered">
+<thead>
+<tr>
+  <th>#</th>
+  <th>order_number</th>
+  <th>customer</th>
+  <th>order_date</th>
+  <th>order_status</th>
+  <th>total_cost</th>
+  <th>operation</th>
+</tr>
+</thead>
+<tbody>
+{% for item in items %}
+<tr>
+  <td>{{ loop.index }}</td>
+  <td>{{ item.order_number }}</td>
+  <td>{{ item.customer.get_full_name()  }}</td>
+  <td>{{ item.order_date }}</td>
+  <td><span class="badge badge-info">{{ item.order_status }}</span></td>
+  <td>{{ item.total_cost }}</td>
+  <td>
+    <a href="{{ url_for('order.detail', order_id=item.id) }}" class="btn btn-primary">Detail</a>
+  </td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+{% endblock %}
