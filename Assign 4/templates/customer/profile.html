@@ -1,0 +1,21 @@
+<!-- templates/customer/profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4">My Profile</h3>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Customer Information</h5>
+            <p class="card-text"><strong>Name:</strong> {{ customer.get_full_name() }}</p>
+            <p class="card-text"><strong>Address:</strong> {{ customer.cust_address }}</p>
+            <p class="card-text"><strong>Balance:</strong> {{ customer.cust_balance }}</p>
+            <p class="card-text"><strong>Max Owing:</strong> {{ customer.max_owing }}</p>
+        </div>
+    </div>
+ 
+</div>
+{% endblock %}

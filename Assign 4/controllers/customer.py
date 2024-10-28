@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, request, flash, session,url_for
-from models import Customer, CorporateCustomer,Order,OrderStatus
+from models import Customer, CorporateCustomer,Order,OrderStatus,db
 from service.report import SalesReportService
 
 customer_blueprint = Blueprint('customer', __name__, url_prefix='/customer')
@@ -67,3 +67,20 @@ def detail(order_id):
         return redirect(url_for('customer.current_orders'))
 
     return render_template('customer/detail.html', **locals())
+
+@customer_blueprint.route("/profile", methods=['GET'])
+def customer_profile():
+    # 从 session 获取用户 ID
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("请先登录。", "warning")
+        return redirect(url_for('login'))
+    
+    # 查询当前用户的客户信息
+    customer = db.session.query(Customer).filter_by(cust_id=user_id).first()
+    if not customer:
+        flash("未找到用户信息。", "warning")
+        return redirect(url_for('login'))
+
+    # 渲染模板，并传递客户信息
+    return render_template('customer/profile.html', customer=customer)
