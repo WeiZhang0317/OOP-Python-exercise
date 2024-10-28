@@ -5,32 +5,48 @@ Customer List
 {% endblock %}
 
 {% block content %}
-  <h3>Customer List</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Cust Address</th>
-      <th>Cust Balance</th>
-      <th>Max Owing</th>
-      <th>Operation</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in items %}
+<div class="container mt-5">
+  <div class="py-3 text-center">
+    <h2>Customer List</h2>
+    <p class="lead">View customer details, including address, balance, and maximum allowed debt.</p>
+  </div>
+
+  <table class="table table-hover table-striped">
+    <thead class="thead-dark">
       <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Address</th>
+        <th scope="col">Balance</th>
+        <th scope="col">Max Owing</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <!-- Customer index -->
         <td>{{ loop.index }}</td>
+
+        <!-- Customer full name -->
         <td>{{ item.get_full_name() }}</td>
+
+        <!-- Customer address -->
         <td>{{ item.cust_address }}</td>
-        <td>{{ item.cust_balance }}</td>
-        <td>{{ item.max_owing }}</td>
+
+        <!-- Customer balance with currency formatting -->
+        <td>${{ "%.2f" | format(item.cust_balance) }}</td>
+
+        <!-- Max owing amount formatted as currency -->
+        <td>${{ "%.2f" | format(item.max_owing) }}</td>
+
+        <!-- Detail button for each customer -->
         <td>
           <a href="{{ url_for('customer.customer_detail', customer_id=item.id) }}" class="btn btn-primary btn-sm">Detail</a>
         </td>
       </tr>
-    {% endfor %}
-
-  </tbody>
-</table>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

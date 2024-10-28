@@ -5,39 +5,46 @@
 {% endblock %}
 
 {% block content %}
-  <div class="card">
-    <div class="card-header">Customer Info
+<div class="container mt-5">
+  <!-- Customer Information Card -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4>Customer Information</h4>
     </div>
-    <div class=card-body>
-      <pre>{{ item.get_customer_details() }}</pre>
+    <div class="card-body">
+      <pre class="font-weight-normal text-dark">{{ item.get_customer_details() }}</pre>
     </div>
   </div>
-  <hr>
-  <div class="row">
 
-    <div class="col-4">
-      <div class="card text-center">
+  <!-- Sales Revenue Cards -->
+  <div class="row text-center">
+    <!-- Weekly Sales Revenue Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">Weekly sales revenue</h5>
-          <p class="card-text">$ {{ weekly_sales }}</p>
+          <h5 class="card-title">Weekly Sales Revenue</h5>
+          <p class="card-text display-4 text-primary">${{ "{:.2f}".format(weekly_sales) }}</p>
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <div class="card text-center">
+    <!-- Monthly Sales Revenue Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">Monthly sales revenue</h5>
-          <p class="card-text">$ {{ monthly_sales }}</p>
+          <h5 class="card-title">Monthly Sales Revenue</h5>
+          <p class="card-text display-4 text-success">${{ "{:.2f}".format(monthly_sales) }}</p>
         </div>
       </div>
     </div>
-    <div class="col-4">
-      <div class="card text-center">
+    <!-- Yearly Sales Revenue Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">Yearly sales revenue</h5>
-          <p class="card-text">$ {{ yearly_sales }}</p>
+          <h5 class="card-title">Yearly Sales Revenue</h5>
+          <p class="card-text display-4 text-info">${{ "{:.2f}".format(yearly_sales) }}</p>
         </div>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

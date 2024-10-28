@@ -5,60 +5,78 @@
 {% endblock %}
 
 {% block content %}
-  <div class="card">
-    <div class="card-header">
-      Order Info
+<div class="container mt-5">
+  <!-- Order Information Card -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4>Order Information</h4>
     </div>
     <div class="card-body">
       <dl class="row">
-        <dt class="col-sm-3">order_number</dt>
-        <dd class="col-sm-9">{{ item.order_number }}</dd>
+        <dt class="col-sm-4">Order Number</dt>
+        <dd class="col-sm-8">{{ item.order_number }}</dd>
 
-        <dt class="col-sm-3">customer_id</dt>
-        <dd class="col-sm-9">
-          {{ item.customer_id }}
+        <dt class="col-sm-4">Customer ID</dt>
+        <dd class="col-sm-8">{{ item.customer_id }}</dd>
+
+        <dt class="col-sm-4">Order Date</dt>
+        <dd class="col-sm-8">{{ item.order_date.strftime('%Y-%m-%d') }}</dd>
+
+        <dt class="col-sm-4">Order Status</dt>
+        <dd class="col-sm-8">
+          <span class="badge 
+            {% if item.order_status == 'Delivered' %}badge-success
+            {% elif item.order_status == 'Canceled' %}badge-danger
+            {% elif item.order_status == 'Pending' %}badge-warning
+            {% else %}badge-info{% endif %}">
+            {{ item.order_status }}
+          </span>
         </dd>
 
-        <dt class="col-sm-3">order_date</dt>
-        <dd class="col-sm-9">{{ item.order_date }}</dd>
-
-        <dt class="col-sm-3 text-truncate">order_status</dt>
-        <dd class="col-sm-9"><span class="badge badge-info">{{ item.order_status }}</span></dd>
-
-        <dt class="col-sm-3">total_cost</dt>
-        <dd class="col-sm-9">
-           {{ item.total_cost }}
-        </dd>
+        <dt class="col-sm-4">Total Cost</dt>
+        <dd class="col-sm-8 text-primary font-weight-bold">${{ "{:.2f}".format(item.total_cost) }}</dd>
       </dl>
     </div>
   </div>
-  <hr>
-  <div class="card">
-    <div class="card-header">
-      Order Items
-    </div>
-    <table class="table">
-      <thead class="table-light">
-      <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>quantity</th>
-        <th>line_total</th>
-      </tr>
-      </thead>
-      <tbody>
-        {% for list_of_order_line in item.list_of_order_lines %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ list_of_order_line.item.name }}</td>
-            <td>{{ list_of_order_line.item.price }}</td>
-            <td>{{ list_of_order_line.quantity }}</td>
-            <td>{{ list_of_order_line.line_total }}</td>
-          </tr>
-        {% endfor %}
 
-      </tbody>
-    </table>
+  <!-- Order Items Table -->
+  <div class="card">
+    <div class="card-header bg-secondary text-white">
+      <h4>Order Items</h4>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-hover table-striped mb-0">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Line Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order_line in item.list_of_order_lines %}
+          <tr>
+            <!-- Item index -->
+            <td>{{ loop.index }}</td>
+
+            <!-- Item name -->
+            <td>{{ order_line.item.name }}</td>
+
+            <!-- Item price formatted as currency -->
+            <td>${{ "{:.2f}".format(order_line.item.price) }}</td>
+
+            <!-- Item quantity -->
+            <td>{{ order_line.quantity }}</td>
+
+            <!-- Line total formatted as currency -->
+            <td class="text-success font-weight-bold">${{ "{:.2f}".format(order_line.line_total) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
 {% endblock %}

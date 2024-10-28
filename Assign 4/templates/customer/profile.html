@@ -1,21 +1,32 @@
-<!-- templates/customer/profile.html -->
 {% extends 'base.html' %}
 
 {% block title %}Profile{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h3 class="mb-4">My Profile</h3>
-    
-    <div class="card">
+    <div class="py-3 text-center">
+        <h2>My Profile</h2>
+        <p class="lead">View your profile information.</p>
+    </div>
+
+    <div class="card shadow-sm border-light">
         <div class="card-body">
-            <h5 class="card-title">Customer Information</h5>
-            <p class="card-text"><strong>Name:</strong> {{ customer.get_full_name() }}</p>
-            <p class="card-text"><strong>Address:</strong> {{ customer.cust_address }}</p>
-            <p class="card-text"><strong>Balance:</strong> {{ customer.cust_balance }}</p>
-            <p class="card-text"><strong>Max Owing:</strong> {{ customer.max_owing }}</p>
+            <h5 class="card-title ">Customer Information</h5>
+            <hr class="my-3">
+            <dl class="row">
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8">{{ customer.get_full_name() }}</dd>
+
+                <dt class="col-sm-4">Address</dt>
+                <dd class="col-sm-8">{{ customer.cust_address }}</dd>
+
+                <dt class="col-sm-4">Balance</dt>
+                <dd class="col-sm-8 text-primary font-weight-bold">${{ "{:.2f}".format(customer.cust_balance) }}</dd>
+
+                <dt class="col-sm-4">Max Owing</dt>
+                <dd class="col-sm-8">${{ "{:.2f}".format(customer.max_owing) }}</dd>
+            </dl>
         </div>
     </div>
- 
 </div>
 {% endblock %}
