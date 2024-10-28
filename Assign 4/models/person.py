@@ -34,6 +34,8 @@ class Person(db.Model):
         使用 werkzeug 的 check_password_hash 方法来验证密码。
         """
         return check_password_hash(self._Person__password, password)
+    
+
 
     def __str__(self) -> str:
         """!

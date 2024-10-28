@@ -21,15 +21,21 @@
 
   {% include 'purchase/_order_details.html' %}
 
-  <!-- Cancel Order Button -->
-  <form action="{{ url_for('cancel_order', order_id=order_id) }}" method="post" style="display: inline;">
-    <button type="submit" class="btn btn-danger btn-lg btn-block mt-3">Cancel Order</button>
-  </form>
+  {% if session.get('role') == 'staff' %}
+    <!-- Order Confirm Button for Staff -->
+    <form action="{{ url_for('order.current_orders') }}" method="get">
+      <button type="submit" class="btn btn-primary btn-lg btn-block mt-3">Order Confirm</button>
+    </form>
+  {% else %}
+    <!-- Cancel Order Button for Customer -->
+    <form action="{{ url_for('cancel_order', order_id=order_id) }}" method="post" style="display: inline;">
+      <button type="submit" class="btn btn-danger btn-lg btn-block mt-3">Cancel Order</button>
+    </form>
 
-  <!-- Keep Payment Button -->
-  <form action="{{ url_for('payment_page', order_id=order_id) }}" method="get" style="display: inline;">
-    <button type="submit" class="btn btn-success btn-lg btn-block mt-3">Keep Payment</button>
-  </form>
-
+    <!-- Keep Payment Button for Customer -->
+    <form action="{{ url_for('payment_page', order_id=order_id) }}" method="get" style="display: inline;">
+      <button type="submit" class="btn btn-success btn-lg btn-block mt-3">Keep Payment</button>
+    </form>
+  {% endif %}
 </div>
 {% endblock %}

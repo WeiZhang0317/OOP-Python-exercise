@@ -46,9 +46,7 @@
                 </li>
               {% elif session['role'] == 'staff' %}
                 <!-- Staff-specific options -->
-                <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('view_vegetables') }}">View All Vegetables</a> <!-- 添加占位符 -->
-                </li>
+              
                 <li class="nav-item active">
                   <a class="nav-link" href="{{ url_for('order.current_orders') }}">Current Orders</a> <!-- 添加占位符 -->
                 </li>

@@ -85,8 +85,8 @@ def dashboard():
 
 @app.route('/view_vegetables')
 def view_vegetables():
-    if 'user_id' not in session or session.get('role') != 'customer':
-        flash('Please log in as a customer.', 'warning')
+    if 'user_id' not in session:
+        flash('Please log in as a customer or staff.', 'warning')
         return redirect(url_for('login'))
 
     weighted_veggie_alias = aliased(WeightedVeggie)
@@ -103,10 +103,11 @@ def view_vegetables():
         .all()
 )
     # 获取购物车对象并计算总价
+    customer_list = Customer.get_all_customers() if session.get('role') == 'staff' else None
     cart = Cart(session.get('cart'))
     total_price = cart.get_total_price()
 
-    return render_template('purchase/view_vegetables.html', items=items, cart=cart.get_cart(), total_price=total_price)
+    return render_template('purchase/view_vegetables.html', items=items, customer_list=customer_list, cart=cart.get_cart(), total_price=total_price)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -174,36 +175,39 @@ def checkout():
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
-
-     # 获取当前用户，可能是私人客户或公司客户
-    customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
-
-    # 检查客户是否可以下订单（基于客户类型）
-    if isinstance(customer, CorporateCustomer):
-        if not customer.can_place_order():
+    
+    # 判断用户角色并设置 customer_id 和 staff_id
+    if session.get('role') == 'customer':
+        customer_id = session.get('user_id')  # 客户使用自己的 ID
+        staff_id = 4  # 默认员工 ID 为 4
+        # 获取当前客户对象并检查下单权限
+        customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
+        if isinstance(customer, CorporateCustomer) and not customer.can_place_order():
             flash('Your corporate balance is below the required minimum, you cannot place an order.', 'danger')
             return redirect(url_for('view_vegetables'))
-    else:
-        if not customer.can_place_order():
+        elif isinstance(customer, Customer) and not customer.can_place_order():
             flash('Your personal balance exceeds the allowed limit, you cannot place an order.', 'danger')
             return redirect(url_for('view_vegetables'))
+    else:
+        # staff 用户从表单获取 customer_id
+        customer_id = request.form.get('customer_id')
+        if not customer_id:
+            flash("Please select a customer for placing the order.", 'warning')
+            return redirect(url_for('view_vegetables'))
+        
+        staff_id = session.get('user_id')
+        customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
+        if not customer:
+            flash(f"Customer with ID {customer_id} not found.", 'danger')
+            return redirect(url_for('view_vegetables'))
 
-    # 打印确认可以下单
-    print("Check done: customer can place order")
-
-    # 获取当前购物车
+    # 获取购物车对象
     cart = Cart(session.get('cart'))
     if not cart or len(cart.get_cart()) == 0:
         flash('Your cart is empty!', 'warning')
         return redirect(url_for('view_vegetables'))
 
-    # 获取当前用户ID
-    customer_id = session.get('user_id')
-
-    # 获取staff_id，可以通过session 或者默认分配
-    staff_id = session.get('staff_id', 4)  # 默认分配给staff_id 4
-
-    # 创建一个新的订单，使用 generate_unique_order_number() 生成唯一订单号
+    # 创建一个新的订单
     order = Order(
         order_number=Order.generate_unique_order_number(),
         customer_id=customer_id,
@@ -219,10 +223,8 @@ def checkout():
 
     # 为购物车中的每个商品创建相应的 OrderLine 记录并减少库存
     for cart_item in cart.get_cart():
-        # 查找对应商品的库存记录
         inventory = db.session.query(Inventory).filter_by(item_id=cart_item['item_id']).first()
         if inventory:
-            # 减少库存
             try:
                 inventory.reduce_stock(cart_item['quantity'])
             except ValueError as e:
@@ -231,7 +233,7 @@ def checkout():
 
             # 创建订单项
             order_line = OrderLine(
-                order_id=order.id,  # 使用刚创建的订单ID
+                order_id=order.id,
                 item_id=cart_item['item_id'],
                 quantity=cart_item['quantity'],
                 line_total=cart_item['line_total']
@@ -241,29 +243,27 @@ def checkout():
             flash(f'No inventory found for item {cart_item["name"]}', 'danger')
             return redirect(url_for('view_vegetables'))
 
-    # 最后提交事务，将订单和订单项保存到数据库，并更新库存
+    # 提交事务并清空购物车
     db.session.commit()
-
-    # 清空购物车
     session['cart'] = []
-    # 跳转到支付页面并传递订单ID
-    flash(f'Order {order.id} created successfully. Please proceed to payment.', 'success')
 
+    flash(f'Order {order.id} created successfully. Please proceed to payment.', 'success')
     return redirect(url_for('current_order', order_id=order.id))
 
-
-
-# Route to view current order details
 @app.route('/current_order/<int:order_id>', methods=['GET'])
 def current_order(order_id):
-    customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
-    order = db.session.query(Order).filter_by(id=order_id, customer_id=customer.cust_id).first()
-
+    # 查询订单并获取客户信息
+    order = db.session.query(Order).filter_by(id=order_id).first()
     if not order:
         flash('Order not found.', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # Get order lines
+    customer = db.session.query(Customer).filter_by(cust_id=order.customer_id).first()
+    if not customer:
+        flash("Customer details not found for this order.", 'danger')
+        return redirect(url_for('view_vegetables'))
+
+    # 获取订单行
     order_lines = order.get_order_lines()
     return render_template('purchase/current_order.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
 

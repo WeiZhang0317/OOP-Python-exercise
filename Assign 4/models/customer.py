@@ -66,7 +66,12 @@ class Customer(Person):
                 f"Max Owing Limit: {self.max_owing}\n"
                 f"Number of Orders: {len(self.list_of_orders)}\n"
                 f"Number of Payments: {len(self.list_of_payments)}")
-
+    
+    @classmethod    
+    def get_all_customers(cls):
+        """获取所有客户对象"""
+        return db.session.query(cls).all()
+    
     def __str__(self) -> str:
         return f"Customer ID: {self.cust_id}, Name: {self.get_full_name()}, Balance: {self.cust_balance}"
 

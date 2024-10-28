@@ -4,20 +4,47 @@
 
 {% block content %}
 <div class="container">
+  <!-- Page header with conditional instructions based on role -->
   <div class="py-5 text-center">
     <h2>Available Products</h2>
-    <p class="lead">Browse our fresh vegetables and premade boxes. Add them to your cart and proceed to checkout when you're ready.</p>
+    {% if session.get('role') == 'staff' %}
+      <p class="lead">Assist customers by selecting fresh vegetables and premade boxes. Add items to their cart and proceed to checkout on their behalf.</p>
+    {% else %}
+      <p class="lead">Browse our fresh vegetables and premade boxes. Add them to your cart and proceed to checkout when you're ready.</p>
+    {% endif %}
   </div>
 
+  <!-- Staff-only customer selection card positioned at the top for clarity -->
+  {% if session.get('role') == 'staff' %}
+  <div class="card mb-4">
+    <div class="card-header bg-light">
+      <h4>Select Customer</h4>
+    </div>
+    <div class="card-body">
+      <form action="{{ url_for('checkout') }}" method="POST">
+        <div class="form-group">
+          <label for="customer_id">Select Customer ID:</label>
+          <select id="customer_id" name="customer_id" class="form-control" required>
+            {% for customer in customer_list %}
+              <option value="{{ customer.cust_id }}">{{ customer.cust_id }} - {{ customer.first_name }} {{ customer.last_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="row">
-    <!-- 商品列表 - 左侧产品 -->
+    <!-- Left side: Product list -->
     <div class="col-md-8">
       <div class="row">
         {% for item in items %}
         <div class="col-md-6">
           <div class="card mb-4 box-shadow">
             <div class="card-header">
-              <!-- 根据商品类型显示不同的标题 -->
+              <!-- Display different titles based on product type -->
               {% if item.type == 'veggie' %}
                 <h4 class="my-0 font-weight-normal">Vegetable (by each)</h4>
               {% elif item.type == 'weighted_veggie' %}
@@ -31,9 +58,9 @@
               {% endif %}
             </div>
             <div class="card-body">
-              <!-- 将商品名称作为 card-title -->
+              <!-- Display item name as card title -->
               <h3 class="card-title">{{ item.name }}</h3>
-              <!-- 使用小一点的字体显示价格 -->
+              <!-- Display price in smaller font -->
               <h5 class="card-subtitle mb-2 text-muted">
                 {% if item.type == 'veggie' %}
                   ${{ item.price }} each
@@ -48,11 +75,11 @@
                 {% endif %}
               </h5>
               <ul class="list-unstyled mt-3 mb-4">
-                <!-- 显示库存 -->
+                <!-- Display available stock -->
                 <li class="text-success">Stock: {{ item.inventory.quantity }} available</li>
               </ul>
 
-              <!-- 添加 Premade Box 和其他商品的 Add to Cart 按钮 -->
+              <!-- Add to Cart button for regular and premade items -->
               <form action="{{ url_for('add_to_cart') }}" method="post" onsubmit="return validateQuantity(this, {{ item.id }});">
                 <input type="hidden" name="item_id" value="{{ item.id }}">
                 <div class="form-group">
@@ -62,7 +89,7 @@
                 <button type="submit" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
               </form>
 
-              <!-- Premade Box 的 "Customize" 按钮，只显示给 Premade Box -->
+              <!-- "Customize" button only for premade boxes -->
               {% if item.type == 'premade_box' %}
               <a href="{{ url_for('customize_premade_box', box_id=item.id) }}" class="btn btn-lg btn-block btn-warning">Customize</a>
               {% endif %}
@@ -73,52 +100,56 @@
       </div>
     </div>
 
-  <!-- 购物车侧栏 - 右侧购物车 -->
-<div class="col-md-4">
-  <div class="card">
-    <div class="card-header bg-info text-white">
-      <h4 class="d-flex justify-content-between align-items-center mb-0">
-        <span>Your cart</span>
-       
-      </h4>
-    </div>
-    <div class="card-body">
-      {% if cart and cart|length > 0 %}
-      <ul class="list-group mb-3">
-        {% for cart_item in cart %}
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">{{ cart_item.name }}</h6>
-            <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
-            <small class="text-muted">Unit pirce: {{ cart_item.price }}</small>
-          </div>
-          <span class="text-muted">${{ cart_item.line_total }}</span>
-          <form action="{{ url_for('remove_from_cart') }}" method="POST" style="display:inline;">
-            <input type="hidden" name="item_id" value="{{ cart_item.item_id }}">
-            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+    <!-- Right side: Cart summary -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h4 class="d-flex justify-content-between align-items-center mb-0">
+            <span>Your cart</span>
+          </h4>
+        </div>
+        <div class="card-body">
+          {% if cart and cart|length > 0 %}
+          <ul class="list-group mb-3">
+            {% for cart_item in cart %}
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">{{ cart_item.name }}</h6>
+                <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
+                <small class="text-muted">Unit price: {{ cart_item.price }}</small>
+              </div>
+              <span class="text-muted">${{ cart_item.line_total }}</span>
+              <form action="{{ url_for('remove_from_cart') }}" method="POST" style="display:inline;">
+                <input type="hidden" name="item_id" value="{{ cart_item.item_id }}">
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+              </form>
+            </li>
+            {% endfor %}
+            
+            <!-- Cart total amount -->
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total (USD)</span>
+              <strong>${{ total_price }}</strong>
+            </li>
+          </ul>
+          
+          <!-- Checkout button for non-staff users -->
+          {% if session.get('role') != 'staff' %}
+          <form action="{{ url_for('checkout') }}" method="POST">
+            <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
           </form>
-        </li>
-        {% endfor %}
-       
-        
-        <li class="list-group-item d-flex justify-content-between">
-          <span>Total (USD)</span>
-          <strong>${{ total_price }}</strong>
-        </li>
-      </ul>
-      <form action="{{ url_for('checkout') }}" method="POST">
-        <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
-    </form>
-    
-      {% else %}
-      <p>Your cart is empty.</p>
-      {% endif %}
+          {% endif %}
+
+          {% else %}
+          <p>Your cart is empty.</p>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-  </div>
-</div>
+
 
 <script>
   function validateQuantity(form, itemId) {
