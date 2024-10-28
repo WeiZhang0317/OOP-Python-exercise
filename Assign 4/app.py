@@ -106,7 +106,7 @@ def view_vegetables():
     cart = Cart(session.get('cart'))
     total_price = cart.get_total_price()
 
-    return render_template('view_vegetables.html', items=items, cart=cart.get_cart(), total_price=total_price)
+    return render_template('purchase/view_vegetables.html', items=items, cart=cart.get_cart(), total_price=total_price)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -265,7 +265,7 @@ def current_order(order_id):
 
     # Get order lines
     order_lines = order.get_order_lines()
-    return render_template('current_order.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
+    return render_template('purchase/current_order.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
 
 
 # Route to handle the delivery option and payment method form
@@ -278,7 +278,7 @@ def payment_page(order_id):
         flash('Order not found.', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    return render_template('payment.html', customer=customer, order_id=order_id, order=order)
+    return render_template('purchase/payment.html', customer=customer, order_id=order_id, order=order)
 
 
 # Route to process the payment
@@ -380,7 +380,7 @@ def customize_premade_box(box_id):
 
         flash('Items added to your premade box successfully!', 'success')
 
-    return render_template('customize_premade_box.html', items=items, box=box, selected_items=selected_items)
+    return render_template('purchase/customize_premade_box.html', items=items, box=box, selected_items=selected_items)
 
 
 
