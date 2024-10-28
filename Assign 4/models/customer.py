@@ -25,22 +25,30 @@ class Customer(Person):
         self.list_of_orders = []  
         self.list_of_payments = []  
         
-    def can_place_order(self) -> bool:
-        """检查私人客户的余额是否超过了允许的最大欠款额度"""
-        return self.cust_balance >= -self.max_owing
 
 
-    def place_order(self, order):
-        if self.can_place_order():
-            self.list_of_orders.append(order)
-            print(f"Order {order.order_number} placed successfully.")
-        else:
-            print("Order cannot be placed. Outstanding balance exceeds maximum owing limit.")
+    def can_process_payment(self, payment_amount: float) -> bool:
+        """Checks if the payment can be processed to prevent exceeding the maximum debt limit"""
+        if self.cust_balance < 0 and abs(self.cust_balance) + payment_amount >= self.max_owing:
+            return False
+        return True
+    
+    def deduct_balance(self, payment_amount: float) -> bool:
+        """Deducts the specified payment amount from the customer's balance if possible."""
+        if self.can_process_payment(payment_amount):
+            self.cust_balance -= payment_amount
+            return True
+        return False
 
     def make_payment(self, payment):
-        self.list_of_payments.append(payment)
-        self.cust_balance -= payment.payment_amount
-        print(f"Payment of {payment.payment_amount} made successfully. New balance: {self.cust_balance}")
+        if self.can_process_payment(payment.payment_amount):
+            self.list_of_payments.append(payment)
+            self.cust_balance -= payment.payment_amount
+            print(f"Payment of {payment.payment_amount} was successful. New balance: {self.cust_balance}")
+        else:
+            print("Payment failed: Outstanding balance exceeds the maximum allowed debt limit.")
+
+
 
     def view_order_history(self):
         if not self.list_of_orders:
@@ -91,9 +99,7 @@ class CorporateCustomer(Customer):
         self.max_credit = max_credit
         self.min_balance = min_balance
         
-    def can_place_order(self) -> bool:
-        """检查公司客户的余额是否足够下单"""
-        return self.cust_balance >= self.min_balance    
+
 
     def place_order(self, order):
         if self.cust_balance >= self.min_balance:

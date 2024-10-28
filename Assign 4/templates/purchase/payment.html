@@ -43,7 +43,7 @@
             <!-- <option value="" disabled selected>--- Select your payment method ---</option> -->
             <option value="credit_card">Credit Card</option>
             <option value="debit_card">Debit Card</option>
-            <option value="account_balance">Account Balance</option>
+            <option value="account_balance">Account Balance (Available Balance: ${{ customer.cust_balance }})</option>
           </select>
           <div class="invalid-feedback">Please select a payment method.</div>
         </div>
@@ -52,6 +52,7 @@
 
     <!-- Shared Card Information -->
     <div id="shared_card_info" style="display: none;">
+
       <div id="credit_card_type" class="form-group" style="display: none;">
         <label for="card_type">Card Type</label>
         <select class="form-control" id="card_type" name="card_type">
@@ -70,14 +71,19 @@
         <label for="card_number">Card Number</label>
         <input type="text" class="form-control" id="card_number" name="card_number" maxlength="16" pattern="\d{16}" placeholder="Enter your 16-digit card number" required>
       </div>
+
       <div class="form-group">
         <label for="card_expiry_date">Expiry Date (MM/YYYY)</label>
         <input type="text" class="form-control" id="card_expiry_date" name="card_expiry_date" pattern="(0[1-9]|1[0-2])/\d{4}" placeholder="MM/YYYY" required>
-      </div>
+        <small class="form-text text-muted">The expiry date for credit and debit cards must be after 01/2025.</small>
+      </div>     
+
+     
       <div class="form-group">
         <label for="cvv">CVV</label>
         <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" placeholder="Enter 3-digit CVV" required>
       </div>
+    </div>
     </div>
 
     <!-- Confirm Payment Button -->
@@ -88,25 +94,26 @@
 </div>
 
 <script>
-  function togglePaymentFields(paymentMethod) {
+function togglePaymentFields(paymentMethod) {
     const sharedCardInfo = document.getElementById('shared_card_info');
     const creditCardType = document.getElementById('credit_card_type');
     const debitBankName = document.getElementById('debit_bank_name');
 
     if (paymentMethod === 'credit_card') {
-      sharedCardInfo.style.display = 'block';
-      creditCardType.style.display = 'block';
-      debitBankName.style.display = 'none';
+        sharedCardInfo.style.display = 'block';
+        creditCardType.style.display = 'block';
+        debitBankName.style.display = 'none';
     } else if (paymentMethod === 'debit_card') {
-      sharedCardInfo.style.display = 'block';
-      creditCardType.style.display = 'none';
-      debitBankName.style.display = 'block';
-    } else {
-      sharedCardInfo.style.display = 'none';
-      creditCardType.style.display = 'none';
-      debitBankName.style.display = 'none';
+        sharedCardInfo.style.display = 'block';
+        creditCardType.style.display = 'none';
+        debitBankName.style.display = 'block';
+    } else if (paymentMethod === 'account_balance') {
+        sharedCardInfo.style.display = 'none'; 
+        creditCardType.style.display = 'none';
+        debitBankName.style.display = 'none';
     }
-  }
+}
+
 
   // 页面加载后将 payment_method 默认设置为 credit_card 并显示对应表单
   document.addEventListener('DOMContentLoaded', function() {
@@ -123,6 +130,10 @@
       var validation = Array.prototype.filter.call(forms, function(form) {
         form.addEventListener('submit', function(event) {
           const paymentMethod = document.getElementById('payment_method').value;
+
+          if (paymentMethod === 'account_balance') {
+                    return; // 不执行后续验证逻辑，直接提交表单
+                }
 
           if (paymentMethod === 'credit_card') {
             // 仅信用卡需要验证到期日期
@@ -179,12 +190,17 @@
 
   function validateForm(event) {
     const form = document.getElementById('paymentForm');
+    if (paymentMethod === 'account_balance') {
+        return;  // 直接返回，不执行后续验证逻辑
+    }
+
     if (!form.checkValidity()) {
         event.preventDefault();  // 阻止表单提交
         alert("Please ensure all required fields are correctly filled before submitting.");  // 弹出提醒框
         form.classList.add('was-validated');  // 增加 Bootstrap 验证样式
     }
 }
+
 
 
 </script>

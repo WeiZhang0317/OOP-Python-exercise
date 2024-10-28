@@ -42,7 +42,7 @@ def login():
             session['user_id'] = person.id  # 将用户 ID 存入 session
             session['role'] = person.role  # 假设有 role 属性
             flash('登录成功！', 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('view_vegetables'))
 
         else:
             flash('用户名或密码错误，请重试。', 'danger')
@@ -64,24 +64,7 @@ def logout():
 # #######################
 
 # Customer Dashboard
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        flash('请登录以访问控制面板。', 'warning')
-        return redirect(url_for('login'))
 
-    # 根据用户角色显示不同的内容
-    if session.get('role') == 'customer':
-        items = Item.query.all()  # 客户查看商品
-        return render_template('dashboard.html', items=items, role='customer')
-
-    elif session.get('role') == 'staff':
-        orders = Order.query.all()  # 员工管理订单
-        return render_template('dashboard.html', orders=orders, role='staff')
-
-    else:
-        flash('未授权的访问。', 'danger')
-        return redirect(url_for('login'))
 
 @app.route('/view_vegetables')
 def view_vegetables():
@@ -182,12 +165,7 @@ def checkout():
         staff_id = 4  # 默认员工 ID 为 4
         # 获取当前客户对象并检查下单权限
         customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
-        if isinstance(customer, CorporateCustomer) and not customer.can_place_order():
-            flash('Your corporate balance is below the required minimum, you cannot place an order.', 'danger')
-            return redirect(url_for('view_vegetables'))
-        elif isinstance(customer, Customer) and not customer.can_place_order():
-            flash('Your personal balance exceeds the allowed limit, you cannot place an order.', 'danger')
-            return redirect(url_for('view_vegetables'))
+      
     else:
         # staff 用户从表单获取 customer_id
         customer_id = request.form.get('customer_id')
@@ -312,6 +290,16 @@ def process_payment(order_id):
                 flash("Invalid debit card number. It must be 16 digits.", 'danger')
                 return redirect(url_for('payment_page', order_id=order_id))
             DebitCardPayment.create_payment(customer, bank_name, card_number, payment_amount)
+            
+        elif payment_method == 'account_balance':
+            # Check if customer can process the payment from balance
+            if customer.deduct_balance(payment_amount):
+                # Deduct balance
+                db.session.commit()
+                flash("Payment deducted from your account balance!", "success")
+            else:
+                flash("Payment failed: Outstanding balance exceeds the maximum allowed debt limit.", "danger")
+                return redirect(url_for('payment_page', order_id=order_id))
 
         # Update order status to "Paid"
         order.update_status('Paid')
