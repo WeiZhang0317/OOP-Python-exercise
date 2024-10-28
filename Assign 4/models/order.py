@@ -8,6 +8,7 @@ from enum import Enum
 from .customer import Customer
 from .item import Item
 import random
+from datetime import datetime, timezone
 
 
 # models/order.py
@@ -112,7 +113,8 @@ class Order(db.Model):  # 使用 db.Model 代替 Base
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_number = Column(Integer, unique=True, nullable=False)
     customer_id = Column(Integer, ForeignKey('customers.cust_id'))
-    order_date = Column(DateTime, default=datetime.now)
+    order_date = Column(DateTime, default=datetime.now(timezone.utc))
+
     order_status = Column(String(50), nullable=False)
     total_cost = Column(Float, nullable=False)
 

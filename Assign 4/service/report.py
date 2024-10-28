@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from sqlalchemy import func, desc, asc
-
+from datetime import datetime, timezone
 from models import Order, db, Item, OrderLine, OrderStatus
 
 
@@ -14,8 +14,11 @@ class SalesReportService:
         @param days: 查询的天数，例如7天，30天，365天。
         @return: 总销售额，float类型。
         """
-        end_date = datetime.now()
+        end_date = datetime.now(timezone.utc)
         start_date = end_date - timedelta(days=days)
+
+        print(f"Start Date: {start_date}")
+        print(f"End Date: {end_date}")
 
         # 查询指定时间区间内的总销售额
         total_query = db.session.query(func.sum(Order.total_cost)) \
