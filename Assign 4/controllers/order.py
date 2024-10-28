@@ -56,3 +56,5 @@ def sales_report():
     popularInfo = PopularItemReportService.get_popular_items_summary()
     leastPopularInfo = PopularItemReportService.get_least_popular_items_summary()
     return render_template('order/sales_report.html', **locals())
+
+

@@ -27,7 +27,7 @@ class Customer(Person):
         
     def can_place_order(self) -> bool:
         """检查私人客户的余额是否超过了允许的最大欠款额度"""
-        return self.cust_balance <= self.max_owing
+        return self.cust_balance >= -self.max_owing
 
 
     def place_order(self, order):

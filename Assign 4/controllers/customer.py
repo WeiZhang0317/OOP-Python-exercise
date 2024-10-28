@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, request
-from models import Customer, CorporateCustomer
+from flask import Blueprint, render_template, redirect, request, flash, session,url_for
+from models import Customer, CorporateCustomer,Order,OrderStatus
 from service.report import SalesReportService
 
 customer_blueprint = Blueprint('customer', __name__, url_prefix='/customer')
@@ -33,3 +33,37 @@ def corporate_customer_detail(customer_id):
     monthly_sales = SalesReportService.get_monthly_sales(customer_id)
     yearly_sales = SalesReportService.get_yearly_sales(customer_id)
     return render_template('customer/corporate_detail.html', **locals())
+
+
+
+@customer_blueprint.route('/history_orders', methods=['GET'])
+def history_orders():
+    """
+    查询当前登录用户的所有历史订单及其详细信息
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('请先登录。', 'warning')
+        return redirect(url_for('login'))
+
+    # 查询属于当前用户的所有订单
+    items = Order.query.filter_by(customer_id=user_id).all()  # 使用 customer_id 而不是 user_id
+    return render_template('customer/history_orders.html', **locals())
+
+@customer_blueprint.route('/detail/<order_id>', methods=['GET'])
+def detail(order_id):
+    """
+    查询当前用户的特定订单详细信息
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('请先登录。', 'warning')
+        return redirect(url_for('login'))
+
+    # 查询订单并确保该订单属于当前用户
+    item = Order.query.filter_by(id=order_id, customer_id=user_id).first()  # 使用 customer_id 进行过滤
+    if not item:
+        flash('订单不存在或无权限查看该订单。', 'danger')
+        return redirect(url_for('customer.current_orders'))
+
+    return render_template('customer/detail.html', **locals())

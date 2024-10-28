@@ -36,11 +36,11 @@
             {% if session['user_id'] %}
               {% if session['role'] == 'customer' %}
                 <!-- Customer-specific options -->
-           
-             
+        
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Previous Orders</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('customer.history_orders') }}">History Orders</a> <!-- 添加占位符 -->
                 </li>
+             
                 <li class="nav-item">
                   <a class="nav-link" href="#">View Profile</a> <!-- 添加占位符 -->
                 </li>
