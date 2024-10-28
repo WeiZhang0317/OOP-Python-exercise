@@ -14,7 +14,7 @@ class SalesReportService:
         @param days: 查询的天数，例如7天，30天，365天。
         @return: 总销售额，float类型。
         """
-        end_date = datetime.now(timezone.utc)
+        end_date = datetime.now().astimezone()
         start_date = end_date - timedelta(days=days)
 
         print(f"Start Date: {start_date}")
@@ -23,7 +23,7 @@ class SalesReportService:
         # 查询指定时间区间内的总销售额
         total_query = db.session.query(func.sum(Order.total_cost)) \
             .filter(Order.order_date >= start_date, Order.order_date <= end_date,
-                    Order.order_status == OrderStatus.PAID)
+                    Order.order_status.in_([OrderStatus.PAID.value, OrderStatus.SHIPPED.value]))
         if customer_id:
             total_query = total_query.filter(Order.customer_id == customer_id)
         total_sales = total_query.scalar()
