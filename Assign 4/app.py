@@ -1,3 +1,7 @@
+# Shared routes, including browsing vegetables and placing orders and paying, etc are in app.py.
+# For staff view order/customer see in controllers file
+
+
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
@@ -22,13 +26,6 @@ db.init_app(app)
 # Create all database tables if they do not exist
 with app.app_context():
     db.create_all()
-
-
-# #######################
-# Shared routes, including browsing vegetables and placing orders and paying, etc are in app.py.
-# For staff view order/customer see in controllers file
-# #######################
-
 
 
 # Route for the cover page

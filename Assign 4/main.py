@@ -1,3 +1,5 @@
+# Create database tables within the app context
+
 from db_config import engine  
 from models import db  
 from models.customer import Customer, CorporateCustomer
