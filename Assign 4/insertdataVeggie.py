@@ -10,11 +10,11 @@ from models.payment import Payment, CreditCardPayment, DebitCardPayment
 from datetime import datetime
 import random
 
-# 创建session
+
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# 插入 Veggie 数据
+
 if not session.query(Veggie).filter_by(name="Capsicum").first():
     veggie1 = Veggie(name="Capsicum", price=2.0, veg_name="Capsicum")
     session.add(veggie1)
@@ -31,7 +31,7 @@ if not session.query(Veggie).filter_by(name="Lettuce").first():
     veggie4 = Veggie(name="Lettuce", price=3.5, veg_name="Lettuce")
     session.add(veggie4)
 
-# 插入 WeightedVeggie 数据
+
 if not session.query(WeightedVeggie).filter_by(name="Potato").first():
     weighted_veggie = WeightedVeggie(name="Potato", price=1.5, veg_name="Potato", weight_per_kilo=1.5, unit_type="kg")
     session.add(weighted_veggie)
@@ -40,7 +40,7 @@ if not session.query(WeightedVeggie).filter_by(name="Sweet Potato").first():
     weighted_veggie2 = WeightedVeggie(name="Sweet Potato", price=2.0, veg_name="Sweet Potato", weight_per_kilo=2.0, unit_type="kg")
     session.add(weighted_veggie2)
 
-# 插入 PackVeggie 数据
+
 if not session.query(PackVeggie).filter_by(name="Tomato Pack").first():
     pack_veggie = PackVeggie(name="Tomato Pack", price=5.0, veg_name="Tomato", num_in_pack=3)
     session.add(pack_veggie)
@@ -49,7 +49,7 @@ if not session.query(PackVeggie).filter_by(name="Mushroom Pack").first():
     pack_veggie2 = PackVeggie(name="Mushroom Pack", price=6.0, veg_name="Mushroom", num_in_pack=7)
     session.add(pack_veggie2)
 
-# 插入 UnitPriceVeggie 数据
+
 if not session.query(UnitPriceVeggie).filter_by(name="Bok choy").first():
     unit_price_veggie = UnitPriceVeggie(name="Bok choy", price=5.5, veg_name="Bok choy", price_per_unit=5.5, unit_type="bunch")
     session.add(unit_price_veggie)
@@ -58,7 +58,7 @@ if not session.query(UnitPriceVeggie).filter_by(name="Spring onion").first():
     unit_price_veggie2 = UnitPriceVeggie(name="Spring onion", price=3.0, veg_name="Spring onion", price_per_unit=3.0, unit_type="bunch")
     session.add(unit_price_veggie2)
 
-# 插入 PremadeBox 数据
+
 if not session.query(PremadeBox).filter_by(name="Small Veggie Box").first():
     small_premade_box = PremadeBox(name="Small Veggie Box", price=15.0, box_size="small")
     session.add(small_premade_box)
@@ -71,19 +71,16 @@ if not session.query(PremadeBox).filter_by(name="Large Veggie Box").first():
     large_premade_box = PremadeBox(name="Large Veggie Box", price=30.0, box_size="large")
     session.add(large_premade_box)
 
-# 提交事务保存Item数据
 session.commit()
 
-# 为每个Item插入库存数据到Inventory表
+
 items = session.query(Item).all()
 for item in items:
-    # 随机生成库存数量
     quantity = random.randint(80, 200)
     
-    # 插入库存数据
+  
     inventory_entry = Inventory(item_id=item.id, quantity=quantity)
     session.add(inventory_entry)
 
-# 提交事务保存库存数据
 session.commit()
 
