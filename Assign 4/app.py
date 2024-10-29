@@ -1,69 +1,73 @@
 import os
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.security import check_password_hash
-from models import db, Person, Customer, CorporateCustomer, Item, Order,Cart,OrderStatus, OrderLine,DebitCardPayment,  Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie,PremadeBox,CreditCardPayment # 从 models 中导入 db 和其他模型
+from models import db, Person, Customer, CorporateCustomer, Item, Order, Cart, OrderStatus, OrderLine, DebitCardPayment, Inventory, WeightedVeggie, PackVeggie, UnitPriceVeggie, PremadeBox, CreditCardPayment
 from controllers import init_controller
-from service import PremadeBoxService
 from sqlalchemy.orm import aliased
-import re
-from sqlalchemy.orm import joinedload
 
+
+
+# Set the base directory path for the application
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# 初始化 Flask 应用
+# Initialize the Flask application
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/fresh_harvest12'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
-# 初始化数据库
+# Initialize the database with Flask application context
 db.init_app(app)
 
-# 创建数据库表
+# Create all database tables if they do not exist
 with app.app_context():
     db.create_all()
 
-# 首页路由
+
+# #######################
+# Shared routes, including browsing vegetables and placing orders and paying, etc are in app.py.
+# For staff view order/customer see in controllers file
+# #######################
+
+
+
+# Route for the cover page
 @app.route('/')
 def coverpage():
     return render_template('coverpage.html')
 
-# 登录路由
+# Route for login page handling both GET and POST requests
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        # 根据用户名查找用户
+        # Query the database for the user by username
         person = Person.query.filter_by(username=username).first()
 
-        if person and check_password_hash(person._Person__password, password):  # 验证密码
-            session['user_id'] = person.id  # 将用户 ID 存入 session
-            session['role'] = person.role  # 假设有 role 属性
-            flash('登录成功！', 'success')
+        # Verify user and password, and set session variables upon successful login
+        if person and check_password_hash(person._Person__password, password):
+            session['user_id'] = person.id  # Store user ID in session
+            session['role'] = person.role  # Store user role in session, if available
+            flash('Login successful!', 'success')
             return redirect(url_for('view_vegetables'))
 
         else:
-            flash('用户名或密码错误，请重试。', 'danger')
+            flash('Incorrect username or password. Please try again.', 'danger')
 
     return render_template('login.html')
 
-# 注销路由
+# Route to handle user logout, clearing session information
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
     session.pop('role', None)
-    flash('你已成功注销。', 'info')
+    flash('You have been successfully logged out.', 'info')
     return redirect(url_for('login'))
 
 
 
-# #######################
-# # Customer-related routes
-# #######################
-
-# Customer Dashboard
 
 
 @app.route('/view_vegetables')
