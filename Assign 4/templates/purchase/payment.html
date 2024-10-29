@@ -11,6 +11,8 @@
 
   <form id="paymentForm" action="{{ url_for('process_payment', order_id=order_id) }}" method="post" novalidate onsubmit="validateForm(event)">
 
+
+
     <!-- Delivery or Pickup -->
     <div class="card mb-4">
       <div class="card-header">
@@ -25,7 +27,7 @@
             <option value="delivery">Delivery (within 20 km - $10.00 fee)</option>
           </select>
         </div>
-        <p id="deliveryFeeMessage" class="text-muted">Note: A $10.00 delivery fee applies for orders within a 20 km radius.</p>
+        <p id="deliveryFeeMessage" class="text-muted">Note: A $10.00 delivery fee applies for orders within 20 km radius.</p>
       </div>
     </div>
 
@@ -38,6 +40,7 @@
         <div class="form-group">
           <label for="payment_method" class="form-label">Payment Method</label>
           <select class="form-control" id="payment_method" name="payment_method" onchange="togglePaymentFields(this.value)">
+            <!-- <option value="" disabled selected>--- Select your payment method ---</option> -->
             <option value="credit_card">Credit Card</option>
             <option value="debit_card">Debit Card</option>
             <option value="account_balance">Account Balance (Available Balance: ${{ customer.cust_balance }})</option>
@@ -61,26 +64,27 @@
       <div id="debit_bank_name" class="form-group" style="display: none;">
         <label for="bank_name">Bank Name</label>
         <input type="text" class="form-control" id="bank_name" name="bank_name">
-        <small class="form-text text-muted">Optional.</small>
+        <small class="form-text text-muted">Optional</small>
       </div>
 
       <!-- Card Details -->
       <div class="form-group">
         <label for="card_number">Card Number</label>
         <input type="text" class="form-control" id="card_number" name="card_number" maxlength="16" pattern="\d{16}" placeholder="Enter your 16-digit card number" required>
-        <small class="form-text text-muted">Card number must be 16 digits.</small>
+        <small class="form-text text-muted">Card number has to be 16 digit number.</small>
       </div>
 
       <div class="form-group">
         <label for="card_expiry_date">Expiry Date (MM/YYYY)</label>
         <input type="text" class="form-control" id="card_expiry_date" name="card_expiry_date" pattern="(0[1-9]|1[0-2])/\d{4}" placeholder="MM/YYYY" required>
-        <small class="form-text text-muted">Expiry date must be after 01/2025.</small>
+        <small class="form-text text-muted">The expiry date for credit and debit cards must be after 01/2025.</small>
       </div>     
 
+     
       <div class="form-group">
         <label for="cvv">CVV</label>
         <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" placeholder="Enter 3-digit CVV" required>
-        <small class="form-text text-muted">CVV must be 3 digits.</small>
+        <small class="form-text text-muted">Card number has to be 3 digit number.</small>
       </div>
     </div>
     </div>
@@ -94,7 +98,6 @@
 
 <script>
 function togglePaymentFields(paymentMethod) {
-    // Display relevant fields based on payment method selection
     const sharedCardInfo = document.getElementById('shared_card_info');
     const creditCardType = document.getElementById('credit_card_type');
     const debitBankName = document.getElementById('debit_bank_name');
@@ -114,28 +117,29 @@ function togglePaymentFields(paymentMethod) {
     }
 }
 
-  // Set default payment method to credit card and show related fields upon page load
+
+ 
   document.addEventListener('DOMContentLoaded', function() {
     const paymentMethodSelect = document.getElementById('payment_method');
     paymentMethodSelect.value = 'credit_card'; 
-    togglePaymentFields('credit_card');
+    togglePaymentFields('credit_card'); //
   });
 
-  // Frontend validation function to ensure all required fields are filled
+
   (function() {
     'use strict';
     window.addEventListener('load', function() {
       var forms = document.getElementsByTagName('form');
-      Array.prototype.filter.call(forms, function(form) {
+      var validation = Array.prototype.filter.call(forms, function(form) {
         form.addEventListener('submit', function(event) {
           const paymentMethod = document.getElementById('payment_method').value;
 
           if (paymentMethod === 'account_balance') {
-              return; // Skip further validation logic for account balance option
-          }
+                    return; 
+                }
 
           if (paymentMethod === 'credit_card') {
-            // Expiry date validation only needed for credit card
+       
             if (!validateExpiryDate()) {
               event.preventDefault();
               event.stopPropagation();
@@ -152,12 +156,12 @@ function togglePaymentFields(paymentMethod) {
     }, false);
   })();
 
-  // Validate credit card expiry date format, ensuring it’s correct and in the future
+ 
   function validateExpiryDate() {
     const expiryInput = document.getElementById('card_expiry_date');
     const expiryValue = expiryInput.value;
     const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth() + 1;
+    const currentMonth = new Date().getMonth() + 1; 
     
     const regex = /^(0[1-9]|1[0-2])\/\d{4}$/;
     if (!regex.test(expiryValue)) {
@@ -176,7 +180,6 @@ function togglePaymentFields(paymentMethod) {
     return true;
   }
 
-  // Update delivery fee message based on delivery option selection
   function updateDeliveryFee() {
     const deliveryOption = document.getElementById('delivery_option').value;
     const deliveryFeeMessage = document.getElementById('deliveryFeeMessage');
@@ -188,14 +191,20 @@ function togglePaymentFields(paymentMethod) {
     }
   }
 
-  // Final form validation check before submission
   function validateForm(event) {
     const form = document.getElementById('paymentForm');
+    if (paymentMethod === 'account_balance') {
+        return;  
+    }
+
     if (!form.checkValidity()) {
-        event.preventDefault();
-        alert("Please ensure all required fields are correctly filled before submitting.");
-        form.classList.add('was-validated');
+        event.preventDefault(); 
+        alert("Please ensure all required fields are correctly filled before submitting."); 
+        form.classList.add('was-validated');  
     }
 }
+
+
+
 </script>
 {% endblock %}

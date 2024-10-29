@@ -32,42 +32,42 @@
               <a class="nav-link" href="{{ url_for('view_vegetables') }}">View Vegetables <span class="sr-only">(current)</span></a>
             </li>
 
-            <!-- 菜单根据用户角色显示 -->
+            
             {% if session['user_id'] %}
               {% if session['role'] == 'customer' %}
                 <!-- Customer-specific options -->
         
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('customer.history_orders') }}">History Orders</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('customer.history_orders') }}">History Orders</a> 
                 </li>
              
                 <li class="nav-item active"> 
-                  <a class="nav-link" href="{{ url_for('customer.customer_profile') }}">View Profile</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('customer.customer_profile') }}">View Profile</a> 
                 </li>
               {% elif session['role'] == 'staff' %}
                 <!-- Staff-specific options -->
               
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('order.current_orders') }}">Current Orders</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('order.current_orders') }}">Current Orders</a> 
                 </li>
           
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('order.history_orders') }}">History Orders</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('order.history_orders') }}">History Orders</a> 
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('customer.customer_list') }}">View Customers</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('customer.customer_list') }}">View Customers</a> 
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('customer.corporate_customer_list') }}">View Corporate Customers</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('customer.corporate_customer_list') }}">View Corporate Customers</a> 
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('order.sales_report') }}">Sales Report</a> <!-- 添加占位符 -->
+                  <a class="nav-link" href="{{ url_for('order.sales_report') }}">Sales Report</a> 
                 </li>
               {% endif %}
             {% endif %}
           </ul>
 
-          <!-- 登录/登出 -->
+        
           <ul class="navbar-nav ml-auto">
             {% if session['user_id'] %}
               <li class="nav-item active">
@@ -85,7 +85,7 @@
 
     <!-- Begin page content -->
     <main role="main" class="container">
-      <!-- 显示 flash 消息 -->
+      
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           <div class="container mt-3">
@@ -103,7 +103,7 @@
 
       <div class="content">
         {% block content %}
-        <!-- 子页面的内容将会放在这里 -->
+     
         {% endblock %}
       </div>
     </main>
