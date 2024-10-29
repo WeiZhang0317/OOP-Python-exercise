@@ -68,19 +68,20 @@ def logout():
 
 
 
-
-
 @app.route('/view_vegetables')
 def view_vegetables():
+    # Ensure user is logged in; redirect to login page if not
     if 'user_id' not in session:
         flash('Please log in as a customer or staff.', 'warning')
         return redirect(url_for('login'))
 
+    # Aliases for each vegetable type model for efficient querying
     weighted_veggie_alias = aliased(WeightedVeggie)
     pack_veggie_alias = aliased(PackVeggie)
     unit_price_veggie_alias = aliased(UnitPriceVeggie)
     premade_box_alias = aliased(PremadeBox)
 
+    # Query to retrieve all items, joining different vegetable types if available
     items = (
         db.session.query(Item)
         .outerjoin(weighted_veggie_alias, Item.id == weighted_veggie_alias.id)
@@ -88,95 +89,94 @@ def view_vegetables():
         .outerjoin(unit_price_veggie_alias, Item.id == unit_price_veggie_alias.id)
         .outerjoin(premade_box_alias, Item.id == premade_box_alias.id)
         .all()
-)
-    # 获取购物车对象并计算总价
+    )
+
+    # Retrieve customer list for staff role; create cart instance and calculate total price
     customer_list = Customer.get_all_customers() if session.get('role') == 'staff' else None
     cart = Cart(session.get('cart'))
     total_price = cart.get_total_price()
 
     return render_template('purchase/view_vegetables.html', items=items, customer_list=customer_list, cart=cart.get_cart(), total_price=total_price)
 
-
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
+    # Ensure user is logged in before adding items
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
 
-    # 获取商品ID和数量
+    # Retrieve item ID and quantity from form data
     item_id = request.form.get('item_id')
     quantity = int(request.form.get('quantity', 0))
 
-    # 从数据库中获取商品
+    # Fetch item from database based on item ID
     item = db.session.get(Item, item_id)
     if not item:
         flash('Item not found!', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # 检查库存
+    # Check if sufficient stock is available
     if not item.inventory.check_stock(quantity):
         flash('Insufficient stock!', 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # 获取购物车对象
+    # Initialize cart object from session data
     cart = Cart(session.get('cart'))
 
-     # 打印购物车内容进行调试
+    # Debug: print cart contents for troubleshooting
     print("Cart content: ", cart.get_cart())
 
-    # 添加商品到购物车
+    # Add item and specified quantity to cart
     cart.add_item(item, quantity)
 
-    # 更新session
+    # Update session with modified cart data
     session['cart'] = cart.get_cart()
     flash(f'{item.name} added to your cart!', 'success')
 
     return redirect(url_for('view_vegetables'))
 
-
 @app.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():
+    # Ensure user is logged in before removing items
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
 
-    # 获取要删除的商品ID
+    # Retrieve item ID of item to remove from form data
     item_id = int(request.form.get('item_id'))
 
-    # 获取购物车对象
+    # Initialize cart object from session data
     cart = Cart(session.get('cart'))
 
-    # 从购物车移除商品
+    # Remove specified item from cart by item ID
     cart.remove_item(item_id)
 
-    # 更新session
+    # Update session with modified cart data
     session['cart'] = cart.get_cart()
     flash('Item removed from cart', 'success')
 
     return redirect(url_for('view_vegetables'))
 
-
-
-
 @app.route('/checkout', methods=['POST'])
 def checkout():
+    # Ensure the user is logged in; redirect if not
     if 'user_id' not in session:
         flash('Please log in first!', 'warning')
         return redirect(url_for('login'))
     
-    # 判断用户角色并设置 customer_id 和 staff_id
+    # Set customer_id and staff_id based on the user's role
     if session.get('role') == 'customer':
-        customer_id = session.get('user_id')  # 客户使用自己的 ID
-        staff_id = 5  # 默认员工 ID 为 5
-          # 尝试直接获取 CorporateCustomer 实例
-     
+        customer_id = session.get('user_id')  # Customer uses their own ID
+        staff_id = 5  # Default staff ID
+
+        # Try to get the CorporateCustomer instance to check ordering permissions
         corporate_customer = CorporateCustomer.query.get(customer_id)
         if corporate_customer and not corporate_customer.can_place_order():
-            # 检查企业客户是否有权限下单
+            # Corporate customer cannot place order due to insufficient balance
             flash("Corporate customer cannot place an order due to insufficient balance.", 'danger')
             return redirect(url_for('view_vegetables'))
         
-        # 获取普通客户实例并进行余额验证
+        # Retrieve Customer instance and verify balance
         customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
         if not customer:
             flash(f"Customer with ID {customer_id} not found.", 'danger')
@@ -184,10 +184,9 @@ def checkout():
         elif not customer.can_place_order_based_on_balance():
             flash("Your balance is insufficient to place an order.", 'danger')
             return redirect(url_for('view_vegetables'))
-
       
     else:
-        # staff 用户从表单获取 customer_id
+        # For staff, get customer_id from the form data
         customer_id = request.form.get('customer_id')
         if not customer_id:
             flash("Please select a customer for placing the order.", 'warning')
@@ -195,14 +194,14 @@ def checkout():
         
         staff_id = session.get('user_id')
         
-          # 尝试直接获取 CorporateCustomer 实例
+        # Attempt to retrieve CorporateCustomer instance and validate balance
         corporate_customer = CorporateCustomer.query.get(customer_id)
         if corporate_customer:
             if not corporate_customer.can_place_order():
                 flash("Corporate customer cannot place an order due to insufficient balance.", 'danger')
                 return redirect(url_for('view_vegetables'))
         else:
-            # 如果不是企业客户，获取普通客户实例
+            # If not a corporate customer, retrieve Customer instance and check balance
             customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
             if not customer:
                 flash(f"Customer with ID {customer_id} not found.", 'danger')
@@ -211,17 +210,13 @@ def checkout():
                 flash("Customer's balance is insufficient to place an order.", 'danger')
                 return redirect(url_for('view_vegetables'))
     
-
-        
-    # 获取购物车对象
+    # Retrieve cart object and check if it contains any items
     cart = Cart(session.get('cart'))
     if not cart or len(cart.get_cart()) == 0:
         flash('Your cart is empty!', 'warning')
         return redirect(url_for('view_vegetables'))
     
- 
-
-    # 创建一个新的订单
+    # Create a new order instance
     order = Order(
         order_number=Order.generate_unique_order_number(),
         customer_id=customer_id,
@@ -230,22 +225,23 @@ def checkout():
         total_cost=cart.get_total_price()
     )
 
-    # 将订单添加到数据库
+    # Add the order to the database and get order ID
     db.session.add(order)
-    db.session.flush()  # 获取订单ID
+    db.session.flush()  # Retrieve order ID for further processing
     session['current_order_id'] = order.id
 
-    # 为购物车中的每个商品创建相应的 OrderLine 记录并减少库存
+    # For each item in the cart, create an OrderLine record and reduce inventory
     for cart_item in cart.get_cart():
         inventory = db.session.query(Inventory).filter_by(item_id=cart_item['item_id']).first()
         if inventory:
             try:
                 inventory.reduce_stock(cart_item['quantity'])
             except ValueError as e:
+                # Handle stock reduction errors
                 flash(f'Error: {str(e)} for item {cart_item["name"]}', 'danger')
                 return redirect(url_for('view_vegetables'))
 
-            # 创建订单项
+            # Create an order line for each item in the cart
             order_line = OrderLine(
                 order_id=order.id,
                 item_id=cart_item['item_id'],
@@ -257,7 +253,7 @@ def checkout():
             flash(f'No inventory found for item {cart_item["name"]}', 'danger')
             return redirect(url_for('view_vegetables'))
 
-    # 提交事务并清空购物车
+    # Commit the transaction and clear the cart
     db.session.commit()
     session['cart'] = []
 
@@ -266,7 +262,7 @@ def checkout():
 
 @app.route('/current_order/<int:order_id>', methods=['GET'])
 def current_order(order_id):
-    # 查询订单并获取客户信息
+    # Query order and fetch customer information
     order = db.session.query(Order).filter_by(id=order_id).first()
     if not order:
         flash('Order not found.', 'danger')
@@ -277,12 +273,12 @@ def current_order(order_id):
         flash("Customer details not found for this order.", 'danger')
         return redirect(url_for('view_vegetables'))
 
-    # 获取订单行
+    # Retrieve order lines associated with this order
     order_lines = order.get_order_lines()
     return render_template('purchase/current_order.html', customer=customer, order_id=order_id, order=order, order_lines=order_lines)
 
 
-# Route to handle the delivery option and payment method form
+# Route to display the delivery and payment options form
 @app.route('/payment/<int:order_id>', methods=['GET'])
 def payment_page(order_id):
     customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
@@ -295,7 +291,7 @@ def payment_page(order_id):
     return render_template('purchase/payment.html', customer=customer, order_id=order_id, order=order)
 
 
-# Route to process the payment
+# Route to handle payment processing
 @app.route('/process_payment/<int:order_id>', methods=['POST'])
 def process_payment(order_id):
     customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
@@ -311,32 +307,31 @@ def process_payment(order_id):
     card_expiry_date = request.form.get('card_expiry_date')
     cvv = request.form.get('cvv')
     
-    # Calculate total cost including delivery if applicable
+    # Calculate total cost with delivery option if selected
     payment_amount = order.calculate_total_with_delivery(delivery_option)
 
     try:
+        # Process payment based on selected method
         if payment_method == 'credit_card':
             card_type = request.form.get('card_type')
             CreditCardPayment.validate_credit_card(card_number, card_expiry_date, cvv)
             CreditCardPayment.create_payment(customer, card_number, card_type, card_expiry_date, payment_amount)
 
-
         elif payment_method == 'debit_card':
-            bank_name = request.form.get('bank_name')        
-            DebitCardPayment.validate_debit_card(card_number)               
+            bank_name = request.form.get('bank_name')
+            DebitCardPayment.validate_debit_card(card_number)
             DebitCardPayment.create_payment(customer, bank_name, card_number, payment_amount)
             
         elif payment_method == 'account_balance':
-            # Check if customer can process the payment from balance
+            # Attempt to deduct from customer's account balance
             if customer.deduct_balance(payment_amount):
-                # Deduct balance
-                db.session.commit()
+                db.session.commit()  # Commit transaction if deduction succeeds
                 flash("Payment deducted from your account balance!", "success")
             else:
                 flash("Payment failed: Outstanding balance exceeds the maximum allowed debt limit.", "danger")
                 return redirect(url_for('payment_page', order_id=order_id))
 
-        # Update order status to "Paid"
+        # Update order status to 'Paid' upon successful payment
         order.update_status('Paid')
         flash('Payment processed successfully!', 'success')
         return redirect(url_for('view_vegetables'))
@@ -346,7 +341,7 @@ def process_payment(order_id):
         return redirect(url_for('payment_page', order_id=order_id))
 
 
-# Route to handle order cancellation
+# Route to cancel an order
 @app.route('/cancel_order/<int:order_id>', methods=['POST'])
 def cancel_order(order_id):
     customer = db.session.query(Customer).filter_by(cust_id=session['user_id']).first()
@@ -409,6 +404,6 @@ def customize_premade_box(box_id):
 
 init_controller(app)
 
-# 启动应用
+
 if __name__ == '__main__':
     app.run(debug=True)
