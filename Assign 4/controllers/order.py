@@ -13,7 +13,7 @@ def current_orders():
     查询所有当前订单及其详细信息
     """
     items = Order.query.filter(Order.order_status.notin_([OrderStatus.CANCELED.value])).all()
-    return render_template('order/current_orders.html', **locals())
+    return render_template('order/current_orders.html', items=items, OrderStatus=OrderStatus)
 
 
 @order_blueprint.route('/history_orders', methods=['GET'])

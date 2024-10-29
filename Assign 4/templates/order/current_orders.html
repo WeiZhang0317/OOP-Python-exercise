@@ -8,7 +8,7 @@ Current Orders
 <div class="container mt-5">
   <div class="py-3 text-center">
     <h2>Current Orders</h2>
-    <p class="lead">View all active and paid orders. Staff members can mark paid orders as shipped.</p>
+    <p class="lead">View all active and paid orders(don't include cancelled orders). Staff members can update orders status.</p>
   </div>
 
   <table class="table table-hover table-striped">
@@ -50,16 +50,18 @@ Current Orders
             <span class="badge badge-secondary">{{ item.order_status }}</span>
           {% endif %}
         </td>
-
         <!-- Total cost -->
         <td>${{ item.total_cost }}</td>
 
         <!-- Operation buttons -->
         <td>
           <div class="btn-group" role="group" aria-label="Order actions">
-            {% if item.order_status == "Paid" %}
-              <!-- Mark as delivered button for staff when order is paid -->
-              <a href="{{ url_for('order.update_status', order_id=item.id) }}" class="btn btn-success btn-sm">Mark as Shipped</a>
+            <!-- Button to change to the next status if available -->
+            {% set next_status = OrderStatus.get_next_status(item.order_status) %}
+            {% if next_status %}
+              <a href="{{ url_for('order.update_status', order_id=item.id) }}" class="btn btn-success btn-sm">
+                Mark as {{ next_status }}
+              </a>
             {% endif %}
             <!-- Detail button for all users -->
             <a href="{{ url_for('order.detail', order_id=item.id) }}" class="btn btn-primary btn-sm">Details</a>

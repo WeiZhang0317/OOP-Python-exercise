@@ -14,28 +14,6 @@
     {% endif %}
   </div>
 
-  <!-- Staff-only customer selection card positioned at the top for clarity -->
-  {% if session.get('role') == 'staff' %}
-  <div class="card mb-4">
-    <div class="card-header bg-light">
-      <h4>Select Customer</h4>
-    </div>
-    <div class="card-body">
-      <form action="{{ url_for('checkout') }}" method="POST">
-        <div class="form-group">
-          <label for="customer_id">Select Customer ID:</label>
-          <select id="customer_id" name="customer_id" class="form-control" required>
-            {% for customer in customer_list %}
-              <option value="{{ customer.cust_id }}">{{ customer.cust_id }} - {{ customer.first_name }} {{ customer.last_name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
-      </form>
-    </div>
-  </div>
-  {% endif %}
-
   <div class="row">
     <!-- Left side: Product list -->
     <div class="col-md-8">
@@ -89,10 +67,7 @@
                 <button type="submit" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
               </form>
 
-              <!-- "Customize" button only for premade boxes -->
-              {% if item.type == 'premade_box' %}
-              <a href="{{ url_for('customize_premade_box', box_id=item.id) }}" class="btn btn-lg btn-block btn-warning">Customize</a>
-              {% endif %}
+ 
             </div>
           </div>
         </div>
@@ -117,6 +92,10 @@
                 <h6 class="my-0">{{ cart_item.name }}</h6>
                 <small class="text-muted">Quantity: {{ cart_item.quantity }}</small>
                 <small class="text-muted">Unit price: {{ cart_item.price }}</small>
+
+                {% if cart_item.type == 'premade_box' %}
+                <a href="{{ url_for('customize_premade_box', box_id=cart_item.item_id) }}" class="btn btn-sm btn-warning mt-2">Customize</a>
+              {% endif %}
               </div>
               <span class="text-muted">${{ cart_item.line_total }}</span>
               <form action="{{ url_for('remove_from_cart') }}" method="POST" style="display:inline;">
@@ -136,7 +115,7 @@
           <!-- Checkout button for non-staff users -->
           {% if session.get('role') != 'staff' %}
           <form action="{{ url_for('checkout') }}" method="POST">
-            <button type="submit" class="btn btn-primary btn-block">Proceed to Payment</button>
+            <button type="submit" class="btn btn-primary btn-block">View current order</button>
           </form>
           {% endif %}
 
@@ -145,11 +124,31 @@
           {% endif %}
         </div>
       </div>
+
+      <!-- Staff-only customer selection card positioned below the cart -->
+      {% if session.get('role') == 'staff' %}
+      <div class="card mt-4">
+        <div class="card-header bg-light">
+          <h4>Select Customer</h4>
+        </div>
+        <div class="card-body">
+          <form action="{{ url_for('checkout') }}" method="POST">
+            <div class="form-group">
+              <label for="customer_id">Select Customer ID:</label>
+              <select id="customer_id" name="customer_id" class="form-control" required>
+                {% for customer in customer_list %}
+                  <option value="{{ customer.cust_id }}">{{ customer.cust_id }} - {{ customer.first_name }} {{ customer.last_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">View current order</button>
+          </form>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
-
-
 
 <script>
   function validateQuantity(form, itemId) {

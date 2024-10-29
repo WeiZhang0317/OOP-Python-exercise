@@ -31,6 +31,7 @@ class Cart:
                 'name': item.name,
                 'price': item.get_price(),
                 'quantity': quantity,
+                'type':item.type,
                 'line_total': item.get_price() * quantity
             }
             self.cart.append(new_cart_item)

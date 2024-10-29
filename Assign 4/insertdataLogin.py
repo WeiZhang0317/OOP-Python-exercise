@@ -44,11 +44,26 @@ if not session.query(Person).filter_by(username="corporate_karen").first():
         password="CorporatePass456",  # 明文密码，后续加密
         cust_address="789 Business Blvd, Corporatia",
         cust_balance=200,
-        discount_rate=0.15,  # 自定义折扣率
+        discount_rate=0.10,  # 自定义折扣率
         max_credit=2000.0,   # 自定义信用额度
         min_balance=1000.0   # 自定义最低余额
     )
     session.add(corporate_customer)
+    
+# 检查并插入 CorporateCustomer
+if not session.query(Person).filter_by(username="corporate_Liz").first():
+    corporate_customer = CorporateCustomer(
+        first_name="Liz",
+        last_name="Corporate",
+        username="corporate_Liz",
+        password="CorporatePass456",  # 明文密码，后续加密
+        cust_address="789 Fair Road, Corporatia",
+        cust_balance=15000,
+        discount_rate=0.10,  # 自定义折扣率
+        max_credit=2000.0,   # 自定义信用额度
+        min_balance=1000.0   # 自定义最低余额
+    )
+    session.add(corporate_customer)    
 
 # 检查并插入 Staff
 if not session.query(Person).filter_by(username="staff_john").first():

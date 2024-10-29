@@ -132,7 +132,7 @@ class DebitCardPayment(Payment):
     
     @staticmethod
     def validate_debit_card(debit_card_number: str) -> bool:
-        """Validates debit card details including card number."""
+        """Validates debit card number ensuring it's 16 digits."""
         if not re.fullmatch(r'\d{16}', debit_card_number):
             raise ValueError('Invalid debit card number. It must be 16 digits.')
         return True

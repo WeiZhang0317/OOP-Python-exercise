@@ -92,6 +92,7 @@ def view_vegetables():
 
     return render_template('purchase/view_vegetables.html', items=items, customer_list=customer_list, cart=cart.get_cart(), total_price=total_price)
 
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     if 'user_id' not in session:
@@ -109,7 +110,7 @@ def add_to_cart():
         return redirect(url_for('view_vegetables'))
 
     # 检查库存
-    if item.inventory.quantity < quantity:
+    if not item.inventory.check_stock(quantity):
         flash('Insufficient stock!', 'danger')
         return redirect(url_for('view_vegetables'))
 
@@ -162,9 +163,24 @@ def checkout():
     # 判断用户角色并设置 customer_id 和 staff_id
     if session.get('role') == 'customer':
         customer_id = session.get('user_id')  # 客户使用自己的 ID
-        staff_id = 4  # 默认员工 ID 为 4
-        # 获取当前客户对象并检查下单权限
+        staff_id = 5  # 默认员工 ID 为 5
+          # 尝试直接获取 CorporateCustomer 实例
+     
+        corporate_customer = CorporateCustomer.query.get(customer_id)
+        if corporate_customer and not corporate_customer.can_place_order():
+            # 检查企业客户是否有权限下单
+            flash("Corporate customer cannot place an order due to insufficient balance.", 'danger')
+            return redirect(url_for('view_vegetables'))
+        
+        # 获取普通客户实例并进行余额验证
         customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
+        if not customer:
+            flash(f"Customer with ID {customer_id} not found.", 'danger')
+            return redirect(url_for('view_vegetables'))
+        elif not customer.can_place_order_based_on_balance():
+            flash("Your balance is insufficient to place an order.", 'danger')
+            return redirect(url_for('view_vegetables'))
+
       
     else:
         # staff 用户从表单获取 customer_id
@@ -174,16 +190,32 @@ def checkout():
             return redirect(url_for('view_vegetables'))
         
         staff_id = session.get('user_id')
-        customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
-        if not customer:
-            flash(f"Customer with ID {customer_id} not found.", 'danger')
-            return redirect(url_for('view_vegetables'))
+        
+          # 尝试直接获取 CorporateCustomer 实例
+        corporate_customer = CorporateCustomer.query.get(customer_id)
+        if corporate_customer:
+            if not corporate_customer.can_place_order():
+                flash("Corporate customer cannot place an order due to insufficient balance.", 'danger')
+                return redirect(url_for('view_vegetables'))
+        else:
+            # 如果不是企业客户，获取普通客户实例
+            customer = db.session.query(Customer).filter_by(cust_id=customer_id).first()
+            if not customer:
+                flash(f"Customer with ID {customer_id} not found.", 'danger')
+                return redirect(url_for('view_vegetables'))
+            elif not customer.can_place_order_based_on_balance():
+                flash("Customer's balance is insufficient to place an order.", 'danger')
+                return redirect(url_for('view_vegetables'))
+    
 
+        
     # 获取购物车对象
     cart = Cart(session.get('cart'))
     if not cart or len(cart.get_cart()) == 0:
         flash('Your cart is empty!', 'warning')
         return redirect(url_for('view_vegetables'))
+    
+ 
 
     # 创建一个新的订单
     order = Order(
@@ -284,11 +316,10 @@ def process_payment(order_id):
             CreditCardPayment.validate_credit_card(card_number, card_expiry_date, cvv)
             CreditCardPayment.create_payment(customer, card_number, card_type, card_expiry_date, payment_amount)
 
+
         elif payment_method == 'debit_card':
-            bank_name = request.form.get('bank_name')
-            if not re.fullmatch(r'\d{16}', card_number):
-                flash("Invalid debit card number. It must be 16 digits.", 'danger')
-                return redirect(url_for('payment_page', order_id=order_id))
+            bank_name = request.form.get('bank_name')        
+            DebitCardPayment.validate_debit_card(card_number)               
             DebitCardPayment.create_payment(customer, bank_name, card_number, payment_amount)
             
         elif payment_method == 'account_balance':

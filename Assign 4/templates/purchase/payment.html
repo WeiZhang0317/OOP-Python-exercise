@@ -64,12 +64,14 @@
       <div id="debit_bank_name" class="form-group" style="display: none;">
         <label for="bank_name">Bank Name</label>
         <input type="text" class="form-control" id="bank_name" name="bank_name">
+        <small class="form-text text-muted">Non-compulsory.</small>
       </div>
 
       <!-- Card Details -->
       <div class="form-group">
         <label for="card_number">Card Number</label>
         <input type="text" class="form-control" id="card_number" name="card_number" maxlength="16" pattern="\d{16}" placeholder="Enter your 16-digit card number" required>
+        <small class="form-text text-muted">Card number has to be 16 digit number.</small>
       </div>
 
       <div class="form-group">
@@ -82,6 +84,7 @@
       <div class="form-group">
         <label for="cvv">CVV</label>
         <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" placeholder="Enter 3-digit CVV" required>
+        <small class="form-text text-muted">Card number has to be 3 digit number.</small>
       </div>
     </div>
     </div>

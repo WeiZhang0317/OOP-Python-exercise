@@ -302,6 +302,14 @@ class Inventory(db.Model):
             self.quantity -= quantity_sold
         else:
             raise ValueError("Not enough stock available")
+        
+    def check_stock(self, quantity_requested: int) -> bool:
+        """!
+        Checks if there is enough stock to fulfill a request.
+        @param quantity_requested: The quantity to check.
+        @return: True if enough stock is available, otherwise False.
+        """
+        return self.quantity >= quantity_requested    
 
     def __str__(self):
         """!

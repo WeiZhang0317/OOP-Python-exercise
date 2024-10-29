@@ -26,7 +26,14 @@ class Customer(Person):
         self.list_of_payments = []  
         
 
-
+    def can_place_order_based_on_balance(self) -> bool:
+        """Check if the customer can place an order based on their current balance."""
+        # If balance is negative, ensure the absolute balance is less than max_owing
+        if self.cust_balance < 0:
+            return abs(self.cust_balance) < self.max_owing
+        return True  # Balance is positive, so they can place an order
+    
+    
     def can_process_payment(self, payment_amount: float) -> bool:
         """Checks if the payment can be processed to prevent exceeding the maximum debt limit"""
         if self.cust_balance < 0 and abs(self.cust_balance) + payment_amount >= self.max_owing:
@@ -99,6 +106,24 @@ class CorporateCustomer(Customer):
         self.max_credit = max_credit
         self.min_balance = min_balance
         
+    def can_place_order(self) -> bool:
+        """Check if the corporate customer can place an order based on their balance."""
+        
+        print(f"[DEBUG] Checking if customer with ID {self.cust_id} can place an order.")
+        print(f"[DEBUG] Current balance: {self.cust_balance}, Minimum balance required: {self.min_balance}")
+
+          # Customer cannot place an order if the balance is negative
+        if self.cust_balance < 0:
+            print("[DEBUG] Cannot place order: Balance is negative.")
+            return False
+        
+        # Customer can place an order if balance is positive and meets min_balance requirement
+        if self.cust_balance >= self.min_balance:
+            print("[DEBUG] Order can be placed: Balance meets the minimum requirement.")
+            return True
+        else:
+            print("[DEBUG] Cannot place order: Balance does not meet the minimum requirement.")
+            return False
 
 
     def place_order(self, order):
