@@ -1,40 +1,34 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from datetime import datetime
 from sqlalchemy.orm import relationship
-from models import db  # 从 models/__init__.py 导入 db 实例
-from .customer import Customer  # 确保正确导入 Customer 模型
+from models import db  # Import db instance from models/__init__.py
+from .customer import Customer  # Ensure correct import of Customer model
 import re
 
-class Payment(db.Model):  # 使用 db.Model 代替 Base
-    """!
-    Represents a payment made for an order in the Fresh Harvest Veggies system.
-    """
+class Payment(db.Model):
+    """Represents a payment made for an order in the Fresh Harvest Veggies system."""
     __tablename__ = 'payments'
     id = Column(Integer, primary_key=True, autoincrement=True)
     payment_amount = Column(Float, nullable=False)
     payment_date = Column(DateTime, default=datetime.now)
     customer_id = Column(Integer, ForeignKey('customers.cust_id'), nullable=False)
 
+    # Relationship to Customer
     customer = relationship("Customer", back_populates="list_of_payments")
 
     def __init__(self, payment_amount: float, customer: Customer, payment_date: datetime = None):
         self.payment_amount = payment_amount
-        self.customer_id = customer.cust_id  # 通过 Customer 对象设置 customer_id
+        self.customer_id = customer.cust_id  # Set customer_id using Customer object
         self.payment_date = payment_date if payment_date else datetime.now()
 
     def get_payment_details(self) -> str:
-        """!
-        Returns a string describing the payment details.
-        @return: A string containing the payment ID, amount, and date.
-        """
+        """Return a string with payment ID, amount, and date."""
         return (f"Payment ID: {self.id}, Amount: ${self.payment_amount:.2f}, "
                 f"Date: {self.payment_date.strftime('%Y-%m-%d %H:%M:%S')}")
 
 
 class CreditCardPayment(Payment):
-    """!
-    Represents a payment made using a credit card. Inherits from Payment.
-    """
+    """Represents a payment made with a credit card, inheriting from Payment."""
     __tablename__ = 'credit_card_payments'
 
     id = Column(Integer, ForeignKey('payments.id'), primary_key=True)
@@ -54,6 +48,7 @@ class CreditCardPayment(Payment):
     
     @staticmethod
     def create_payment(customer, card_number, card_type, expiry_date, amount):
+        """Creates and saves a CreditCardPayment record to the database."""
         payment = CreditCardPayment(
             payment_amount=amount,
             customer=customer,
@@ -67,33 +62,27 @@ class CreditCardPayment(Payment):
 
     @staticmethod
     def validate_credit_card(card_number: str, card_expiry_date: str, cvv: str) -> bool:
-            """Validates credit card details including card number, expiry date, and CVV."""
-            if not re.fullmatch(r'\d{16}', card_number):
-                raise ValueError('Invalid card number. It must be 16 digits.')
-            
-            if not re.fullmatch(r'(0[1-9]|1[0-2])/\d{4}', card_expiry_date):
-                raise ValueError('Invalid expiry date format. Please use MM/YYYY.')
-            
-            if not re.fullmatch(r'\d{3}', cvv):
-                raise ValueError('Invalid CVV. It must be 3 digits.')
-            
-            return True
+        """Validate credit card details: card number, expiry date, and CVV."""
+        if not re.fullmatch(r'\d{16}', card_number):
+            raise ValueError('Invalid card number. It must be 16 digits.')
+        
+        if not re.fullmatch(r'(0[1-9]|1[0-2])/\d{4}', card_expiry_date):
+            raise ValueError('Invalid expiry date format. Please use MM/YYYY.')
+        
+        if not re.fullmatch(r'\d{3}', cvv):
+            raise ValueError('Invalid CVV. It must be 3 digits.')
+        
+        return True
 
-    
     def get_payment_details(self) -> str:
-        """!
-        Returns a string describing the credit card payment details, including card type and masked card number.
-        @return: A string containing the payment details.
-        """
-        masked_card = "**** **** **** " + self.card_number[-4:]  # Masking card number for security
+        """Return details of credit card payment, with masked card number."""
+        masked_card = "**** **** **** " + self.card_number[-4:]  # Mask card for security
         return (f"Credit Card Payment - {super().get_payment_details()}, Card Type: {self.card_type}, "
                 f"Card Number: {masked_card}, Expiry Date: {self.card_expiry_date}")
 
 
 class DebitCardPayment(Payment):
-    """!
-    Represents a payment made using a debit card. Inherits from Payment.
-    """
+    """Represents a payment made with a debit card, inheriting from Payment."""
     __tablename__ = 'debit_card_payments'
 
     id = Column(Integer, ForeignKey('payments.id'), primary_key=True)
@@ -110,16 +99,14 @@ class DebitCardPayment(Payment):
         self.debit_card_number = debit_card_number
 
     def get_payment_details(self) -> str:
-        """!
-        Returns a string describing the debit card payment details, including bank name and masked card number.
-        @return: A string containing the payment details.
-        """
-        masked_card = "**** **** **** " + self.debit_card_number[-4:]  # Masking card number for security
+        """Return details of debit card payment, with masked card number."""
+        masked_card = "**** **** **** " + self.debit_card_number[-4:]  # Mask card for security
         return (f"Debit Card Payment - {super().get_payment_details()}, Bank Name: {self.bank_name}, "
                 f"Card Number: {masked_card}")
 
     @staticmethod
     def create_payment(customer, bank_name, card_number, amount):
+        """Creates and saves a DebitCardPayment record to the database."""
         payment = DebitCardPayment(
             payment_amount=amount,
             customer=customer,
@@ -132,7 +119,7 @@ class DebitCardPayment(Payment):
     
     @staticmethod
     def validate_debit_card(debit_card_number: str) -> bool:
-        """Validates debit card number ensuring it's 16 digits."""
+        """Validate debit card number ensuring it's 16 digits."""
         if not re.fullmatch(r'\d{16}', debit_card_number):
             raise ValueError('Invalid debit card number. It must be 16 digits.')
         return True

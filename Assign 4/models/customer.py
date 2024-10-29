@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from models import db  # 从 models/__init__.py 导入 db 实例
+from models import db  # Import db instance from models/__init__.py
 from .person import Person
 
 class Customer(Person):
@@ -13,41 +13,40 @@ class Customer(Person):
         'inherit_condition': cust_id == Person.id  
     }
 
-    # Relationships
+    # Relationships to related tables
     list_of_payments = relationship("Payment", back_populates="customer")
     list_of_orders = relationship("Order", back_populates="customer")
 
     def __init__(self, first_name: str, last_name: str, username: str, password: str, cust_address: str, cust_balance: float = 0.0):
-        super().__init__(first_name, last_name, username, password, role='customer')  # 设置默认角色
+        super().__init__(first_name, last_name, username, password, role='customer')  # Default role is customer
         self.cust_address = cust_address
         self.cust_balance = cust_balance
         self.max_owing = 100.0
         self.list_of_orders = []  
         self.list_of_payments = []  
         
-
     def can_place_order_based_on_balance(self) -> bool:
-        """Check if the customer can place an order based on their current balance."""
-        # If balance is negative, ensure the absolute balance is less than max_owing
+        """Determine if the customer can place an order based on their balance status."""
+        # Check if balance is within allowable limit when negative
         if self.cust_balance < 0:
             return abs(self.cust_balance) < self.max_owing
-        return True  # Balance is positive, so they can place an order
-    
+        return True  # Positive balance allows ordering
     
     def can_process_payment(self, payment_amount: float) -> bool:
-        """Checks if the payment can be processed to prevent exceeding the maximum debt limit"""
+        """Check if a payment can be processed without exceeding the maximum debt limit."""
         if self.cust_balance < 0 and abs(self.cust_balance) + payment_amount >= self.max_owing:
             return False
         return True
     
     def deduct_balance(self, payment_amount: float) -> bool:
-        """Deducts the specified payment amount from the customer's balance if possible."""
+        """Deducts the payment amount from the balance if within limit, returning success status."""
         if self.can_process_payment(payment_amount):
             self.cust_balance -= payment_amount
             return True
         return False
 
     def make_payment(self, payment):
+        """Process a payment and deduct the amount from the balance if allowed."""
         if self.can_process_payment(payment.payment_amount):
             self.list_of_payments.append(payment)
             self.cust_balance -= payment.payment_amount
@@ -55,9 +54,8 @@ class Customer(Person):
         else:
             print("Payment failed: Outstanding balance exceeds the maximum allowed debt limit.")
 
-
-
     def view_order_history(self):
+        """Display the customer's order history or indicate none exist."""
         if not self.list_of_orders:
             print("No orders found in your history.")
         else:
@@ -66,6 +64,7 @@ class Customer(Person):
                 print(order)
 
     def view_payment_history(self):
+        """Display the customer's payment history or indicate none exist."""
         if not self.list_of_payments:
             print("No payments found in your history.")
         else:
@@ -74,6 +73,7 @@ class Customer(Person):
                 print(payment)
 
     def get_customer_details(self) -> str:
+        """Return formatted string of detailed customer information."""
         return (f"Customer ID: {self.cust_id}\n"
                 f"Name: {self.get_full_name()}\n"
                 f"Address: {self.cust_address}\n"
@@ -84,13 +84,13 @@ class Customer(Person):
     
     @classmethod    
     def get_all_customers(cls):
-        """获取所有客户对象"""
+        """Retrieve all customer records."""
         return db.session.query(cls).all()
     
     def __str__(self) -> str:
         return f"Customer ID: {self.cust_id}, Name: {self.get_full_name()}, Balance: {self.cust_balance}"
 
-# CorporateCustomer 类
+# CorporateCustomer class with additional attributes and order rules
 class CorporateCustomer(Customer):
     __tablename__ = 'corporate_customers'
     
@@ -107,17 +107,17 @@ class CorporateCustomer(Customer):
         self.min_balance = min_balance
         
     def can_place_order(self) -> bool:
-        """Check if the corporate customer can place an order based on their balance."""
+        """Determine if the corporate customer can place an order based on balance requirements."""
         
         print(f"[DEBUG] Checking if customer with ID {self.cust_id} can place an order.")
         print(f"[DEBUG] Current balance: {self.cust_balance}, Minimum balance required: {self.min_balance}")
 
-          # Customer cannot place an order if the balance is negative
+        # Prevent ordering if balance is negative
         if self.cust_balance < 0:
             print("[DEBUG] Cannot place order: Balance is negative.")
             return False
         
-        # Customer can place an order if balance is positive and meets min_balance requirement
+        # Allow ordering if balance meets or exceeds minimum required
         if self.cust_balance >= self.min_balance:
             print("[DEBUG] Order can be placed: Balance meets the minimum requirement.")
             return True
@@ -125,15 +125,16 @@ class CorporateCustomer(Customer):
             print("[DEBUG] Cannot place order: Balance does not meet the minimum requirement.")
             return False
 
-
     def place_order(self, order):
+        """Apply discount to order and place it if balance meets requirements."""
         if self.cust_balance >= self.min_balance:
-            order.order_total *= (1 - self.discount_rate)  # 对订单应用折扣
+            order.order_total *= (1 - self.discount_rate)  # Apply discount to order total
             super().place_order(order)
         else:
             print("Order cannot be placed. Customer balance is below the required minimum balance.")
 
     def get_corporate_details(self) -> str:
+        """Return formatted string of detailed corporate customer information."""
         return (f"Corporate Customer ID: {self.cust_id}\n"
                 f"Name: {self.get_full_name()}\n"
                 f"Address: {self.cust_address}\n"
