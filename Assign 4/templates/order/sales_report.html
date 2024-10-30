@@ -5,69 +5,67 @@
 {% endblock %}
 
 {% block content %}
-  <h2>Sales Report</h2>
-  <div class="row">
-    <div class="col-md-12 m-3">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">
-            Sales volume
-          </h5>
-          <dl class="row">
-            <dt class="col-sm-3">weekly</dt>
-            <dd class="col-sm-9">{{ weekly }}</dd>
+  <div class="container my-4">
+    <h2 class="text-center mb-4">Sales Report</h2>
+    <div class="row">
+      <div class="col-md-12 m-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              Sales Volume
+            </h5>
+            <dl class="row">
+              <dt class="col-sm-3">Weekly</dt>
+              <dd class="col-sm-9">{{ weekly }}</dd>
 
-            <dt class="col-sm-3">monthly</dt>
-            <dd class="col-sm-9">
-              {{ monthly }}
-            </dd>
-            <dt class="col-sm-3">yearly</dt>
-            <dd class="col-sm-9">{{ yearly }}</dd>
-          </dl>
-        </div>
+              <dt class="col-sm-3">Monthly</dt>
+              <dd class="col-sm-9">{{ monthly }}</dd>
 
-      </div>
-    </div>
-
-    <div class="col-md-12 m-3">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">
-            The Popular Item
-          </h5>
-          <dl class="row">
-            <dt class="col-sm-3">most_sold_item: </dt>
-            <dd class="col-sm-9">{{ popularInfo['most_sold_item']['item_name'] }}({{ popularInfo['most_sold_item']['total'] }})</dd>
-
-            <dt class="col-sm-3">highest_revenue_item: </dt>
-            <dd class="col-sm-9">
-              {{ popularInfo['highest_revenue_item']['item_name'] }}({{ popularInfo['highest_revenue_item']['total'] }})
-            </dd>
-            <dt class="col-sm-3">most_frequent_item: </dt>
-            <dd class="col-sm-9">{{ popularInfo['most_frequent_item']['item_name'] }}({{ popularInfo['most_frequent_item']['total'] }})</dd>
-          </dl>
+              <dt class="col-sm-3">Yearly</dt>
+              <dd class="col-sm-9">{{ yearly }}</dd>
+            </dl>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-12 m-3">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">
-            The least popular
-          </h5>
-          <dl class="row">
-            <dt class="col-sm-3">least_sold_item: </dt>
-            <dd class="col-sm-9">{{ leastPopularInfo['least_sold_item']['item_name'] }}({{ leastPopularInfo['least_sold_item']['total'] }})</dd>
 
-            <dt class="col-sm-3">lower_revenue_item: </dt>
-            <dd class="col-sm-9">
-              {{ leastPopularInfo['lower_revenue_item']['item_name'] }}({{ leastPopularInfo['lower_revenue_item']['total'] }})
-            </dd>
-            <dt class="col-sm-3">least_frequent_item: </dt>
-            <dd class="col-sm-9">{{ leastPopularInfo['least_frequent_item']['item_name'] }}({{ leastPopularInfo['least_frequent_item']['total'] }})</dd>
-          </dl>
+      <div class="col-md-12 m-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              Popular Item
+            </h5>
+            <dl class="row">
+              <dt class="col-sm-3">Most Sold Item:</dt>
+              <dd class="col-sm-9">{{ popularInfo['most_sold_item']['item_name'] }} ({{ popularInfo['most_sold_item']['total'] }})</dd>
+
+              <dt class="col-sm-3">Highest Revenue Item:</dt>
+              <dd class="col-sm-9">{{ popularInfo['highest_revenue_item']['item_name'] }} ({{ popularInfo['highest_revenue_item']['total'] }})</dd>
+
+              <dt class="col-sm-3">Most Frequent Item:</dt>
+              <dd class="col-sm-9">{{ popularInfo['most_frequent_item']['item_name'] }} ({{ popularInfo['most_frequent_item']['total'] }})</dd>
+            </dl>
+          </div>
         </div>
+      </div>
 
+      <div class="col-md-12 m-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              Least Popular
+            </h5>
+            <dl class="row">
+              <dt class="col-sm-3">Least Sold Item:</dt>
+              <dd class="col-sm-9">{{ leastPopularInfo['least_sold_item']['item_name'] }} ({{ leastPopularInfo['least_sold_item']['total'] }})</dd>
+
+              <dt class="col-sm-3">Lower Revenue Item:</dt>
+              <dd class="col-sm-9">{{ leastPopularInfo['lower_revenue_item']['item_name'] }} ({{ leastPopularInfo['lower_revenue_item']['total'] }})</dd>
+
+              <dt class="col-sm-3">Least Frequent Item:</dt>
+              <dd class="col-sm-9">{{ leastPopularInfo['least_frequent_item']['item_name'] }} ({{ leastPopularInfo['least_frequent_item']['total'] }})</dd>
+            </dl>
+          </div>
+        </div>
       </div>
     </div>
   </div>
