@@ -11,13 +11,13 @@ from app import app as flask_app
 from models import db, Customer, CorporateCustomer, Person, Staff, Item, Inventory, PremadeBox, Veggie, WeightedVeggie, PackVeggie, UnitPriceVeggie
 from werkzeug.security import generate_password_hash
 
-# 设置测试数据库
+
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(TEST_DATABASE_URL)
-SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))  # 使用 scoped_session 管理
+SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))  
 
-print("Loading conftest.py")  # 用于调试，确保加载此文件
+print("Loading conftest.py") 
 
 
 @pytest.fixture(scope="session")

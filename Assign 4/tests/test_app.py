@@ -1,9 +1,10 @@
-# tests/test_app.py
+# pytest tests/test_app.py --cov=app --cov-report=term-missing
 
-import pytest
+
+import pytest,random
 from flask import session, url_for
 from app import app, db
-from models import Customer, Item, Inventory, PremadeBox, Order, Person
+from models import Customer, Item, Inventory, PremadeBox, Order, Person,CorporateCustomer,Veggie,PackVeggie,WeightedVeggie,UnitPriceVeggie
 from werkzeug.security import generate_password_hash
 
 @pytest.fixture
@@ -11,57 +12,66 @@ def client():
     with app.test_client() as client:
         with app.app_context():
             db.create_all()
-            # Set up test data
-            hashed_password = generate_password_hash("password")
-            person = Person(username="testuser", role="customer", _Person__password=hashed_password)
-            customer = Customer(cust_id=1, username="testuser", cust_balance=100.0)
-            item = Item(name="Carrot", price=2.0)
-            inventory = Inventory(item_id=item.id, quantity=100)
-            premade_box = PremadeBox(name="Veggie Box", max_content=10)
-            db.session.add_all([person, customer, item, inventory, premade_box])
-            db.session.commit()
             yield client
         db.session.remove()
         db.drop_all()
 
+
 def login(client, username="testuser", password="password"):
     return client.post(url_for('login'), data=dict(username=username, password=password), follow_redirects=True)
 
+# Test cover page
 def test_coverpage(client):
-    """Test that the cover page loads successfully."""
     response = client.get(url_for('coverpage'))
     assert response.status_code == 200
 
+# Test login and session
 def test_login(client):
-    """Test login functionality and session creation."""
     response = login(client)
     assert b'Login successful!' in response.data
     assert 'user_id' in session
     assert 'role' in session
 
+def test_login_invalid(client):
+    response = client.post(url_for('login'), data=dict(username="wronguser", password="wrongpassword"), follow_redirects=True)
+    assert b'Incorrect username or password' in response.data
+    assert 'user_id' not in session
+
+# Test logout
 def test_logout(client):
-    """Test logout functionality and session clearing."""
     login(client)
     response = client.get(url_for('logout'), follow_redirects=True)
     assert b'You have been successfully logged out.' in response.data
     assert 'user_id' not in session
 
+# Test vegetable viewing
 def test_view_vegetables(client):
-    """Test vegetable viewing page loads correctly."""
     login(client)
     response = client.get(url_for('view_vegetables'))
     assert response.status_code == 200
 
+def test_view_vegetables_not_logged_in(client):
+    response = client.get(url_for('view_vegetables'), follow_redirects=True)
+    assert b'Please log in as a customer or staff.' in response.data
+
+# Test adding to cart
 def test_add_to_cart(client):
-    """Test adding an item to the cart."""
     login(client)
     item = Item.query.first()
     response = client.post(url_for('add_to_cart'), data=dict(item_id=item.id, quantity=3), follow_redirects=True)
     assert b'added to your cart!' in response.data
     assert session['cart'][0]['name'] == "Carrot"
 
+def test_add_to_cart_insufficient_stock(client):
+    login(client)
+    item = Item.query.first()
+    Inventory.query.filter_by(item_id=item.id).update({"quantity": 0})
+    db.session.commit()
+    response = client.post(url_for('add_to_cart'), data=dict(item_id=item.id, quantity=3), follow_redirects=True)
+    assert b'Insufficient stock!' in response.data
+
+# Test removing from cart
 def test_remove_from_cart(client):
-    """Test removing an item from the cart."""
     login(client)
     item = Item.query.first()
     client.post(url_for('add_to_cart'), data=dict(item_id=item.id, quantity=3), follow_redirects=True)
@@ -69,16 +79,21 @@ def test_remove_from_cart(client):
     assert b'Item removed from cart' in response.data
     assert len(session['cart']) == 0
 
+# Test checkout
 def test_checkout(client):
-    """Test checkout process initiates an order."""
     login(client)
     item = Item.query.first()
     client.post(url_for('add_to_cart'), data=dict(item_id=item.id, quantity=2), follow_redirects=True)
     response = client.post(url_for('checkout'), follow_redirects=True)
     assert b'created successfully' in response.data
 
+def test_checkout_empty_cart(client):
+    login(client)
+    response = client.post(url_for('checkout'), follow_redirects=True)
+    assert b'Your cart is empty!' in response.data
+
+# Test payment page
 def test_payment_page(client):
-    """Test accessing the payment page."""
     login(client)
     order = Order(order_number="ORD123", customer_id=1, total_cost=50.0)
     db.session.add(order)
@@ -86,8 +101,8 @@ def test_payment_page(client):
     response = client.get(url_for('payment_page', order_id=order.id))
     assert response.status_code == 200
 
+# Test payment processing
 def test_process_payment(client):
-    """Test payment processing functionality."""
     login(client)
     order = Order(order_number="ORD123", customer_id=1, total_cost=20.0)
     db.session.add(order)
@@ -101,8 +116,19 @@ def test_process_payment(client):
     }, follow_redirects=True)
     assert b'Payment processed successfully!' in response.data
 
+def test_process_payment_invalid_method(client):
+    login(client)
+    order = Order(order_number="ORD123", customer_id=1, total_cost=20.0)
+    db.session.add(order)
+    db.session.commit()
+    response = client.post(url_for('process_payment', order_id=order.id), data={
+        'delivery_option': 'standard',
+        'payment_method': 'invalid_method'
+    }, follow_redirects=True)
+    assert b'Payment failed' in response.data
+
+# Test order cancellation
 def test_cancel_order(client):
-    """Test order cancellation."""
     login(client)
     order = Order(order_number="ORD123", customer_id=1, total_cost=20.0)
     db.session.add(order)
@@ -110,8 +136,8 @@ def test_cancel_order(client):
     response = client.post(url_for('cancel_order', order_id=order.id), follow_redirects=True)
     assert b'Order has been canceled.' in response.data
 
+# Test customize premade box
 def test_customize_premade_box(client):
-    """Test customization of premade boxes."""
     login(client)
     box = PremadeBox.query.first()
     response = client.get(url_for('customize_premade_box', box_id=box.id))
