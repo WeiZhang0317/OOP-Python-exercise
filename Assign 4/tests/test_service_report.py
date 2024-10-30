@@ -25,8 +25,7 @@ def create_order(customer_id, total_cost, order_status, days_ago=0):
         customer_id=customer_id,
         staff_id=1,
         order_status=order_status,
-        total_cost=total_cost,
-        order_date=order_date
+        total_cost=total_cost
     )
     db.session.add(order)
     db.session.commit()

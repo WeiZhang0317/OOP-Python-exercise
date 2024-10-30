@@ -42,7 +42,21 @@ def test_history_orders(client):
 
 def test_detail(client):
     """Test displaying details of a specific order."""
-    order = Order(order_status=OrderStatus.SHIPPED.value)
+    # Setup required order details
+    order_number = "ORD12345"
+    customer_id = 1  
+    staff_id = 1    
+    total_cost = 100.0
+
+    # Create an order instance with all required fields
+    order = Order(
+        order_number=order_number,
+        customer_id=customer_id,
+        staff_id=staff_id,
+        total_cost=total_cost,
+        order_status=OrderStatus.SHIPPED.value
+    )
+    
     db.session.add(order)
     db.session.commit()
 
