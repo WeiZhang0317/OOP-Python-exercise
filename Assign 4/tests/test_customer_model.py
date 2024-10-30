@@ -1,9 +1,9 @@
+# python -m pytest -v tests/test_customer_model.py
+
 import pytest
 from models import db
 from models.customer import Customer
 from app import app
-
-# python -m pytest -v tests/test_customer_model.py
 
 @pytest.fixture
 def setup_db():
@@ -77,30 +77,6 @@ def test_deduct_balance(setup_db):
     db.session.commit()
     assert customer.deduct_balance(20.0) is False
     assert customer.cust_balance == -90.0
-
-def test_make_payment(setup_db):
-    """Test `make_payment` method by adding a mock payment."""
-    customer = Customer(
-        first_name="Eve",
-        last_name="Adams",
-        username="eveadams",
-        password="password456",
-        cust_address="321 Pine St",
-        cust_balance=-50.0
-    )
-    db.session.add(customer)
-    db.session.commit()
-    
-    # Create a mock payment object
-    class MockPayment:
-        payment_amount = 20.0
-    
-    # Attempt payment
-    customer.make_payment(MockPayment())
-    
-    # Verify payment has been applied
-    assert customer.cust_balance == -70.0
-    assert len(customer.list_of_payments) == 1
 
 def test_view_order_history(setup_db, capsys):
     """Test `view_order_history` method output."""

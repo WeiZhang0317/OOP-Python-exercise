@@ -1,4 +1,4 @@
-# python -m pytest -v tests/test_report_service.py
+# python -m pytest -v tests/test_controllers_service/test_report_service.py
 
 import pytest
 from datetime import datetime, timedelta

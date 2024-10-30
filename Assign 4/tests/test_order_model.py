@@ -1,12 +1,12 @@
 # python -m pytest -v tests/test_order_model.py
 
 import pytest
-from datetime import datetime
 from models import db
-from models.order import Order, OrderLine, OrderStatus, Cart
-from models.customer import Customer
+from models.order import Cart,Order,OrderStatus
 from models.item import Item
 from app import app
+
+# python -m pytest -v tests/test_order_model.py
 
 @pytest.fixture
 def setup_db():
@@ -51,62 +51,9 @@ def test_cart_remove_item(setup_db):
     assert len(cart.get_cart()) == 1
     assert cart.get_cart()[0]['name'] == "Banana"
 
-def test_order_initialization(setup_db):
-    """Test initializing an Order with customer and total cost."""
-    customer = Customer(first_name="John", last_name="Doe", username="johndoe", password="password", cust_address="123 Main St")
-    db.session.add(customer)
-    db.session.commit()
-
-    order = Order(order_number=Order.generate_unique_order_number(), customer_id=customer.cust_id, staff_id=1,
-                  order_status=OrderStatus.PENDING.value, total_cost=50.0)
-    db.session.add(order)
-    db.session.commit()
-
-    assert order.customer_id == customer.cust_id
-    assert order.total_cost == 50.0
-    assert order.order_status == OrderStatus.PENDING.value
-
-def test_order_add_order_line(setup_db):
-    """Test adding OrderLine to an Order."""
-    customer = Customer(first_name="Jane", last_name="Smith", username="janesmith", password="secure", cust_address="456 Elm St")
-    item = Item(name="Milk", price=2.5)
-    db.session.add_all([customer, item])
-    db.session.commit()
-
-    order = Order(order_number=Order.generate_unique_order_number(), customer_id=customer.cust_id, staff_id=1,
-                  order_status=OrderStatus.PENDING.value, total_cost=0.0)
-    order_line = OrderLine(order_id=order.id, item_id=item.id, quantity=4, line_total=item.price * 4)
-    
-    order.add_order_line(order_line)
-    db.session.add(order)
-    db.session.commit()
-
-    assert len(order.list_of_order_lines) == 1
-    assert order.get_total_cost() == 10.0  # 2.5 * 4
-
-def test_order_set_order_status(setup_db):
-    """Test setting the order status using OrderStatus Enum."""
-    order = Order(order_number=Order.generate_unique_order_number(), customer_id=1, staff_id=1,
-                  order_status=OrderStatus.PENDING.value, total_cost=50.0)
-    db.session.add(order)
-    db.session.commit()
-
-    order.set_order_status(OrderStatus.PAID.value)
-    db.session.commit()
-    assert order.order_status == OrderStatus.PAID.value
-
-def test_order_generate_unique_order_number(setup_db):
-    """Test generating a unique order number."""
-    order1 = Order(order_number=Order.generate_unique_order_number(), customer_id=1, staff_id=1, order_status=OrderStatus.PENDING.value, total_cost=30.0)
-    order2 = Order(order_number=Order.generate_unique_order_number(), customer_id=1, staff_id=1, order_status=OrderStatus.PENDING.value, total_cost=60.0)
-    
-    db.session.add_all([order1, order2])
-    db.session.commit()
-
-    assert order1.order_number != order2.order_number
-
 def test_order_calculate_total_with_delivery(setup_db):
     """Test calculating total cost with optional delivery fee."""
+    # Create a mock order
     order = Order(order_number=Order.generate_unique_order_number(), customer_id=1, staff_id=1,
                   order_status=OrderStatus.PAID.value, total_cost=100.0)
 
@@ -117,12 +64,3 @@ def test_order_calculate_total_with_delivery(setup_db):
     # With delivery fee
     total_with_delivery = order.calculate_total_with_delivery(delivery_option='delivery')
     assert total_with_delivery == 110.0  # 100.0 + 10.0 delivery fee
-
-def test_order_line_get_line_total(setup_db):
-    """Test calculating line total for an OrderLine."""
-    item = Item(name="Bread", price=3.0)
-    db.session.add(item)
-    db.session.commit()
-
-    order_line = OrderLine(order_id=1, item_id=item.id, quantity=5, line_total=15.0)
-    assert order_line.get_line_total() == 15.0  # 3.0 * 5

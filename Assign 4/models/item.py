@@ -245,17 +245,6 @@ class PremadeBox(Item):
         
         self.box_content.extend([veggie] * quantity)  # Add the vegetable multiple times based on quantity
 
-    def process_selected_items(self, items: list, selected_quantities: dict):
-        """Processes and adds selected items based on form data."""
-        total_quantity = sum(selected_quantities[item.id] for item in items if selected_quantities.get(item.id, 0) > 0)
-        
-        if total_quantity > self.max_content:
-            raise ValueError(f"Total items exceed the box limit! Maximum allowed: {self.max_content}.")
-        
-        for item in items:
-            quantity = selected_quantities.get(item.id, 0)
-            if quantity > 0:
-                self.add_items_to_box(item, quantity)
 
 
 
